@@ -7,13 +7,39 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A113ACEA1C692BFC00C3EDBB /* NSObject+Swizzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A113ACE91C692BFC00C3EDBB /* NSObject+Swizzle.swift */; };
+		A113ACEC1C692C5200C3EDBB /* AnimationBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A113ACEB1C692C5200C3EDBB /* AnimationBuilder.swift */; };
+		A14E954E1C689B5600C303CC /* Swizzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E954D1C689B5600C303CC /* Swizzle.swift */; };
+		A15402E51C6655400035AB8C /* LayerAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15402E41C6655400035AB8C /* LayerAnimation.swift */; };
+		A15402E71C665F6D0035AB8C /* DirectAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15402E61C665F6D0035AB8C /* DirectAnimation.swift */; };
+		A15402E91C665FA40035AB8C /* AnimationGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15402E81C665FA40035AB8C /* AnimationGroup.swift */; };
+		A15402EB1C6662450035AB8C /* Interpolation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15402EA1C6662450035AB8C /* Interpolation.swift */; };
+		A18F35241C69361C005D2343 /* UIView+CommonAncestor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18F35231C69361C005D2343 /* UIView+CommonAncestor.swift */; };
+		A18F35261C6938B2005D2343 /* PropertyInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18F35251C6938B2005D2343 /* PropertyInfo.swift */; };
+		A18F35281C693C41005D2343 /* CurvedAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18F35271C693C41005D2343 /* CurvedAnimation.swift */; };
 		A1D704441C664D14009F7C8F /* Slaminate.h in Headers */ = {isa = PBXBuildFile; fileRef = A1D704431C664D14009F7C8F /* Slaminate.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A1D704521C664D37009F7C8F /* NSObject+Slaminate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D704511C664D37009F7C8F /* NSObject+Slaminate.swift */; };
+		A1D704541C664D48009F7C8F /* Animation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D704531C664D48009F7C8F /* Animation.swift */; };
+		A1D7045C1C664EC0009F7C8F /* Curve.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D7045B1C664EC0009F7C8F /* Curve.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A113ACE91C692BFC00C3EDBB /* NSObject+Swizzle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObject+Swizzle.swift"; sourceTree = "<group>"; };
+		A113ACEB1C692C5200C3EDBB /* AnimationBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationBuilder.swift; sourceTree = "<group>"; };
+		A14E954D1C689B5600C303CC /* Swizzle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Swizzle.swift; sourceTree = "<group>"; };
+		A15402E41C6655400035AB8C /* LayerAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayerAnimation.swift; sourceTree = "<group>"; };
+		A15402E61C665F6D0035AB8C /* DirectAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DirectAnimation.swift; sourceTree = "<group>"; };
+		A15402E81C665FA40035AB8C /* AnimationGroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationGroup.swift; sourceTree = "<group>"; };
+		A15402EA1C6662450035AB8C /* Interpolation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Interpolation.swift; sourceTree = "<group>"; };
+		A18F35231C69361C005D2343 /* UIView+CommonAncestor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+CommonAncestor.swift"; sourceTree = "<group>"; };
+		A18F35251C6938B2005D2343 /* PropertyInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyInfo.swift; sourceTree = "<group>"; };
+		A18F35271C693C41005D2343 /* CurvedAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurvedAnimation.swift; sourceTree = "<group>"; };
 		A1D704401C664D14009F7C8F /* Slaminate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Slaminate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1D704431C664D14009F7C8F /* Slaminate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Slaminate.h; sourceTree = "<group>"; };
 		A1D704451C664D14009F7C8F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A1D704511C664D37009F7C8F /* NSObject+Slaminate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObject+Slaminate.swift"; sourceTree = "<group>"; };
+		A1D704531C664D48009F7C8F /* Animation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Animation.swift; sourceTree = "<group>"; };
+		A1D7045B1C664EC0009F7C8F /* Curve.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Curve.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -46,8 +72,21 @@
 		A1D704421C664D14009F7C8F /* Slaminate */ = {
 			isa = PBXGroup;
 			children = (
+				A18F35271C693C41005D2343 /* CurvedAnimation.swift */,
+				A113ACEB1C692C5200C3EDBB /* AnimationBuilder.swift */,
+				A113ACE91C692BFC00C3EDBB /* NSObject+Swizzle.swift */,
+				A15402EA1C6662450035AB8C /* Interpolation.swift */,
+				A15402E41C6655400035AB8C /* LayerAnimation.swift */,
+				A15402E61C665F6D0035AB8C /* DirectAnimation.swift */,
+				A15402E81C665FA40035AB8C /* AnimationGroup.swift */,
+				A1D7045B1C664EC0009F7C8F /* Curve.swift */,
+				A1D704531C664D48009F7C8F /* Animation.swift */,
+				A1D704511C664D37009F7C8F /* NSObject+Slaminate.swift */,
 				A1D704431C664D14009F7C8F /* Slaminate.h */,
 				A1D704451C664D14009F7C8F /* Info.plist */,
+				A14E954D1C689B5600C303CC /* Swizzle.swift */,
+				A18F35231C69361C005D2343 /* UIView+CommonAncestor.swift */,
+				A18F35251C6938B2005D2343 /* PropertyInfo.swift */,
 			);
 			path = Slaminate;
 			sourceTree = "<group>";
@@ -131,6 +170,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A14E954E1C689B5600C303CC /* Swizzle.swift in Sources */,
+				A15402E51C6655400035AB8C /* LayerAnimation.swift in Sources */,
+				A18F35261C6938B2005D2343 /* PropertyInfo.swift in Sources */,
+				A113ACEC1C692C5200C3EDBB /* AnimationBuilder.swift in Sources */,
+				A15402E71C665F6D0035AB8C /* DirectAnimation.swift in Sources */,
+				A18F35241C69361C005D2343 /* UIView+CommonAncestor.swift in Sources */,
+				A1D704541C664D48009F7C8F /* Animation.swift in Sources */,
+				A1D7045C1C664EC0009F7C8F /* Curve.swift in Sources */,
+				A18F35281C693C41005D2343 /* CurvedAnimation.swift in Sources */,
+				A15402E91C665FA40035AB8C /* AnimationGroup.swift in Sources */,
+				A113ACEA1C692BFC00C3EDBB /* NSObject+Swizzle.swift in Sources */,
+				A1D704521C664D37009F7C8F /* NSObject+Slaminate.swift in Sources */,
+				A15402EB1C6662450035AB8C /* Interpolation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -229,6 +281,7 @@
 		A1D704491C664D14009F7C8F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -239,12 +292,14 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.trenskow.Slaminate;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		A1D7044A1C664D14009F7C8F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -277,6 +332,7 @@
 				A1D7044A1C664D14009F7C8F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
