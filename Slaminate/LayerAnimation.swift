@@ -93,6 +93,7 @@ class LayerAnimation: NSObject, PropertyAnimation {
         animation?.toValue = toValue as? Interpolatable
         animation?.curve = curve
         animation?.delegate = self
+        animation?.removedOnCompletion = true
         
         animating = true
         

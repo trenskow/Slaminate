@@ -7,20 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A113ACEA1C692BFC00C3EDBB /* NSObject+Swizzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A113ACE91C692BFC00C3EDBB /* NSObject+Swizzle.swift */; };
-		A113ACEC1C692C5200C3EDBB /* AnimationBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A113ACEB1C692C5200C3EDBB /* AnimationBuilder.swift */; };
-		A14E954E1C689B5600C303CC /* Swizzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E954D1C689B5600C303CC /* Swizzle.swift */; };
-		A15402E51C6655400035AB8C /* LayerAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15402E41C6655400035AB8C /* LayerAnimation.swift */; };
-		A15402E71C665F6D0035AB8C /* DirectAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15402E61C665F6D0035AB8C /* DirectAnimation.swift */; };
-		A15402E91C665FA40035AB8C /* AnimationGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15402E81C665FA40035AB8C /* AnimationGroup.swift */; };
-		A15402EB1C6662450035AB8C /* Interpolation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15402EA1C6662450035AB8C /* Interpolation.swift */; };
-		A18F35241C69361C005D2343 /* UIView+CommonAncestor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18F35231C69361C005D2343 /* UIView+CommonAncestor.swift */; };
-		A18F35261C6938B2005D2343 /* PropertyInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18F35251C6938B2005D2343 /* PropertyInfo.swift */; };
-		A18F35281C693C41005D2343 /* CurvedAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18F35271C693C41005D2343 /* CurvedAnimation.swift */; };
-		A1D704441C664D14009F7C8F /* Slaminate.h in Headers */ = {isa = PBXBuildFile; fileRef = A1D704431C664D14009F7C8F /* Slaminate.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A1D704521C664D37009F7C8F /* NSObject+Slaminate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D704511C664D37009F7C8F /* NSObject+Slaminate.swift */; };
-		A1D704541C664D48009F7C8F /* Animation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D704531C664D48009F7C8F /* Animation.swift */; };
-		A1D7045C1C664EC0009F7C8F /* Curve.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D7045B1C664EC0009F7C8F /* Curve.swift */; };
+		A1591B6C1C6B037D001687F6 /* Slaminate.h in Headers */ = {isa = PBXBuildFile; fileRef = A1D704431C664D14009F7C8F /* Slaminate.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A1591B6D1C6B0381001687F6 /* Swizzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E954D1C689B5600C303CC /* Swizzle.swift */; };
+		A1591B6E1C6B0381001687F6 /* UIView+CommonAncestor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18F35231C69361C005D2343 /* UIView+CommonAncestor.swift */; };
+		A1591B6F1C6B0381001687F6 /* PropertyInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18F35251C6938B2005D2343 /* PropertyInfo.swift */; };
+		A1591B701C6B0384001687F6 /* CurvedAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18F35271C693C41005D2343 /* CurvedAnimation.swift */; };
+		A1591B711C6B0384001687F6 /* AnimationBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A113ACEB1C692C5200C3EDBB /* AnimationBuilder.swift */; };
+		A1591B721C6B0384001687F6 /* NSObject+Swizzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A113ACE91C692BFC00C3EDBB /* NSObject+Swizzle.swift */; };
+		A1591B731C6B0384001687F6 /* Interpolation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15402EA1C6662450035AB8C /* Interpolation.swift */; };
+		A1591B741C6B0384001687F6 /* LayerAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15402E41C6655400035AB8C /* LayerAnimation.swift */; };
+		A1591B751C6B0384001687F6 /* DirectAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15402E61C665F6D0035AB8C /* DirectAnimation.swift */; };
+		A1591B761C6B0384001687F6 /* AnimationGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15402E81C665FA40035AB8C /* AnimationGroup.swift */; };
+		A1591B771C6B0384001687F6 /* Curve.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D7045B1C664EC0009F7C8F /* Curve.swift */; };
+		A1591B781C6B0384001687F6 /* Animation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D704531C664D48009F7C8F /* Animation.swift */; };
+		A1591B791C6B0384001687F6 /* NSObject+Slaminate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D704511C664D37009F7C8F /* NSObject+Slaminate.swift */; };
+		A1EF9F2B1C6B47820045AE18 /* ConstraintPresenceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1EF9F2A1C6B47820045AE18 /* ConstraintPresenceInfo.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,19 +32,20 @@
 		A15402E61C665F6D0035AB8C /* DirectAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DirectAnimation.swift; sourceTree = "<group>"; };
 		A15402E81C665FA40035AB8C /* AnimationGroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationGroup.swift; sourceTree = "<group>"; };
 		A15402EA1C6662450035AB8C /* Interpolation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Interpolation.swift; sourceTree = "<group>"; };
+		A1591B641C6B0329001687F6 /* Slaminate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Slaminate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A18F35231C69361C005D2343 /* UIView+CommonAncestor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+CommonAncestor.swift"; sourceTree = "<group>"; };
 		A18F35251C6938B2005D2343 /* PropertyInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyInfo.swift; sourceTree = "<group>"; };
 		A18F35271C693C41005D2343 /* CurvedAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurvedAnimation.swift; sourceTree = "<group>"; };
-		A1D704401C664D14009F7C8F /* Slaminate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Slaminate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1D704431C664D14009F7C8F /* Slaminate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Slaminate.h; sourceTree = "<group>"; };
 		A1D704451C664D14009F7C8F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A1D704511C664D37009F7C8F /* NSObject+Slaminate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObject+Slaminate.swift"; sourceTree = "<group>"; };
 		A1D704531C664D48009F7C8F /* Animation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Animation.swift; sourceTree = "<group>"; };
 		A1D7045B1C664EC0009F7C8F /* Curve.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Curve.swift; sourceTree = "<group>"; };
+		A1EF9F2A1C6B47820045AE18 /* ConstraintPresenceInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstraintPresenceInfo.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		A1D7043C1C664D14009F7C8F /* Frameworks */ = {
+		A1591B601C6B0329001687F6 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -64,7 +66,7 @@
 		A1D704411C664D14009F7C8F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A1D704401C664D14009F7C8F /* Slaminate.framework */,
+				A1591B641C6B0329001687F6 /* Slaminate.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -72,10 +74,12 @@
 		A1D704421C664D14009F7C8F /* Slaminate */ = {
 			isa = PBXGroup;
 			children = (
-				A18F35271C693C41005D2343 /* CurvedAnimation.swift */,
+				A18F35251C6938B2005D2343 /* PropertyInfo.swift */,
+				A1EF9F2A1C6B47820045AE18 /* ConstraintPresenceInfo.swift */,
 				A113ACEB1C692C5200C3EDBB /* AnimationBuilder.swift */,
 				A113ACE91C692BFC00C3EDBB /* NSObject+Swizzle.swift */,
 				A15402EA1C6662450035AB8C /* Interpolation.swift */,
+				A18F35271C693C41005D2343 /* CurvedAnimation.swift */,
 				A15402E41C6655400035AB8C /* LayerAnimation.swift */,
 				A15402E61C665F6D0035AB8C /* DirectAnimation.swift */,
 				A15402E81C665FA40035AB8C /* AnimationGroup.swift */,
@@ -86,7 +90,6 @@
 				A1D704451C664D14009F7C8F /* Info.plist */,
 				A14E954D1C689B5600C303CC /* Swizzle.swift */,
 				A18F35231C69361C005D2343 /* UIView+CommonAncestor.swift */,
-				A18F35251C6938B2005D2343 /* PropertyInfo.swift */,
 			);
 			path = Slaminate;
 			sourceTree = "<group>";
@@ -94,25 +97,25 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		A1D7043D1C664D14009F7C8F /* Headers */ = {
+		A1591B611C6B0329001687F6 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A1D704441C664D14009F7C8F /* Slaminate.h in Headers */,
+				A1591B6C1C6B037D001687F6 /* Slaminate.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		A1D7043F1C664D14009F7C8F /* Slaminate */ = {
+		A1591B631C6B0329001687F6 /* Slaminate */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A1D704481C664D14009F7C8F /* Build configuration list for PBXNativeTarget "Slaminate" */;
+			buildConfigurationList = A1591B691C6B0329001687F6 /* Build configuration list for PBXNativeTarget "Slaminate" */;
 			buildPhases = (
-				A1D7043B1C664D14009F7C8F /* Sources */,
-				A1D7043C1C664D14009F7C8F /* Frameworks */,
-				A1D7043D1C664D14009F7C8F /* Headers */,
-				A1D7043E1C664D14009F7C8F /* Resources */,
+				A1591B5F1C6B0329001687F6 /* Sources */,
+				A1591B601C6B0329001687F6 /* Frameworks */,
+				A1591B611C6B0329001687F6 /* Headers */,
+				A1591B621C6B0329001687F6 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -120,7 +123,7 @@
 			);
 			name = Slaminate;
 			productName = Slaminate;
-			productReference = A1D704401C664D14009F7C8F /* Slaminate.framework */;
+			productReference = A1591B641C6B0329001687F6 /* Slaminate.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -132,8 +135,8 @@
 				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = Trenskow.io;
 				TargetAttributes = {
-					A1D7043F1C664D14009F7C8F = {
-						CreatedOnToolsVersion = 7.2;
+					A1591B631C6B0329001687F6 = {
+						CreatedOnToolsVersion = 7.2.1;
 						DevelopmentTeam = GNSKCLJY5Q;
 					};
 				};
@@ -150,13 +153,13 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A1D7043F1C664D14009F7C8F /* Slaminate */,
+				A1591B631C6B0329001687F6 /* Slaminate */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		A1D7043E1C664D14009F7C8F /* Resources */ = {
+		A1591B621C6B0329001687F6 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -166,29 +169,62 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		A1D7043B1C664D14009F7C8F /* Sources */ = {
+		A1591B5F1C6B0329001687F6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A14E954E1C689B5600C303CC /* Swizzle.swift in Sources */,
-				A15402E51C6655400035AB8C /* LayerAnimation.swift in Sources */,
-				A18F35261C6938B2005D2343 /* PropertyInfo.swift in Sources */,
-				A113ACEC1C692C5200C3EDBB /* AnimationBuilder.swift in Sources */,
-				A15402E71C665F6D0035AB8C /* DirectAnimation.swift in Sources */,
-				A18F35241C69361C005D2343 /* UIView+CommonAncestor.swift in Sources */,
-				A1D704541C664D48009F7C8F /* Animation.swift in Sources */,
-				A1D7045C1C664EC0009F7C8F /* Curve.swift in Sources */,
-				A18F35281C693C41005D2343 /* CurvedAnimation.swift in Sources */,
-				A15402E91C665FA40035AB8C /* AnimationGroup.swift in Sources */,
-				A113ACEA1C692BFC00C3EDBB /* NSObject+Swizzle.swift in Sources */,
-				A1D704521C664D37009F7C8F /* NSObject+Slaminate.swift in Sources */,
-				A15402EB1C6662450035AB8C /* Interpolation.swift in Sources */,
+				A1591B721C6B0384001687F6 /* NSObject+Swizzle.swift in Sources */,
+				A1591B791C6B0384001687F6 /* NSObject+Slaminate.swift in Sources */,
+				A1591B6E1C6B0381001687F6 /* UIView+CommonAncestor.swift in Sources */,
+				A1591B701C6B0384001687F6 /* CurvedAnimation.swift in Sources */,
+				A1591B751C6B0384001687F6 /* DirectAnimation.swift in Sources */,
+				A1EF9F2B1C6B47820045AE18 /* ConstraintPresenceInfo.swift in Sources */,
+				A1591B771C6B0384001687F6 /* Curve.swift in Sources */,
+				A1591B761C6B0384001687F6 /* AnimationGroup.swift in Sources */,
+				A1591B711C6B0384001687F6 /* AnimationBuilder.swift in Sources */,
+				A1591B741C6B0384001687F6 /* LayerAnimation.swift in Sources */,
+				A1591B6D1C6B0381001687F6 /* Swizzle.swift in Sources */,
+				A1591B6F1C6B0381001687F6 /* PropertyInfo.swift in Sources */,
+				A1591B781C6B0384001687F6 /* Animation.swift in Sources */,
+				A1591B731C6B0384001687F6 /* Interpolation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		A1591B6A1C6B0329001687F6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = Slaminate/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = io.trenskow.Slaminate;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		A1591B6B1C6B0329001687F6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = Slaminate/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = io.trenskow.Slaminate;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 		A1D704461C664D14009F7C8F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -278,58 +314,23 @@
 			};
 			name = Release;
 		};
-		A1D704491C664D14009F7C8F /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = Slaminate/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = io.trenskow.Slaminate;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-			};
-			name = Debug;
-		};
-		A1D7044A1C664D14009F7C8F /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = Slaminate/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = io.trenskow.Slaminate;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		A1591B691C6B0329001687F6 /* Build configuration list for PBXNativeTarget "Slaminate" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1591B6A1C6B0329001687F6 /* Debug */,
+				A1591B6B1C6B0329001687F6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		A1D7043A1C664D14009F7C8F /* Build configuration list for PBXProject "Slaminate" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A1D704461C664D14009F7C8F /* Debug */,
 				A1D704471C664D14009F7C8F /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		A1D704481C664D14009F7C8F /* Build configuration list for PBXNativeTarget "Slaminate" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				A1D704491C664D14009F7C8F /* Debug */,
-				A1D7044A1C664D14009F7C8F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

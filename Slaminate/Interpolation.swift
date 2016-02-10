@@ -389,23 +389,23 @@ extension NSValue: Interpolatable {
         
         switch typeEncoding {
         case "f":
-            var val = value(Float()).interpolate((to as! NSValue).value(Float()), position)
-            return self.dynamicType.init(&val, withObjCType: objCType)
+            let val = value(Float()).interpolate((to as! NSValue).value(Float()), position)
+            return NSNumber(float: val as! Float)
         case "d":
-            var val = value(Double()).interpolate((to as! NSValue).value(Double()), position)
-            return self.dynamicType.init(&val, withObjCType: objCType)
+            let val = value(Double()).interpolate((to as! NSValue).value(Double()), position)
+            return NSNumber(double: val as! Double)
         case "{CGPoint=dd}":
-            var val = value(CGPoint()).interpolate((to as! NSValue).value(CGPoint()), position)
-            return self.dynamicType.init(&val, withObjCType: objCType)
+            let val = value(CGPoint()).interpolate((to as! NSValue).value(CGPoint()), position)
+            return NSValue(CGPoint: val as! CGPoint)
         case "{CGSize=dd}":
-            var val = value(CGSize()).interpolate((to as! NSValue).value(CGSize()), position)
-            return self.dynamicType.init(&val, withObjCType: objCType)
+            let val = value(CGSize()).interpolate((to as! NSValue).value(CGSize()), position)
+            return NSValue(CGSize: val as! CGSize)
         case "{CGRect={CGPoint=dd}{CGSize=dd}}":
-            var val = value(CGRect()).interpolate((to as! NSValue).value(CGRect()), position)
-            return self.dynamicType.init(&val, withObjCType: objCType)
+            let val = value(CGRect()).interpolate((to as! NSValue).value(CGRect()), position)
+            return NSValue(CGRect: val as! CGRect)
         case "{CATransform3D=dddddddddddddddd}":
-            var val = value(CATransform3D()).interpolate((to as! NSValue).value(CATransform3D()), position)
-            return self.dynamicType.init(&val, withObjCType: objCType)
+            let val = value(CATransform3D()).interpolate((to as! NSValue).value(CATransform3D()), position)
+            return NSValue(CATransform3D: val as! CATransform3D)
         default:
             fatalError("Interpolation does not support type encoding \(typeEncoding).")
             break

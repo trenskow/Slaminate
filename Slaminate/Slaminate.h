@@ -2,7 +2,7 @@
 //  Slaminate.h
 //  Slaminate
 //
-//  Created by Kristian Trenskow on 06/02/16.
+//  Created by Kristian Trenskow on 10/02/16.
 //  Copyright © 2016 Trenskow.io. All rights reserved.
 //
 
@@ -16,4 +16,4 @@ FOUNDATION_EXPORT const unsigned char SlaminateVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <Slaminate/PublicHeader.h>
 
-#import "Slaminate-swift.h"
+
