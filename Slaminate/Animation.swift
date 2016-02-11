@@ -18,6 +18,8 @@ A protocol representing an animation.
     var duration:NSTimeInterval { get }
     var delay:NSTimeInterval { get }
     func then(duration duration: NSTimeInterval, delay: NSTimeInterval, curve: Curve?, animation: Void -> Void, completion: ((finished: Bool) -> Void)?) -> Animation
+    func beginAnimation()
+    func postponeAnimation() -> Animation
 }
 
 protocol AnimationDelegate: class {
@@ -26,8 +28,6 @@ protocol AnimationDelegate: class {
 
 protocol DelegatedAnimation: Animation {
     weak var delegate: AnimationDelegate? { get set }
-    func beginAnimation()
-    func postponeAnimation()
 }
 
 protocol PropertyAnimation: DelegatedAnimation {
@@ -59,10 +59,10 @@ extension Array where Element: Animation {
 
 class ConcreteAnimation: NSObject, DelegatedAnimation {
     
-    @objc(isAnimating) var animating: Bool = false
-    @objc(isComplete) var complete: Bool = false
-    @objc(isFinished) var finished: Bool = true
-    @objc var duration: NSTimeInterval = 0.0
+    @objc(isAnimating) internal(set) var animating: Bool = false
+    @objc(isComplete) internal(set) var complete: Bool = false
+    @objc(isFinished) internal(set) var finished: Bool = true
+    @objc internal(set) var duration: NSTimeInterval = 0.0
     @objc var delay: NSTimeInterval = 0.0
     
     weak var delegate: AnimationDelegate?
@@ -87,13 +87,14 @@ class ConcreteAnimation: NSObject, DelegatedAnimation {
         self.performSelector(Selector("commitAnimation"), withObject: nil, afterDelay: 0.0)
     }
     
-    func postponeAnimation() {
+    func postponeAnimation() -> Animation {
         ongoingAnimations.remove(self)
         NSObject.cancelPreviousPerformRequestsWithTarget(
             self,
             selector: Selector("commitAnimation"),
             object: nil
         )
+        return self
     }
     
     func commitAnimation() {}
