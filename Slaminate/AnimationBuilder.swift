@@ -8,44 +8,51 @@
 
 import Foundation
 
-class AnimationBuilder {
+class AnimationBuilder: AnimationGroup {
     
     static var allAnimations = [AnimationGroup]()
     static var builders = [AnimationBuilder]()
-    
-    static var top: AnimationBuilder {
-        return builders.last!
-    }
-    
-    static func pushBuilder() {
-        builders.append(AnimationBuilder())
-        updateSwizzle()
-    }
     
     private static func updateSwizzle() {
         NSObject.swizzled = builders.reduce(false, combine: { $0 || $1.state == .Collecting })
     }
     
+    static var top: AnimationBuilder {
+        return builders.last!
+    }
+    
     enum AnimationBuilderState {
+        case Waiting
         case Collecting
         case Resetting
         case Building
         case Done
     }
     
-    var state = AnimationBuilderState.Collecting {
+    var state = AnimationBuilderState.Waiting {
         didSet {
             AnimationBuilder.updateSwizzle()
         }
     }
     
-    deinit {
-        print("deinit builder")
-    }
-    
     var propertyInfos = [PropertyInfo]()
     var constraintInfos = [PropertyInfo]()
     var constraintPresenceInfos = [ConstraintPresenceInfo]()
+    
+    let animation: Void -> Void
+    var curve: Curve?
+    
+    init(duration: NSTimeInterval, delay: NSTimeInterval, animation: Void -> Void, curve: Curve?, completion: ((finished: Bool) -> Void)?) {
+        self.animation = animation
+        super.init(animations: [], completion: completion)
+        self.duration = duration
+        self.delay = delay
+        self.curve = curve
+    }
+    
+    deinit {
+        print("deinit builder")
+    }
     
     func setObjectFromValue(object: NSObject, key: String, value: NSObject?) -> Bool {
         
@@ -108,7 +115,7 @@ class AnimationBuilder {
         
     }
     
-    internal func finalize(duration: NSTimeInterval, delay: NSTimeInterval, curve: Curve?, completion: ((finished: Bool) -> Void)?) -> AnimationGroup {
+    func collectAnimations() {
         
         guard state == .Collecting else {
             fatalError("Finalizing without collecting.")
@@ -117,21 +124,27 @@ class AnimationBuilder {
         constraintInfos.applyToValues()
         constraintPresenceInfos.applyPresent(true)
         
-        var views: [(UIView, UIView)] = constraintInfos.map({ (
+        var views: [(UIView, UIView?)] = constraintInfos.map({ (
                 ($0.object as! NSLayoutConstraint).firstItem as! UIView,
-                ($0.object as! NSLayoutConstraint).secondItem as! UIView
+                ($0.object as! NSLayoutConstraint).secondItem as? UIView
         ) })
         
         views.appendContentsOf(constraintPresenceInfos.map({ (
             ($0.constraint.firstItem as! UIView),
-            ($0.constraint.secondItem as! UIView)
+            ($0.constraint.secondItem as? UIView)
         ) }))
         
         if let first = views.first {
             
-            let common = views.reduce(first.0.commonAncestor(first.1)!, combine: { (c, views) -> UIView in
-                return c.commonAncestor(views.0.commonAncestor(views.1)!)!
+            var common = views.reduce(first.1 != nil ? first.0.commonAncestor(first.1!)! : first.0, combine: { (c, views) -> UIView in
+                var first = c.commonAncestor(views.0)
+                if let _ = views.1 {
+                    first = first?.commonAncestor(views.1!)
+                }
+                return first!
             })
+            
+            common = common.superview ?? common
             
             common.updateConstraints()
             common.layoutSubviews()
@@ -178,28 +191,37 @@ class AnimationBuilder {
             
         }
         
-        AnimationBuilder.builders.removeLast()
+        self.animations = animations
         
-        var animationGroup: AnimationGroup!
-        
-        let ci = self.constraintInfos
-        let cpi = self.constraintPresenceInfos
-        
-        animationGroup = AnimationGroup(animations: animations, completion: {
-            ci.applyToValues()
-            cpi.applyPresent(true)
-            AnimationBuilder.allAnimations.removeAtIndex(AnimationBuilder.allAnimations.indexOf({ $0 === animationGroup })!)
-            completion?(finished: $0)
-        })
-        
-        animationGroup.beginAnimation()
-        
-        AnimationBuilder.allAnimations.append(animationGroup)
+        self.animations.forEach { (animation) -> () in
+            animation.delegate = self
+            animation.postponeAnimation()
+        }
         
         state = .Done
         
-        return animationGroup
+    }
+    
+    override func commitAnimation() {
         
+        AnimationBuilder.builders.append(self)
+        
+        state = .Collecting
+        
+        animation()
+        
+        collectAnimations()
+        
+        AnimationBuilder.builders.removeLast()
+        
+        super.commitAnimation()
+        
+    }
+    
+    override func completeAnimation(finished: Bool) {
+        constraintInfos.applyToValues()
+        constraintPresenceInfos.applyPresent(true)
+        super.completeAnimation(finished)
     }
     
 }

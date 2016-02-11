@@ -15,8 +15,9 @@ A protocol representing an animation.
     var animating:Bool { @objc(isAnimating) get }
     var complete:Bool { @objc(isComplete) get }
     var finished:Bool { @objc(isFinished) get }
-    var duration:NSTimeInterval { get set }
-    var delay:NSTimeInterval { get set }
+    var duration:NSTimeInterval { get }
+    var delay:NSTimeInterval { get }
+    func then(duration duration: NSTimeInterval, delay: NSTimeInterval, curve: Curve?, animation: Void -> Void, completion: ((finished: Bool) -> Void)?) -> Animation
 }
 
 protocol AnimationDelegate: class {
@@ -26,6 +27,7 @@ protocol AnimationDelegate: class {
 protocol DelegatedAnimation: Animation {
     weak var delegate: AnimationDelegate? { get set }
     func beginAnimation()
+    func postponeAnimation()
 }
 
 protocol PropertyAnimation: DelegatedAnimation {
@@ -46,4 +48,56 @@ extension Array where Element: Animation {
         }
         return nil
     }
+    mutating func remove(element: Element) {
+        if let index = indexOf(element) {
+            removeAtIndex(index)
+        }
+    }
 }
+
+// Gets segmentation fault when trying to implement this as a protocol extension.
+
+class ConcreteAnimation: NSObject, DelegatedAnimation {
+    
+    @objc(isAnimating) var animating: Bool = false
+    @objc(isComplete) var complete: Bool = false
+    @objc(isFinished) var finished: Bool = true
+    @objc var duration: NSTimeInterval = 0.0
+    @objc var delay: NSTimeInterval = 0.0
+    
+    weak var delegate: AnimationDelegate?
+    
+    @objc func then(duration duration: NSTimeInterval, delay: NSTimeInterval, curve: Curve?, animation: Void -> Void, completion: ((finished: Bool) -> Void)?) -> Animation {
+        let ret = AnimationChain(animations: [
+            self,
+            slaminate(
+                duration: duration,
+                delay: delay,
+                curve: curve,
+                animation: animation,
+                completion: completion
+                ) as! DelegatedAnimation
+            ])
+        ret.beginAnimation()
+        return ret;
+    }
+    
+    func beginAnimation() {
+        ongoingAnimations.append(self)
+        self.performSelector(Selector("commitAnimation"), withObject: nil, afterDelay: 0.0)
+    }
+    
+    func postponeAnimation() {
+        ongoingAnimations.remove(self)
+        NSObject.cancelPreviousPerformRequestsWithTarget(
+            self,
+            selector: Selector("commitAnimation"),
+            object: nil
+        )
+    }
+    
+    func commitAnimation() {}
+    
+}
+
+internal var ongoingAnimations = [Animation]()

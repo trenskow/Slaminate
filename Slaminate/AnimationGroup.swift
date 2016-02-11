@@ -6,20 +6,16 @@
 //  Copyright © 2016 Trenskow.io. All rights reserved.
 //
 
-class AnimationGroup: DelegatedAnimation, AnimationDelegate {
-    
-    @objc(isAnimating) var animating: Bool = false
-    @objc(isComplete) var complete: Bool = false
-    @objc(isFinished) var finished: Bool = true
-    @objc var duration: NSTimeInterval = 0.0
-    @objc var delay: NSTimeInterval = 0.0
+class AnimationGroup: ConcreteAnimation, AnimationDelegate {
     
     var completion: (Bool -> Void)?
     
-    weak var delegate: AnimationDelegate?
+    override convenience init() {
+        self.init(animations: [], completion: nil)
+    }
     
     convenience init(completion: ((finished: Bool) -> Void)?) {
-        self.init(animations: nil, completion: completion)
+        self.init(animations: [], completion: completion)
     }
     
     deinit {
@@ -28,24 +24,38 @@ class AnimationGroup: DelegatedAnimation, AnimationDelegate {
     
     var animations: [DelegatedAnimation]
     
-    init(animations: [DelegatedAnimation]?, completion: ((finished: Bool) -> Void)?) {
+    init(animations: [DelegatedAnimation], completion: ((finished: Bool) -> Void)?) {
         self.animations = animations ?? []
         self.completion = completion
-        animations?.forEach({ $0.delegate = self })
+        super.init()
+        animations.forEach({ $0.delegate = self })
     }
     
-    func beginAnimation() {
-        animations.forEach { $0.beginAnimation() }
+    override func commitAnimation() {
+        self.animating = true
+        if animations.count > 0 {
+            animations.forEach { $0.beginAnimation() }
+        } else {
+            completeAnimation(true)
+        }
     }
         
+    internal func completeAnimation(finished: Bool) {
+        self.complete = true
+        self.finished = finished
+        self.animating = false
+        self.delegate?.animationCompleted(self, finished: self.finished)
+        self.completion?(finished)
+        ongoingAnimations.remove(self)
+    }
+    
     func animationCompleted(animation: Animation, finished: Bool) {
-        self.finished = self.finished && finished
+        let finished = self.finished && finished
         let complete = animations.reduce(true) { (c, animation) -> Bool in
             return c && animation.complete
         }
         if complete {
-            self.delegate?.animationCompleted(self, finished: self.finished)
-            self.completion?(finished)
+            completeAnimation(finished)
         }
     }
     

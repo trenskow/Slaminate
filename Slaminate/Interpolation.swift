@@ -203,14 +203,6 @@ extension CATransform3D : Interpolatable {
         
         var q = Quaternion()
         
-        guard a != b && position > 0.0 else {
-            return a
-        }
-        
-        guard position < 1.0 else {
-            return b
-        }
-        
         let dp = Double(a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w)
         
         var theta = acos(dp)
@@ -383,14 +375,17 @@ extension NSValue: Interpolatable {
     }
     
     func interpolate(to: Any, _ position: Double) -> Any {
+        
+        // If number - but not same type.
+        if let to = to as? NSNumber, from = self as? NSNumber where from.typeEncoding != "d" || to.typeEncoding != "d" {
+            return NSNumber(double: from.doubleValue).interpolate(to.doubleValue, position)
+        }
+        
         guard typeEncoding == (to as! NSValue).typeEncoding else {
             fatalError("Cannot interpolate NSValue instances of different type encoding.")
         }
         
         switch typeEncoding {
-        case "f":
-            let val = value(Float()).interpolate((to as! NSValue).value(Float()), position)
-            return NSNumber(float: val as! Float)
         case "d":
             let val = value(Double()).interpolate((to as! NSValue).value(Double()), position)
             return NSNumber(double: val as! Double)

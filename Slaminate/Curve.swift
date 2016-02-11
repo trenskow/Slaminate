@@ -12,7 +12,7 @@ public func +(lhs: Curve, rhs: Curve) -> Curve {
     return lhs.add(rhs)
 }
 
-private func easeInOut(inCurve: Curve, _ outCurve: Curve) -> Curve {
+private func combineInOut(inCurve: Curve, _ outCurve: Curve) -> Curve {
     return Curve(block: {
         if ($0 < 0.5) { return inCurve.block($0 * 2.0) / 2.0}
         return outCurve.block(($0 - 0.5) * 2.0) / 2.0 + 0.5
@@ -27,21 +27,26 @@ public class Curve : NSObject {
     
     public static let linear = Curve(block: { $0 } )
     
+    public static let easeIn = Curve(mediaTimingFunction: kCAMediaTimingFunctionEaseIn)
+    public static let easeOut = Curve(mediaTimingFunction: kCAMediaTimingFunctionEaseOut)
+    public static let easeInOut = Curve(mediaTimingFunction: kCAMediaTimingFunctionEaseInEaseOut)
+    public static let easeDefault = Curve(mediaTimingFunction: kCAMediaTimingFunctionDefault)
+    
     public static let easeInQuad = Curve(block: { pow($0, 2) });
     public static let easeOutQuad = Curve { -1.0 * $0 * ($0 - 2.0) }
-    public static let easeInOutQuad = easeInOut(easeInQuad, easeOutQuad)
+    public static let easeInOutQuad = combineInOut(easeInQuad, easeOutQuad)
     
     public static let easeInCubic = Curve { pow($0, 3.0) }
     public static let easeOutCubic = Curve { pow($0 - 1.0, 3.0) + 1.0 }
-    public static let easeInOutCubic = easeInOut(easeInCubic, easeOutCubic)
+    public static let easeInOutCubic = combineInOut(easeInCubic, easeOutCubic)
     
     public static let easeInQuart = Curve { pow($0, 4.0) }
     public static let easeOutQuart = Curve { -1.0 * (pow($0 - 1.0, 4.0) - 1.0) }
-    public static let easeInOutQuart = easeInOut(easeInQuart, easeOutQuart)
+    public static let easeInOutQuart = combineInOut(easeInQuart, easeOutQuart)
     
     public static let easeInQuint = Curve { pow($0, 5.0) }
     public static let easeOutQuint = Curve { 1.0 * (pow($0 - 1.0, 5.0) + 1.0) }
-    public static let easeInOutQuint = easeInOut(easeInQuint, easeOutQuint)
+    public static let easeInOutQuint = combineInOut(easeInQuint, easeOutQuint)
     
     public static let easeInSine = Curve { (-1.0 * cos($0 * M_PI_2) + 1.0) }
     public static let easeOutSine = Curve { sin($0 * M_PI_2) }
@@ -49,11 +54,11 @@ public class Curve : NSObject {
     
     public static let easeInExpo = Curve { ($0 == 0.0 ? 0.0 : pow(2.0, 10.0 * ($0 - 1.0))) }
     public static let easeOutExpo = Curve { -pow(2.0, -10.0 * $0) + 1.0 }
-    public static let easeInOutExpo = easeInOut(easeInExpo, easeOutExpo)
+    public static let easeInOutExpo = combineInOut(easeInExpo, easeOutExpo)
     
     public static let easeInCirc = Curve { -1.0 * (sqrt(1.0 - pow($0, 2.0)) - 1.0) }
     public static let easeOutCirc = Curve { sqrt(1.0 - pow($0 - 1.0, 2.0)) }
-    public static let easeInOutCirc = easeInOut(easeInCirc, easeOutCirc)
+    public static let easeInOutCirc = combineInOut(easeInCirc, easeOutCirc)
     
     public static let easeInElastic = Curve {
         
@@ -121,7 +126,7 @@ public class Curve : NSObject {
     
     public static let easeInBack = Curve { $0 * $0 * (2.70158 * $0 - 1.70158) }
     public static let easeOutBack = Curve { ($0 - 1.0) * ($0 - 1.0) * (2.70158 * ($0 - 1.0) + 1.70158) + 1.0 }
-    public static let easeInOutBack = easeInOut(easeInBack, easeOutBack)
+    public static let easeInOutBack = combineInOut(easeInBack, easeOutBack)
     
     public static let easeInBounce = Curve(block: { 1.0 - easeOutBounce.block(1.0 - $0) })
     public static let easeOutBounce = Curve {
@@ -145,7 +150,7 @@ public class Curve : NSObject {
         
         return r;
     }
-    public static let easeInOutBounce = easeInOut(easeInBounce, easeOutBounce)
+    public static let easeInOutBounce = combineInOut(easeInBounce, easeOutBounce)
     
     public init(block: CurveBlock) {
         self.block = block;

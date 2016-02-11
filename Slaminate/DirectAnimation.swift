@@ -8,19 +8,11 @@
 
 import Foundation
 
-class DirectAnimation: NSObject, PropertyAnimation {
+class DirectAnimation: ConcreteAnimation, PropertyAnimation {
     
     static func canAnimate(object: NSObject, key: String) -> Bool {
         return (object.valueForKey(key) as? Interpolatable)?.canInterpolate == true
     }
-    
-    @objc(isAnimating) var animating: Bool = false
-    @objc(isComplete) var complete: Bool = false
-    @objc(isFinished) var finished: Bool = false
-    @objc var duration: NSTimeInterval
-    @objc var delay: NSTimeInterval
-    
-    weak var delegate: AnimationDelegate?
     
     var object: NSObject
     var key: String
@@ -32,15 +24,16 @@ class DirectAnimation: NSObject, PropertyAnimation {
     var displayLink: CADisplayLink?
     
     required init(duration: NSTimeInterval, delay: NSTimeInterval, object: NSObject, key: String, toValue: AnyObject, curve: Curve) {
-        self.duration = duration
-        self.delay = delay
         self.object = object
         self.key = key
         self.toValue = toValue
         self.curve = curve
+        super.init()
+        self.duration = duration
+        self.delay = delay
     }
     
-    func beginAnimation() {
+    override func commitAnimation() {
         animating = true
         animationStart = NSDate()
         displayLink = CADisplayLink(target: self, selector: Selector("displayDidUpdate"))
@@ -60,6 +53,7 @@ class DirectAnimation: NSObject, PropertyAnimation {
             finished = true
             animating = false
             self.delegate?.animationCompleted(self, finished: true)
+            ongoingAnimations.remove(self)
         }
         
         else if progress >= delay {

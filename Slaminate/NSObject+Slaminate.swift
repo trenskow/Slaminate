@@ -9,21 +9,27 @@
 import ObjectiveC.runtime
 import Foundation
 
-public extension NSObject {
+public func slaminate(duration duration: NSTimeInterval, delay: NSTimeInterval, curve: Curve?, animation: Void -> Void, completion: ((finished: Bool) -> Void)?) -> Animation {
     
-    public class func slaminate(duration duration: NSTimeInterval, delay: NSTimeInterval, curve: Curve?, animation: Void -> Void, completion: ((finished: Bool) -> Void)?) -> Animation {
-        
-        AnimationBuilder.pushBuilder()
-        
-        animation()
-        
-        return AnimationBuilder.top.finalize(duration, delay: delay, curve: curve, completion: completion)
-        
-    }
+    let ret = AnimationBuilder(
+        duration: duration,
+        delay: delay,
+        animation: animation,
+        curve: curve,
+        completion: completion
+    )
+    
+    ret.beginAnimation()
+    
+    return ret
+    
+}
+
+public extension NSObject {
     
     public func setValue(value: AnyObject?, forKey key: String, duration: NSTimeInterval, delay: NSTimeInterval, curve: Curve?, completion: ((finished: Bool) -> Void)?) -> Animation? {
         
-        return NSObject.slaminate(
+        return slaminate(
             duration: duration,
             delay: delay,
             curve: curve,

@@ -8,7 +8,7 @@
 
 import Foundation
 
-class LayerAnimation: NSObject, PropertyAnimation {
+class LayerAnimation: ConcreteAnimation, PropertyAnimation {
     
     static func canAnimate(object: NSObject, key: String) -> Bool {
         guard (object as? CALayer) != nil && (object.valueForKey(key) as? Interpolatable)?.canInterpolate == true else {
@@ -41,14 +41,6 @@ class LayerAnimation: NSObject, PropertyAnimation {
         ].contains(key);
     }
     
-    @objc(isAnimating) var animating: Bool = false
-    @objc(isComplete) var complete: Bool = false
-    @objc(isFinished) var finished: Bool = false
-    @objc var duration: NSTimeInterval
-    @objc var delay: NSTimeInterval
-    
-    weak var delegate: AnimationDelegate?
-    
     var object: NSObject
     var layer: CALayer
     var key: String
@@ -60,13 +52,14 @@ class LayerAnimation: NSObject, PropertyAnimation {
     var animation: CurvedAnimation?
     
     required init(duration: NSTimeInterval, delay: NSTimeInterval, object: NSObject, key: String, toValue: AnyObject, curve: Curve) {
-        self.duration = duration
-        self.delay = delay
         self.object = object
         self.layer = object as! CALayer
         self.key = key
         self.toValue = toValue
         self.curve = curve
+        super.init()
+        self.duration = duration
+        self.delay = delay
     }
     
     deinit {
@@ -83,6 +76,7 @@ class LayerAnimation: NSObject, PropertyAnimation {
         complete = true
         finished = flag
         delegate?.animationCompleted(self, finished: flag)
+        ongoingAnimations.remove(self)
     }
     
     func startAnimation() {
@@ -101,7 +95,7 @@ class LayerAnimation: NSObject, PropertyAnimation {
         
     }
     
-    func beginAnimation() {
+    override func commitAnimation() {
         if delay > 0.0 {
             delayTimer = NSTimer(
                 timeInterval: delay,
@@ -115,5 +109,5 @@ class LayerAnimation: NSObject, PropertyAnimation {
             startAnimation()
         }
     }
-        
+    
 }
