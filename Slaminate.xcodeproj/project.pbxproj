@@ -23,6 +23,8 @@
 		A1591B791C6B0384001687F6 /* NSObject+Slaminate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D704511C664D37009F7C8F /* NSObject+Slaminate.swift */; };
 		A15C8F601C6C872500B2EB74 /* AnimationChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15C8F5F1C6C872500B2EB74 /* AnimationChain.swift */; };
 		A1EF9F2B1C6B47820045AE18 /* ConstraintPresenceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1EF9F2A1C6B47820045AE18 /* ConstraintPresenceInfo.swift */; };
+		A1FB7ACC1C6DF67D0078BD8B /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1FB7ACB1C6DF67D0078BD8B /* Array.swift */; };
+		A1FB7ACE1C6DF8610078BD8B /* ConstraintConstantAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1FB7ACD1C6DF8610078BD8B /* ConstraintConstantAnimation.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +46,8 @@
 		A1D704531C664D48009F7C8F /* Animation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Animation.swift; sourceTree = "<group>"; };
 		A1D7045B1C664EC0009F7C8F /* Curve.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Curve.swift; sourceTree = "<group>"; };
 		A1EF9F2A1C6B47820045AE18 /* ConstraintPresenceInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstraintPresenceInfo.swift; sourceTree = "<group>"; };
+		A1FB7ACB1C6DF67D0078BD8B /* Array.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
+		A1FB7ACD1C6DF8610078BD8B /* ConstraintConstantAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstraintConstantAnimation.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,8 +86,9 @@
 				A113ACE91C692BFC00C3EDBB /* NSObject+Swizzle.swift */,
 				A15402EA1C6662450035AB8C /* Interpolation.swift */,
 				A18F35271C693C41005D2343 /* CurvedAnimation.swift */,
-				A15402E41C6655400035AB8C /* LayerAnimation.swift */,
 				A15402E61C665F6D0035AB8C /* DirectAnimation.swift */,
+				A15402E41C6655400035AB8C /* LayerAnimation.swift */,
+				A1FB7ACD1C6DF8610078BD8B /* ConstraintConstantAnimation.swift */,
 				A15402E81C665FA40035AB8C /* AnimationGroup.swift */,
 				A1D7045B1C664EC0009F7C8F /* Curve.swift */,
 				A1D704531C664D48009F7C8F /* Animation.swift */,
@@ -93,6 +98,7 @@
 				A14E954D1C689B5600C303CC /* Swizzle.swift */,
 				A18F35231C69361C005D2343 /* UIView+CommonAncestor.swift */,
 				A15C8F5F1C6C872500B2EB74 /* AnimationChain.swift */,
+				A1FB7ACB1C6DF67D0078BD8B /* Array.swift */,
 			);
 			path = Slaminate;
 			sourceTree = "<group>";
@@ -181,6 +187,7 @@
 				A1591B6E1C6B0381001687F6 /* UIView+CommonAncestor.swift in Sources */,
 				A1591B701C6B0384001687F6 /* CurvedAnimation.swift in Sources */,
 				A1591B751C6B0384001687F6 /* DirectAnimation.swift in Sources */,
+				A1FB7ACC1C6DF67D0078BD8B /* Array.swift in Sources */,
 				A15C8F601C6C872500B2EB74 /* AnimationChain.swift in Sources */,
 				A1EF9F2B1C6B47820045AE18 /* ConstraintPresenceInfo.swift in Sources */,
 				A1591B771C6B0384001687F6 /* Curve.swift in Sources */,
@@ -191,6 +198,7 @@
 				A1591B6F1C6B0381001687F6 /* PropertyInfo.swift in Sources */,
 				A1591B781C6B0384001687F6 /* Animation.swift in Sources */,
 				A1591B731C6B0384001687F6 /* Interpolation.swift in Sources */,
+				A1FB7ACE1C6DF8610078BD8B /* ConstraintConstantAnimation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

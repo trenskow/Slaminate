@@ -14,7 +14,7 @@ class AnimationBuilder: AnimationGroup {
     static var builders = [AnimationBuilder]()
     
     private static func updateSwizzle() {
-        NSObject.swizzled = builders.reduce(false, combine: { $0 || $1.state == .Collecting })
+        NSObject.swizzled = builders.some({ $0.buildState == .Collecting })
     }
     
     static var top: AnimationBuilder {
@@ -29,7 +29,7 @@ class AnimationBuilder: AnimationGroup {
         case Done
     }
     
-    var state = AnimationBuilderState.Waiting {
+    var buildState = AnimationBuilderState.Building {
         didSet {
             AnimationBuilder.updateSwizzle()
         }
@@ -49,14 +49,18 @@ class AnimationBuilder: AnimationGroup {
         self.delay = delay
         self.curve = curve
     }
-    
-    deinit {
-        print("deinit builder")
+        
+    override var offset: NSTimeInterval {
+        didSet {
+            if offset > 0.0 {
+                build()
+            }
+        }
     }
     
     func setObjectFromValue(object: NSObject, key: String, value: NSObject?) -> Bool {
         
-        guard state == .Collecting else {
+        guard buildState == .Collecting else {
             return false
         }
         
@@ -69,7 +73,7 @@ class AnimationBuilder: AnimationGroup {
     
     func setObjectToValue(object: NSObject, key: String, value: NSObject?) -> Bool {
         
-        guard state == .Collecting else {
+        guard buildState == .Collecting else {
             return false
         }
         
@@ -81,7 +85,7 @@ class AnimationBuilder: AnimationGroup {
     
     func setObjectFromToValue(object: NSObject, key: String, fromValue: NSObject?, toValue: NSObject?) -> Bool {
         
-        guard state == .Collecting else {
+        guard buildState == .Collecting else {
             return false
         }
         
@@ -93,19 +97,23 @@ class AnimationBuilder: AnimationGroup {
         
     }
     
-    func setConstraintValue(object: NSLayoutConstraint, key: String, oldValue: NSObject, newValue: NSObject) {
+    func setConstraintValue(object: NSLayoutConstraint, key: String, fromValue: NSObject, toValue: NSObject) {
         
-        guard state == .Collecting else { return }
+        guard buildState == .Collecting else { return }
         
         let index = constraintInfos.indexOf(object, key: key)
-        constraintInfos[index].fromValue = oldValue
-        constraintInfos[index].toValue = newValue
+        constraintInfos[index].fromValue = fromValue
+        constraintInfos[index].toValue = toValue
+        
+        if key == "constant" {
+            setObjectFromToValue(object, key: key, fromValue: fromValue, toValue: toValue)
+        }
         
     }
     
     func addConstraintPresence(view: UIView, constraint: NSLayoutConstraint, added: Bool) {
         
-        guard state == .Collecting else { return }
+        guard buildState == .Collecting else { return }
         
         constraintPresenceInfos.append(ConstraintPresenceInfo(
             view: view,
@@ -117,7 +125,7 @@ class AnimationBuilder: AnimationGroup {
     
     func collectAnimations() {
         
-        guard state == .Collecting else {
+        guard buildState == .Collecting else {
             fatalError("Finalizing without collecting.")
         }
         
@@ -149,7 +157,7 @@ class AnimationBuilder: AnimationGroup {
             common.updateConstraints()
             common.layoutSubviews()
             
-            state = .Resetting
+            buildState = .Resetting
             
             constraintInfos.applyFromValues()
             constraintPresenceInfos.applyPresent(false)
@@ -159,11 +167,11 @@ class AnimationBuilder: AnimationGroup {
             
         }
         
-        state = .Resetting
+        buildState = .Resetting
         
         propertyInfos.applyFromValues()
         
-        state = .Building
+        buildState = .Building
         
         var animations = [DelegatedAnimation]()
         
@@ -175,6 +183,10 @@ class AnimationBuilder: AnimationGroup {
                 
                 if LayerAnimation.canAnimate(propertyInfo.object, key: propertyInfo.key) {
                     animation = LayerAnimation(duration: duration, delay: delay, object: propertyInfo.object, key: propertyInfo.key, toValue: value, curve: curve ?? Curve.linear)
+                }
+                
+                else if ConstraintConstantAnimation.canAnimate(propertyInfo.object, key: propertyInfo.key) {
+                    animation = ConstraintConstantAnimation(duration: duration, delay: delay, object: propertyInfo.object, key: propertyInfo.key, toValue: value, curve: curve ?? Curve.linear)
                 }
                     
                 else if DirectAnimation.canAnimate(propertyInfo.object, key: propertyInfo.key) {
@@ -198,21 +210,28 @@ class AnimationBuilder: AnimationGroup {
             animation.postponeAnimation()
         }
         
-        state = .Done
+        buildState = .Done
         
     }
     
-    override func commitAnimation() {
+    func build() {
+        guard buildState == .Building else { return }
         
         AnimationBuilder.builders.append(self)
         
-        state = .Collecting
+        buildState = .Collecting
         
         animation()
         
         collectAnimations()
         
         AnimationBuilder.builders.removeLast()
+        
+    }
+    
+    override func commitAnimation() {
+        
+        build()
         
         super.commitAnimation()
         

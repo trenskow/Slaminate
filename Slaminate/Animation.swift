@@ -8,17 +8,36 @@
 
 import Foundation
 
+public typealias CompletionHandler = (finished: Bool) -> Void
+
+@objc public enum AnimationPosition: Int {
+    case Beginning = 0
+    case InProgress
+    case End
+}
+
+@objc public enum AnimationState: Int {
+    case Waiting = 0
+    case Comited
+}
+
 /*!
 A protocol representing an animation.
 */
 @objc public protocol Animation {
-    var animating:Bool { @objc(isAnimating) get }
-    var complete:Bool { @objc(isComplete) get }
+    var position: AnimationPosition { get }
+    var state: AnimationState { get }
     var finished:Bool { @objc(isFinished) get }
     var duration:NSTimeInterval { get }
     var delay:NSTimeInterval { get }
-    func then(duration duration: NSTimeInterval, delay: NSTimeInterval, curve: Curve?, animation: Void -> Void, completion: ((finished: Bool) -> Void)?) -> Animation
+    var offset:NSTimeInterval { get set }
+    func then(duration duration: NSTimeInterval, delay: NSTimeInterval, curve: Curve?, animation: Void -> Void, completion: CompletionHandler?) -> Animation
+    func then(animation animation: Animation) -> Animation
+    func then(completion completion: CompletionHandler) -> Animation
+    func and(duration duration: NSTimeInterval, delay: NSTimeInterval, curve: Curve?, animation: Void -> Void, completion: CompletionHandler?) -> Animation
+    func and(animation animation: Animation) -> Animation
     func beginAnimation()
+    func beginAnimation(reversed: Bool)
     func postponeAnimation() -> Animation
 }
 
@@ -59,32 +78,102 @@ extension Array where Element: Animation {
 
 class ConcreteAnimation: NSObject, DelegatedAnimation {
     
-    @objc(isAnimating) internal(set) var animating: Bool = false
-    @objc(isComplete) internal(set) var complete: Bool = false
     @objc(isFinished) internal(set) var finished: Bool = true
     @objc internal(set) var duration: NSTimeInterval = 0.0
     @objc var delay: NSTimeInterval = 0.0
     
+    @objc var offset: NSTimeInterval = 0.0 {
+        didSet {
+            if offset != oldValue {
+                if offset <= 0.0 {
+                    position = .Beginning
+                } else if offset > 0.0 && offset < delay + duration {
+                    position = .InProgress
+                } else {
+                    position = .End
+                }
+            }
+        }
+    }
+    
+    var position: AnimationPosition = .Beginning {
+        didSet {
+            if position != oldValue && position == .End {
+                delegate?.animationCompleted(self, finished: finished)
+                ongoingAnimations.remove(self)
+            }
+        }
+    }
+    
+    var state: AnimationState = .Waiting
+    
     weak var delegate: AnimationDelegate?
     
     @objc func then(duration duration: NSTimeInterval, delay: NSTimeInterval, curve: Curve?, animation: Void -> Void, completion: ((finished: Bool) -> Void)?) -> Animation {
-        let ret = AnimationChain(animations: [
-            self,
+        return then(animation: slaminate(
+            duration: duration,
+            delay: delay,
+            curve: curve,
+            animation: animation,
+            completion: completion
+            ) as! DelegatedAnimation
+        )
+    }
+    
+    @objc func then(animation animation: Animation) -> Animation {
+        let ret = AnimationChain(animations: [self, animation as! DelegatedAnimation])
+        ret.beginAnimation()
+        return ret
+    }
+    
+    @objc func then(completion completion: CompletionHandler) -> Animation {
+        let ret = AnimationGroup(animations: [self], completion: completion)
+        ret.beginAnimation()
+        return ret
+    }
+    
+    @objc func and(duration duration: NSTimeInterval, delay: NSTimeInterval, curve: Curve?, animation: Void -> Void, completion: CompletionHandler?) -> Animation {
+        return and(animation:
             slaminate(
                 duration: duration,
                 delay: delay,
                 curve: curve,
                 animation: animation,
                 completion: completion
-                ) as! DelegatedAnimation
-            ])
+            )
+        )
+    }
+    
+    @objc func and(animation animation: Animation) -> Animation {
+        let ret = AnimationGroup(
+            animations: [
+                self,
+                animation as! DelegatedAnimation
+            ],
+            completion: nil
+        )
         ret.beginAnimation()
         return ret;
     }
     
     func beginAnimation() {
-        ongoingAnimations.append(self)
-        self.performSelector(Selector("commitAnimation"), withObject: nil, afterDelay: 0.0)
+        beginAnimation(false)
+    }
+    
+    func beginAnimation(reversed: Bool) {
+        if !reversed {
+            ongoingAnimations.append(self)
+            self.performSelector(Selector("commitAnimation"), withObject: nil, afterDelay: 0.0)
+        } else {
+            DirectAnimation(
+                duration: offset,
+                delay: 0.0,
+                object: self,
+                key: "offset",
+                toValue: 0.0,
+                curve: Curve.linear
+            ).beginAnimation()
+        }
     }
     
     func postponeAnimation() -> Animation {

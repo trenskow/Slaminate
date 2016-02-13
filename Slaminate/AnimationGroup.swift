@@ -17,11 +17,7 @@ class AnimationGroup: ConcreteAnimation, AnimationDelegate {
     convenience init(completion: ((finished: Bool) -> Void)?) {
         self.init(animations: [], completion: completion)
     }
-    
-    deinit {
-        print("deinit group")
-    }
-    
+        
     var animations: [DelegatedAnimation]
     
     init(animations: [DelegatedAnimation], completion: ((finished: Bool) -> Void)?) {
@@ -31,30 +27,47 @@ class AnimationGroup: ConcreteAnimation, AnimationDelegate {
         animations.forEach({ $0.delegate = self })
     }
     
+    override var position: AnimationPosition {
+        didSet {
+            if let completion = completion where position != oldValue && position == .End {
+                completion(finished)
+            }
+        }
+    }
+    
+    override var offset: NSTimeInterval {
+        didSet {
+            animations.forEach({ (animation) in
+                animation.offset = max(0.0, min(animation.delay + animation.duration, offset))
+            })
+        }
+    }
+    
     override func commitAnimation() {
-        self.animating = true
-        if animations.count > 0 {
-            animations.forEach { $0.beginAnimation() }
+        state = .Comited
+        position = .InProgress
+        let nonCompleteAnimations = animations.filter { $0.position != .End }
+        if nonCompleteAnimations.count > 0 {
+            animations.forEach { ($0 as! ConcreteAnimation).commitAnimation() }
         } else {
             completeAnimation(true)
         }
     }
-        
+    
+    override func and(animation animation: Animation) -> Animation {
+        animation.postponeAnimation()
+        animations.append(animation as! DelegatedAnimation)
+        return self
+    }
+    
     internal func completeAnimation(finished: Bool) {
-        self.complete = true
         self.finished = finished
-        self.animating = false
-        self.delegate?.animationCompleted(self, finished: self.finished)
-        self.completion?(finished)
-        ongoingAnimations.remove(self)
+        self.position = .End
     }
     
     func animationCompleted(animation: Animation, finished: Bool) {
         let finished = self.finished && finished
-        let complete = animations.reduce(true) { (c, animation) -> Bool in
-            return c && animation.complete
-        }
-        if complete {
+        if animations.all({ $0.position == .End }) {
             completeAnimation(finished)
         }
     }

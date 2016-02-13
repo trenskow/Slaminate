@@ -82,8 +82,8 @@ extension NSObject {
         AnimationBuilder.top.setConstraintValue(
             self as! NSLayoutConstraint,
             key: key,
-            oldValue: valueForKey(key) as! NSObject,
-            newValue: newValue as! NSObject
+            fromValue: valueForKey(key) as! NSObject,
+            toValue: newValue as! NSObject
         )
     }
     

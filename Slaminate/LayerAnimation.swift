@@ -8,9 +8,9 @@
 
 import Foundation
 
-class LayerAnimation: ConcreteAnimation, PropertyAnimation {
+class LayerAnimation: DirectAnimation {
     
-    static func canAnimate(object: NSObject, key: String) -> Bool {
+    override class func canAnimate(object: NSObject, key: String) -> Bool {
         guard (object as? CALayer) != nil && (object.valueForKey(key) as? Interpolatable)?.canInterpolate == true else {
             return false;
         }
@@ -41,64 +41,50 @@ class LayerAnimation: ConcreteAnimation, PropertyAnimation {
         ].contains(key);
     }
     
-    var object: NSObject
     var layer: CALayer
-    var key: String
-    var toValue: AnyObject
-    var curve: Curve
     
     var delayTimer: NSTimer?
     
     var animation: CurvedAnimation?
     
     required init(duration: NSTimeInterval, delay: NSTimeInterval, object: NSObject, key: String, toValue: AnyObject, curve: Curve) {
-        self.object = object
         self.layer = object as! CALayer
-        self.key = key
-        self.toValue = toValue
-        self.curve = curve
-        super.init()
-        self.duration = duration
-        self.delay = delay
+        super.init(duration: duration, delay: delay, object: object, key: key, toValue: toValue, curve: curve)
     }
-    
-    deinit {
-        print("deinit layeranimation")
-    }
-    
+        
     override func animationDidStart(anim: CAAnimation) {
         object.setValue(toValue, forKey: key)
     }
     
     override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
         animation?.delegate = nil
-        animating = false
-        complete = true
         finished = flag
-        delegate?.animationCompleted(self, finished: flag)
-        ongoingAnimations.remove(self)
+        position = .End
     }
     
     func startAnimation() {
         
+        fromValue = fromValue ?? object.valueForKey(key)
+        
         animation = CurvedAnimation(keyPath: key)
-        animation?.duration = duration
-        animation?.fromValue = object.valueForKey(key) as? Interpolatable
+        animation?.duration = duration - max(0.0, offset - delay)
+        animation?.offset = max(0.0, offset - delay)
+        animation?.fromValue = fromValue as? Interpolatable
         animation?.toValue = toValue as? Interpolatable
         animation?.curve = curve
         animation?.delegate = self
         animation?.removedOnCompletion = true
-        
-        animating = true
         
         layer.addAnimation(animation!, forKey: "animation_\(key)")
         
     }
     
     override func commitAnimation() {
-        if delay > 0.0 {
+        state = .Comited
+        position = .InProgress
+        if (delay - offset) > 0.0 {
             delayTimer = NSTimer(
-                timeInterval: delay,
+                timeInterval: delay - offset,
                 target: self,
                 selector: Selector("startAnimation"),
                 userInfo: nil,

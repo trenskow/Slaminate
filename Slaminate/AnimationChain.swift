@@ -10,7 +10,7 @@ import Foundation
 
 class AnimationChain: ConcreteAnimation, AnimationDelegate {
     
-    let animations: [DelegatedAnimation]
+    var animations: [DelegatedAnimation]
     
     init(animations: [DelegatedAnimation]) {
         self.animations = animations
@@ -25,64 +25,61 @@ class AnimationChain: ConcreteAnimation, AnimationDelegate {
         get {
             return self.animations.reduce(0.0, combine: { (c, animation) -> NSTimeInterval in
                 return c + animation.delay + animation.duration
-            }) - (self.animations.first?.delay ?? 0.0)
+            })
         }
         set {}
     }
     
     @objc override var delay: NSTimeInterval {
         get {
-            return self.animations.first?.delay ?? 0.0
-        }
-        set {}
-    }
-    
-    @objc override var animating: Bool {
-        @objc(isAnimating) get {
-            return self.animations.reduce(false, combine: { (c, animation) -> Bool in
-                return c || animation.animating
-            })
-        }
-        set {}
-    }
-    
-    @objc override var complete: Bool {
-        @objc(isComplete) get {
-            return self.animations.reduce(true, combine: { (c, animation) -> Bool in
-                return c && animation.complete
-            })
+            return 0.0
         }
         set {}
     }
     
     @objc override var finished: Bool {
         @objc(isFinished) get {
-            return self.animations.reduce(true, combine: { (c, animation) -> Bool in
-                return c && animation.complete && animation.finished
-            })
+            return self.animations.all({ $0.finished && $0.position == AnimationPosition.End })
         }
         set {}
     }
     
-    override func commitAnimation() {
-        if let first = animations.first {
-            first.beginAnimation()
-        } else {
-            completeAnimation(true)
+    override var offset: NSTimeInterval {
+        didSet {
+            var total = 0.0
+            animations.forEach { (animation) in
+                animation.offset = max(0.0, min(animation.delay + animation.duration, offset - total))
+                total += animation.delay + animation.duration
+            }
         }
     }
     
-    func completeAnimation(finished: Bool) {
-        delegate?.animationCompleted(self, finished: finished)
-        ongoingAnimations.remove(self)
+    override func commitAnimation() {
+        state = .Comited
+        position = .InProgress
+        animateNext()
+    }
+    
+    override func then(animation animation: Animation) -> Animation {
+        if let animation = animation as? DelegatedAnimation {
+            animation.postponeAnimation()
+            animation.delegate = self
+            animations.append(animation)
+        }
+        return self
+    }
+    
+    private func animateNext() {
+        if let nextAnimation = animations.filter({ $0.position != .End }).first as? ConcreteAnimation {
+            nextAnimation.commitAnimation()
+        } else {
+            position = .End
+        }
     }
     
     func animationCompleted(animation: Animation, finished: Bool) {
-        if let nextAnimation = animations.filter({ !$0.animating && !$0.complete }).first {
-            nextAnimation.beginAnimation()
-        } else {
-            completeAnimation(finished)
-        }
+        guard state == .Comited else { return }
+        animateNext()
     }
     
 }
