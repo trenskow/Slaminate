@@ -91,6 +91,12 @@ extension Array where Element: Animation {
     func fadeOut(duration: NSTimeInterval, delay: NSTimeInterval, curve: Curve?, completion: CompletionHandler?) -> Animation
 }
 
+extension NSObject {
+    public func setValue(value: AnyObject?, forKey key: String, duration: NSTimeInterval, delay: NSTimeInterval, curve: Curve?, completion: ((finished: Bool) -> Void)?) -> Animation {
+        return slaminate(duration: duration, delay: delay, curve: curve, animation: { [weak self] in self?.setValue(value, forKey: key) }, completion: completion)
+    }
+}
+
 extension CALayer: BuildInAnimations {
     func fadeIn(duration: NSTimeInterval, delay: NSTimeInterval = 0.0, curve: Curve? = nil, completion: CompletionHandler? = nil) -> Animation {
         return self.setValue(1.0, forKey: "opacity", duration: duration, delay: delay, curve: curve, completion: completion)

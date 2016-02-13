@@ -21,7 +21,6 @@
 		A1591B761C6B0384001687F6 /* AnimationGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15402E81C665FA40035AB8C /* AnimationGroup.swift */; };
 		A1591B771C6B0384001687F6 /* Curve.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D7045B1C664EC0009F7C8F /* Curve.swift */; };
 		A1591B781C6B0384001687F6 /* Animation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D704531C664D48009F7C8F /* Animation.swift */; };
-		A1591B791C6B0384001687F6 /* NSObject+Animate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D704511C664D37009F7C8F /* NSObject+Animate.swift */; };
 		A15C8F601C6C872500B2EB74 /* AnimationChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15C8F5F1C6C872500B2EB74 /* AnimationChain.swift */; };
 		A1EF9F2B1C6B47820045AE18 /* ConstraintPresenceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1EF9F2A1C6B47820045AE18 /* ConstraintPresenceInfo.swift */; };
 		A1FB7ACC1C6DF67D0078BD8B /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1FB7ACB1C6DF67D0078BD8B /* Array.swift */; };
@@ -44,7 +43,6 @@
 		A18F35271C693C41005D2343 /* CurvedAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurvedAnimation.swift; sourceTree = "<group>"; };
 		A1D704431C664D14009F7C8F /* Slaminate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Slaminate.h; sourceTree = "<group>"; };
 		A1D704451C664D14009F7C8F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A1D704511C664D37009F7C8F /* NSObject+Animate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObject+Animate.swift"; sourceTree = "<group>"; };
 		A1D704531C664D48009F7C8F /* Animation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Animation.swift; sourceTree = "<group>"; };
 		A1D7045B1C664EC0009F7C8F /* Curve.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Curve.swift; sourceTree = "<group>"; };
 		A1EF9F2A1C6B47820045AE18 /* ConstraintPresenceInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstraintPresenceInfo.swift; sourceTree = "<group>"; };
@@ -63,6 +61,77 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A1117A811C6EE73A006828D7 /* Animation Builder */ = {
+			isa = PBXGroup;
+			children = (
+				A18F35251C6938B2005D2343 /* PropertyInfo.swift */,
+				A1EF9F2A1C6B47820045AE18 /* ConstraintPresenceInfo.swift */,
+				A113ACEB1C692C5200C3EDBB /* AnimationBuilder.swift */,
+				A113ACE91C692BFC00C3EDBB /* NSObject+Swizzle.swift */,
+			);
+			name = "Animation Builder";
+			sourceTree = "<group>";
+		};
+		A1117A821C6EE747006828D7 /* Animation Group */ = {
+			isa = PBXGroup;
+			children = (
+				A1117A811C6EE73A006828D7 /* Animation Builder */,
+				A15402E81C665FA40035AB8C /* AnimationGroup.swift */,
+			);
+			name = "Animation Group";
+			sourceTree = "<group>";
+		};
+		A1117A831C6EE74F006828D7 /* Property Animations */ = {
+			isa = PBXGroup;
+			children = (
+				A1117A851C6EE789006828D7 /* Layer animations */,
+				A1FB7ACD1C6DF8610078BD8B /* ConstraintConstantAnimation.swift */,
+				A15402E61C665F6D0035AB8C /* DirectAnimation.swift */,
+			);
+			name = "Property Animations";
+			sourceTree = "<group>";
+		};
+		A1117A841C6EE763006828D7 /* Concrete Animations */ = {
+			isa = PBXGroup;
+			children = (
+				A1117A821C6EE747006828D7 /* Animation Group */,
+				A1117A831C6EE74F006828D7 /* Property Animations */,
+				A15C8F5F1C6C872500B2EB74 /* AnimationChain.swift */,
+				A1117A7F1C6EE08C006828D7 /* ConcreteAnimation.swift */,
+			);
+			name = "Concrete Animations";
+			sourceTree = "<group>";
+		};
+		A1117A851C6EE789006828D7 /* Layer animations */ = {
+			isa = PBXGroup;
+			children = (
+				A18F35271C693C41005D2343 /* CurvedAnimation.swift */,
+				A15402E41C6655400035AB8C /* LayerAnimation.swift */,
+			);
+			name = "Layer animations";
+			sourceTree = "<group>";
+		};
+		A1117A861C6EE7F3006828D7 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				A14E954D1C689B5600C303CC /* Swizzle.swift */,
+				A18F35231C69361C005D2343 /* UIView+CommonAncestor.swift */,
+				A1FB7ACB1C6DF67D0078BD8B /* Array.swift */,
+			);
+			name = Helpers;
+			sourceTree = "<group>";
+		};
+		A1117A871C6EE804006828D7 /* Animations */ = {
+			isa = PBXGroup;
+			children = (
+				A1117A841C6EE763006828D7 /* Concrete Animations */,
+				A15402EA1C6662450035AB8C /* Interpolation.swift */,
+				A1D7045B1C664EC0009F7C8F /* Curve.swift */,
+				A1D704531C664D48009F7C8F /* Animation.swift */,
+			);
+			name = Animations;
+			sourceTree = "<group>";
+		};
 		A1D704361C664D14009F7C8F = {
 			isa = PBXGroup;
 			children = (
@@ -82,26 +151,10 @@
 		A1D704421C664D14009F7C8F /* Slaminate */ = {
 			isa = PBXGroup;
 			children = (
-				A18F35251C6938B2005D2343 /* PropertyInfo.swift */,
-				A1EF9F2A1C6B47820045AE18 /* ConstraintPresenceInfo.swift */,
-				A113ACEB1C692C5200C3EDBB /* AnimationBuilder.swift */,
-				A113ACE91C692BFC00C3EDBB /* NSObject+Swizzle.swift */,
-				A15402EA1C6662450035AB8C /* Interpolation.swift */,
-				A18F35271C693C41005D2343 /* CurvedAnimation.swift */,
-				A15402E61C665F6D0035AB8C /* DirectAnimation.swift */,
-				A15402E41C6655400035AB8C /* LayerAnimation.swift */,
-				A1FB7ACD1C6DF8610078BD8B /* ConstraintConstantAnimation.swift */,
-				A15402E81C665FA40035AB8C /* AnimationGroup.swift */,
-				A1D7045B1C664EC0009F7C8F /* Curve.swift */,
-				A1D704531C664D48009F7C8F /* Animation.swift */,
-				A1D704511C664D37009F7C8F /* NSObject+Animate.swift */,
+				A1117A861C6EE7F3006828D7 /* Helpers */,
+				A1117A871C6EE804006828D7 /* Animations */,
 				A1D704431C664D14009F7C8F /* Slaminate.h */,
 				A1D704451C664D14009F7C8F /* Info.plist */,
-				A14E954D1C689B5600C303CC /* Swizzle.swift */,
-				A18F35231C69361C005D2343 /* UIView+CommonAncestor.swift */,
-				A15C8F5F1C6C872500B2EB74 /* AnimationChain.swift */,
-				A1FB7ACB1C6DF67D0078BD8B /* Array.swift */,
-				A1117A7F1C6EE08C006828D7 /* ConcreteAnimation.swift */,
 			);
 			path = Slaminate;
 			sourceTree = "<group>";
@@ -186,7 +239,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				A1591B721C6B0384001687F6 /* NSObject+Swizzle.swift in Sources */,
-				A1591B791C6B0384001687F6 /* NSObject+Animate.swift in Sources */,
 				A1591B6E1C6B0381001687F6 /* UIView+CommonAncestor.swift in Sources */,
 				A1591B701C6B0384001687F6 /* CurvedAnimation.swift in Sources */,
 				A1591B751C6B0384001687F6 /* DirectAnimation.swift in Sources */,
