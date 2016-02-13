@@ -59,7 +59,7 @@ class LayerAnimation: DirectAnimation {
     override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
         animation?.delegate = nil
         finished = flag
-        position = .End
+        progressState = .End
     }
     
     func startAnimation() {
@@ -67,8 +67,8 @@ class LayerAnimation: DirectAnimation {
         fromValue = fromValue ?? object.valueForKey(key)
         
         animation = CurvedAnimation(keyPath: key)
-        animation?.duration = duration - max(0.0, offset - delay)
-        animation?.offset = max(0.0, offset - delay)
+        animation?.duration = duration - max(0.0, position - delay)
+        animation?.position = max(0.0, position - delay)
         animation?.fromValue = fromValue as? Interpolatable
         animation?.toValue = toValue as? Interpolatable
         animation?.curve = curve
@@ -81,10 +81,10 @@ class LayerAnimation: DirectAnimation {
     
     override func commitAnimation() {
         state = .Comited
-        position = .InProgress
-        if (delay - offset) > 0.0 {
+        progressState = .InProgress
+        if (delay - position) > 0.0 {
             delayTimer = NSTimer(
-                timeInterval: delay - offset,
+                timeInterval: delay - position,
                 target: self,
                 selector: Selector("startAnimation"),
                 userInfo: nil,

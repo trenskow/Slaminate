@@ -22,6 +22,7 @@ extension NSObject {
                     
                     InstanceSwizzle(cls: NSLayoutConstraint.classForCoder(), "setConstant:"),
                     InstanceSwizzle(cls: NSLayoutConstraint.classForCoder(), "setActive:"),
+                    InstanceSwizzle(cls: NSLayoutConstraint.classForCoder(), "setPriority:"),
                     
                     InstanceSwizzle(cls: UIView.classForCoder(), "addConstraint:"),
                     InstanceSwizzle(cls: UIView.classForCoder(), "removeConstraint:"),
@@ -95,6 +96,11 @@ extension NSObject {
     func slaminate_setConstant(constant: CGFloat) {
         setConstraintValue("constant", newValue: constant)
         slaminate_setConstant(constant)
+    }
+    
+    func slaminate_setPriority(priority: UILayoutPriority) {
+        setConstraintValue("priority", newValue: priority)
+        slaminate_setPriority(priority)
     }
     
     // UIView

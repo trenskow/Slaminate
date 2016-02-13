@@ -17,7 +17,7 @@ class CurvedAnimation: CAKeyframeAnimation {
             var values = [AnyObject]()
             let curve = self.curve ?? Curve.linear
             
-            for var position: NSTimeInterval = offset ; position <= 1.0 ; position += 1.0 / 60.0 * (duration / NSTimeInterval(speed)) {
+            for var position: NSTimeInterval = self.position ; position <= 1.0 ; position += 1.0 / 60.0 * (duration / NSTimeInterval(speed)) {
                 keyTimes.append(position)
                 values.append(fromValue.interpolate(toValue, curve.block(position)) as! AnyObject)
             }
@@ -34,7 +34,7 @@ class CurvedAnimation: CAKeyframeAnimation {
         }
     }
     
-    var offset: NSTimeInterval = 0.0 {
+    var position: NSTimeInterval = 0.0 {
         didSet {
             applyInterpolation()
         }

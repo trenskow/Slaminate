@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A1117A801C6EE08C006828D7 /* ConcreteAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1117A7F1C6EE08C006828D7 /* ConcreteAnimation.swift */; };
 		A1591B6C1C6B037D001687F6 /* Slaminate.h in Headers */ = {isa = PBXBuildFile; fileRef = A1D704431C664D14009F7C8F /* Slaminate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A1591B6D1C6B0381001687F6 /* Swizzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E954D1C689B5600C303CC /* Swizzle.swift */; };
 		A1591B6E1C6B0381001687F6 /* UIView+CommonAncestor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18F35231C69361C005D2343 /* UIView+CommonAncestor.swift */; };
@@ -20,7 +21,7 @@
 		A1591B761C6B0384001687F6 /* AnimationGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15402E81C665FA40035AB8C /* AnimationGroup.swift */; };
 		A1591B771C6B0384001687F6 /* Curve.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D7045B1C664EC0009F7C8F /* Curve.swift */; };
 		A1591B781C6B0384001687F6 /* Animation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D704531C664D48009F7C8F /* Animation.swift */; };
-		A1591B791C6B0384001687F6 /* NSObject+Slaminate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D704511C664D37009F7C8F /* NSObject+Slaminate.swift */; };
+		A1591B791C6B0384001687F6 /* NSObject+Animate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D704511C664D37009F7C8F /* NSObject+Animate.swift */; };
 		A15C8F601C6C872500B2EB74 /* AnimationChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15C8F5F1C6C872500B2EB74 /* AnimationChain.swift */; };
 		A1EF9F2B1C6B47820045AE18 /* ConstraintPresenceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1EF9F2A1C6B47820045AE18 /* ConstraintPresenceInfo.swift */; };
 		A1FB7ACC1C6DF67D0078BD8B /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1FB7ACB1C6DF67D0078BD8B /* Array.swift */; };
@@ -28,6 +29,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A1117A7F1C6EE08C006828D7 /* ConcreteAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcreteAnimation.swift; sourceTree = "<group>"; };
 		A113ACE91C692BFC00C3EDBB /* NSObject+Swizzle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObject+Swizzle.swift"; sourceTree = "<group>"; };
 		A113ACEB1C692C5200C3EDBB /* AnimationBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationBuilder.swift; sourceTree = "<group>"; };
 		A14E954D1C689B5600C303CC /* Swizzle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Swizzle.swift; sourceTree = "<group>"; };
@@ -42,7 +44,7 @@
 		A18F35271C693C41005D2343 /* CurvedAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurvedAnimation.swift; sourceTree = "<group>"; };
 		A1D704431C664D14009F7C8F /* Slaminate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Slaminate.h; sourceTree = "<group>"; };
 		A1D704451C664D14009F7C8F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A1D704511C664D37009F7C8F /* NSObject+Slaminate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObject+Slaminate.swift"; sourceTree = "<group>"; };
+		A1D704511C664D37009F7C8F /* NSObject+Animate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObject+Animate.swift"; sourceTree = "<group>"; };
 		A1D704531C664D48009F7C8F /* Animation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Animation.swift; sourceTree = "<group>"; };
 		A1D7045B1C664EC0009F7C8F /* Curve.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Curve.swift; sourceTree = "<group>"; };
 		A1EF9F2A1C6B47820045AE18 /* ConstraintPresenceInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstraintPresenceInfo.swift; sourceTree = "<group>"; };
@@ -92,13 +94,14 @@
 				A15402E81C665FA40035AB8C /* AnimationGroup.swift */,
 				A1D7045B1C664EC0009F7C8F /* Curve.swift */,
 				A1D704531C664D48009F7C8F /* Animation.swift */,
-				A1D704511C664D37009F7C8F /* NSObject+Slaminate.swift */,
+				A1D704511C664D37009F7C8F /* NSObject+Animate.swift */,
 				A1D704431C664D14009F7C8F /* Slaminate.h */,
 				A1D704451C664D14009F7C8F /* Info.plist */,
 				A14E954D1C689B5600C303CC /* Swizzle.swift */,
 				A18F35231C69361C005D2343 /* UIView+CommonAncestor.swift */,
 				A15C8F5F1C6C872500B2EB74 /* AnimationChain.swift */,
 				A1FB7ACB1C6DF67D0078BD8B /* Array.swift */,
+				A1117A7F1C6EE08C006828D7 /* ConcreteAnimation.swift */,
 			);
 			path = Slaminate;
 			sourceTree = "<group>";
@@ -183,7 +186,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A1591B721C6B0384001687F6 /* NSObject+Swizzle.swift in Sources */,
-				A1591B791C6B0384001687F6 /* NSObject+Slaminate.swift in Sources */,
+				A1591B791C6B0384001687F6 /* NSObject+Animate.swift in Sources */,
 				A1591B6E1C6B0381001687F6 /* UIView+CommonAncestor.swift in Sources */,
 				A1591B701C6B0384001687F6 /* CurvedAnimation.swift in Sources */,
 				A1591B751C6B0384001687F6 /* DirectAnimation.swift in Sources */,
@@ -196,6 +199,7 @@
 				A1591B741C6B0384001687F6 /* LayerAnimation.swift in Sources */,
 				A1591B6D1C6B0381001687F6 /* Swizzle.swift in Sources */,
 				A1591B6F1C6B0381001687F6 /* PropertyInfo.swift in Sources */,
+				A1117A801C6EE08C006828D7 /* ConcreteAnimation.swift in Sources */,
 				A1591B781C6B0384001687F6 /* Animation.swift in Sources */,
 				A1591B731C6B0384001687F6 /* Interpolation.swift in Sources */,
 				A1FB7ACE1C6DF8610078BD8B /* ConstraintConstantAnimation.swift in Sources */,

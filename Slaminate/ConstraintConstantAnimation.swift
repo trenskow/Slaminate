@@ -14,7 +14,7 @@ class ConstraintConstantAnimation: DirectAnimation {
     
     override func commitAnimation() {
         state = .Comited
-        position = .InProgress
+        progressState = .InProgress
         completeAnimation()
     }
     

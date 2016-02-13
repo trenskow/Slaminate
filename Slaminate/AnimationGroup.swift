@@ -27,26 +27,26 @@ class AnimationGroup: ConcreteAnimation, AnimationDelegate {
         animations.forEach({ $0.delegate = self })
     }
     
-    override var position: AnimationPosition {
+    override var progressState: AnimationProgressState {
         didSet {
-            if let completion = completion where position != oldValue && position == .End {
+            if let completion = completion where progressState != oldValue && progressState == .End {
                 completion(finished)
             }
         }
     }
     
-    override var offset: NSTimeInterval {
+    override var position: NSTimeInterval {
         didSet {
             animations.forEach({ (animation) in
-                animation.offset = max(0.0, min(animation.delay + animation.duration, offset))
+                animation.position = max(0.0, min(animation.delay + animation.duration, position))
             })
         }
     }
     
     override func commitAnimation() {
         state = .Comited
-        position = .InProgress
-        let nonCompleteAnimations = animations.filter { $0.position != .End }
+        progressState = .InProgress
+        let nonCompleteAnimations = animations.filter { $0.progressState != .End }
         if nonCompleteAnimations.count > 0 {
             animations.forEach { ($0 as! ConcreteAnimation).commitAnimation() }
         } else {
@@ -55,19 +55,19 @@ class AnimationGroup: ConcreteAnimation, AnimationDelegate {
     }
     
     override func and(animation animation: Animation) -> Animation {
-        animation.postponeAnimation()
+        animation.postpone()
         animations.append(animation as! DelegatedAnimation)
         return self
     }
     
     internal func completeAnimation(finished: Bool) {
         self.finished = finished
-        self.position = .End
+        self.progressState = .End
     }
     
     func animationCompleted(animation: Animation, finished: Bool) {
         let finished = self.finished && finished
-        if animations.all({ $0.position == .End }) {
+        if animations.all({ $0.progressState == .End }) {
             completeAnimation(finished)
         }
     }

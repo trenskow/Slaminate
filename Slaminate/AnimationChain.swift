@@ -17,7 +17,7 @@ class AnimationChain: ConcreteAnimation, AnimationDelegate {
         super.init()
         self.animations.forEach { (animation) -> () in
             animation.delegate = self
-            animation.postponeAnimation()
+            animation.postpone()
         }
     }
     
@@ -39,16 +39,16 @@ class AnimationChain: ConcreteAnimation, AnimationDelegate {
     
     @objc override var finished: Bool {
         @objc(isFinished) get {
-            return self.animations.all({ $0.finished && $0.position == AnimationPosition.End })
+            return self.animations.all({ $0.finished && $0.progressState == .End })
         }
         set {}
     }
     
-    override var offset: NSTimeInterval {
+    override var position: NSTimeInterval {
         didSet {
             var total = 0.0
             animations.forEach { (animation) in
-                animation.offset = max(0.0, min(animation.delay + animation.duration, offset - total))
+                animation.position = max(0.0, min(animation.delay + animation.duration, position - total))
                 total += animation.delay + animation.duration
             }
         }
@@ -56,13 +56,13 @@ class AnimationChain: ConcreteAnimation, AnimationDelegate {
     
     override func commitAnimation() {
         state = .Comited
-        position = .InProgress
+        progressState = .InProgress
         animateNext()
     }
     
     override func then(animation animation: Animation) -> Animation {
         if let animation = animation as? DelegatedAnimation {
-            animation.postponeAnimation()
+            animation.postpone()
             animation.delegate = self
             animations.append(animation)
         }
@@ -70,10 +70,10 @@ class AnimationChain: ConcreteAnimation, AnimationDelegate {
     }
     
     private func animateNext() {
-        if let nextAnimation = animations.filter({ $0.position != .End }).first as? ConcreteAnimation {
+        if let nextAnimation = animations.filter({ $0.progressState != .End }).first as? ConcreteAnimation {
             nextAnimation.commitAnimation()
         } else {
-            position = .End
+            progressState = .End
         }
     }
     

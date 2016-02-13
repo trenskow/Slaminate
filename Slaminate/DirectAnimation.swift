@@ -25,10 +25,10 @@ class DirectAnimation: ConcreteAnimation, PropertyAnimation {
     var animationStart: NSDate?
     var displayLink: CADisplayLink?
     
-    override var position: AnimationPosition {
+    override var progressState: AnimationProgressState {
         didSet {
-            if position != oldValue {
-                if position == .Beginning {
+            if progressState != oldValue {
+                if progressState == .Beginning {
                     invalidatedFromValue = true
                 }
             }
@@ -45,16 +45,16 @@ class DirectAnimation: ConcreteAnimation, PropertyAnimation {
         self.delay = delay
     }
     
-    override var offset: NSTimeInterval {
+    override var position: NSTimeInterval {
         didSet {
-            if offset != oldValue {
-                update(offset)
+            if position != oldValue {
+                update(position)
             }
         }
     }
     
     override func commitAnimation() {
-        position = .InProgress
+        progressState = .InProgress
         animationStart = NSDate()
         displayLink = CADisplayLink(target: self, selector: Selector("displayDidUpdate"))
         displayLink?.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSRunLoopCommonModes)
@@ -67,7 +67,7 @@ class DirectAnimation: ConcreteAnimation, PropertyAnimation {
         displayLink = nil
         animationStart = nil
         finished = true
-        position = .End
+        progressState = .End
     }
     
     func update(progress: Double) {
@@ -104,7 +104,7 @@ class DirectAnimation: ConcreteAnimation, PropertyAnimation {
     
     func displayDidUpdate() {
         
-        update(abs(animationStart?.timeIntervalSinceNow ?? 0.0) + offset)
+        update(abs(animationStart?.timeIntervalSinceNow ?? 0.0) + position)
         
     }
     

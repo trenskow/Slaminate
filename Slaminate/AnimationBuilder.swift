@@ -50,9 +50,9 @@ class AnimationBuilder: AnimationGroup {
         self.curve = curve
     }
         
-    override var offset: NSTimeInterval {
+    override var position: NSTimeInterval {
         didSet {
-            if offset > 0.0 {
+            if position > 0.0 {
                 build()
             }
         }
@@ -207,7 +207,7 @@ class AnimationBuilder: AnimationGroup {
         
         self.animations.forEach { (animation) -> () in
             animation.delegate = self
-            animation.postponeAnimation()
+            animation.postpone()
         }
         
         buildState = .Done
