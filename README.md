@@ -3,7 +3,7 @@
 
 The power of Core Animation - with the animation API of UIKit.
 
-## How it works
+## How it Works
 
 Have you ever wanted to do something like this?
 
@@ -90,9 +90,9 @@ Now you can do stuff like this.
 
 See what happened? We **organized the animations** of our application!
 
-#### One last thing
+#### Oh – and this...
 
-Lastly you can animate non-UI properties by using `setValue(_, forKey:)`.
+You can also animate non-UI properties by using `setValue(_, forKey:)`.
 
 	slaminate(
 		duration: 1.0,
