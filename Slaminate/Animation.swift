@@ -10,7 +10,7 @@ import Foundation
 
 internal var ongoingAnimations = [Animation]()
 
-public func slaminate(duration duration: NSTimeInterval, delay: NSTimeInterval, curve: Curve?, animation: Void -> Void, completion: ((finished: Bool) -> Void)?) -> Animation {
+public func slaminate(duration duration: NSTimeInterval, animation: Void -> Void, curve: Curve? = nil, delay: NSTimeInterval = 0.0, completion: ((finished: Bool) -> Void)? = nil) -> Animation {
     return AnimationBuilder(
         duration: duration,
         delay: delay,
@@ -43,10 +43,10 @@ A protocol representing an animation.
     var duration:NSTimeInterval { get }
     var delay:NSTimeInterval { get }
     var position:NSTimeInterval { get set }
-    func then(duration duration: NSTimeInterval, delay: NSTimeInterval, curve: Curve?, animation: Void -> Void, completion: CompletionHandler?) -> Animation
+    func then(duration duration: NSTimeInterval, animation: Void -> Void, curve: Curve?, delay: NSTimeInterval, completion: CompletionHandler?) -> Animation
     func then(animation animation: Animation) -> Animation
     func then(completion completion: CompletionHandler) -> Animation
-    func and(duration duration: NSTimeInterval, delay: NSTimeInterval, curve: Curve?, animation: Void -> Void, completion: CompletionHandler?) -> Animation
+    func and(duration duration: NSTimeInterval, animation: Void -> Void, curve: Curve?, delay: NSTimeInterval, completion: CompletionHandler?) -> Animation
     func and(animation animation: Animation) -> Animation
     func begin()
     func begin(reversed: Bool)
@@ -86,31 +86,8 @@ extension Array where Element: Animation {
     }
 }
 
-@objc protocol BuildInAnimations {
-    func fadeIn(duration: NSTimeInterval, delay: NSTimeInterval, curve: Curve?, completion: CompletionHandler?) -> Animation
-    func fadeOut(duration: NSTimeInterval, delay: NSTimeInterval, curve: Curve?, completion: CompletionHandler?) -> Animation
-}
-
 extension NSObject {
-    public func setValue(value: AnyObject?, forKey key: String, duration: NSTimeInterval, delay: NSTimeInterval, curve: Curve?, completion: ((finished: Bool) -> Void)?) -> Animation {
-        return slaminate(duration: duration, delay: delay, curve: curve, animation: { [weak self] in self?.setValue(value, forKey: key) }, completion: completion)
-    }
-}
-
-extension CALayer: BuildInAnimations {
-    func fadeIn(duration: NSTimeInterval, delay: NSTimeInterval = 0.0, curve: Curve? = nil, completion: CompletionHandler? = nil) -> Animation {
-        return self.setValue(1.0, forKey: "opacity", duration: duration, delay: delay, curve: curve, completion: completion)
-    }
-    func fadeOut(duration: NSTimeInterval, delay: NSTimeInterval, curve: Curve?, completion: CompletionHandler?) -> Animation {
-        return self.setValue(0.0, forKey: "opacity", duration: duration, delay: delay, curve: curve, completion: completion)
-    }
-}
-
-extension UIView: BuildInAnimations {
-    func fadeIn(duration: NSTimeInterval, delay: NSTimeInterval, curve: Curve?, completion: CompletionHandler?) -> Animation {
-        return self.layer.fadeIn(duration, delay: delay, curve: curve, completion: completion)
-    }
-    func fadeOut(duration: NSTimeInterval, delay: NSTimeInterval, curve: Curve?, completion: CompletionHandler?) -> Animation {
-        return self.layer.fadeIn(duration, delay: delay, curve: curve, completion: completion)
+    public func setValue(value: AnyObject?, forKey key: String, duration: NSTimeInterval, curve: Curve? = nil, delay: NSTimeInterval = 0.0, completion: ((finished: Bool) -> Void)? = nil) -> Animation {
+        return slaminate(duration: duration, animation: { [weak self] in self?.setValue(value, forKey: key) }, curve: curve, delay: delay, completion: completion)
     }
 }

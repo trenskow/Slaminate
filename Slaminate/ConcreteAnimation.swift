@@ -46,15 +46,14 @@ class ConcreteAnimation: NSObject, DelegatedAnimation {
     
     weak var delegate: AnimationDelegate?
     
-    @objc func then(duration duration: NSTimeInterval, delay: NSTimeInterval, curve: Curve?, animation: Void -> Void, completion: ((finished: Bool) -> Void)?) -> Animation {
+    @objc func then(duration duration: NSTimeInterval, animation: Void -> Void, curve: Curve?, delay: NSTimeInterval, completion: ((finished: Bool) -> Void)?) -> Animation {
         return then(animation: slaminate(
             duration: duration,
-            delay: delay,
-            curve: curve,
             animation: animation,
+            curve: curve,
+            delay: delay,
             completion: completion
-            ) as! DelegatedAnimation
-        )
+        ) as! DelegatedAnimation)
     }
     
     @objc func then(animation animation: Animation) -> Animation {
@@ -65,15 +64,14 @@ class ConcreteAnimation: NSObject, DelegatedAnimation {
         return AnimationGroup(animations: [self], completion: completion)
     }
     
-    @objc func and(duration duration: NSTimeInterval, delay: NSTimeInterval, curve: Curve?, animation: Void -> Void, completion: CompletionHandler?) -> Animation {
+    @objc func and(duration duration: NSTimeInterval, animation: Void -> Void, curve: Curve?, delay: NSTimeInterval, completion: CompletionHandler?) -> Animation {
         return and(animation: slaminate(
-                duration: duration,
-                delay: delay,
-                curve: curve,
-                animation: animation,
-                completion: completion
-            )
-        )
+            duration: duration,
+            animation: animation,
+            curve: curve,
+            delay: delay,
+            completion: completion
+        ) as! DelegatedAnimation)
     }
     
     @objc func and(animation animation: Animation) -> Animation {
