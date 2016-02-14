@@ -53,7 +53,7 @@ You can even group and chain animations – like this.
 	myAnimation.and(slamniate(...))
 	myAnimation.then(slamniate(...))
    
-The above code makes the first two `slaminate` animations go together by `add`ing them - then the third in animated. Completion handlers are available at all three steps!
+The above code makes the first two `slaminate` animations go together by `add`ing them - then the third is animated. Completion handlers are available at all three steps!
 
 #### Advanced Animations
 
@@ -108,6 +108,8 @@ You can also animate non-UI properties by using `setValue(_, forKey:)`.
 
 #### More things are coming - like convenience methods for showing and hiding view easily!
 
-Things are still very new, and kind of hacky implemented – a refactoring is probably coming up soon — but it works!
+Things are still very new, and kind of hacky implemented – a refactoring is probably coming up soon. But it works!
+
+----
 
 Documentation is coming... :/
