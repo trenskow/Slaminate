@@ -33,10 +33,6 @@ public typealias CompletionHandler = (finished: Bool) -> Void
     case End
 }
 
-class EventEmitter {
-    
-}
-
 @objc public enum AnimationEvent: Int {
     case Begin
     case End
