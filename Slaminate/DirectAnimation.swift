@@ -18,31 +18,46 @@ class DirectAnimation: ConcreteAnimation, PropertyAnimation {
     var object: NSObject
     var key: String
     var invalidatedFromValue = false
-    var fromValue: AnyObject?
-    var toValue: AnyObject
+    var fromValue: Any?
+    var fromValueIsConcrete: Bool = false
+    var toValue: Any
     var curve: Curve
     
     var animationStart: NSDate?
     var displayLink: CADisplayLink?
     
+    var _finished: Bool = false
+    var _duration: NSTimeInterval = 0.0
+    var _delay: NSTimeInterval = 0.0
+    
+    @objc(isFinished) override var finished: Bool { return _finished }
+    override var duration: NSTimeInterval { return _duration }
+    override var delay: NSTimeInterval { return _delay }
+    
     override var progressState: AnimationProgressState {
         didSet {
             if progressState != oldValue {
-                if progressState == .Beginning {
+                if !fromValueIsConcrete && progressState == .Beginning {
                     invalidatedFromValue = true
                 }
             }
         }
     }
     
-    required init(duration: NSTimeInterval, delay: NSTimeInterval, object: NSObject, key: String, toValue: AnyObject, curve: Curve) {
+    required init(duration: NSTimeInterval, delay: NSTimeInterval, object: NSObject, key: String, toValue: Any, curve: Curve) {
         self.object = object
         self.key = key
         self.toValue = toValue
         self.curve = curve
         super.init()
-        self.duration = duration
-        self.delay = delay
+        self._duration = duration
+        self._delay = delay
+    }
+    
+    internal convenience init(duration: NSTimeInterval, delay: NSTimeInterval, object: NSObject, key: String, fromValue: Any, toValue: Any, curve: Curve) {
+        self.init(duration: duration, delay: delay, object: object, key: key, toValue: toValue, curve: curve)
+        self.fromValue = fromValue
+        self.fromValueIsConcrete = true
     }
     
     override var position: NSTimeInterval {
@@ -54,20 +69,20 @@ class DirectAnimation: ConcreteAnimation, PropertyAnimation {
     }
     
     override func commitAnimation() {
-        progressState = .InProgress
+        state = .Comited
+        guard progressState.rawValue < AnimationProgressState.End.rawValue else { return }
         animationStart = NSDate()
         displayLink = CADisplayLink(target: self, selector: Selector("displayDidUpdate"))
         displayLink?.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSRunLoopCommonModes)
     }
     
     func completeAnimation() {
-        state = .Comited
-        object.setValue(toValue, forKey: key)
+        object.setValue(toValue as? NSObject, forKey: key)
+        progressState = .End
         displayLink?.invalidate()
         displayLink = nil
         animationStart = nil
-        finished = true
-        progressState = .End
+        _finished = true
     }
     
     func update(progress: Double) {
@@ -75,8 +90,10 @@ class DirectAnimation: ConcreteAnimation, PropertyAnimation {
         if progress >= delay + duration {
             completeAnimation()
         }
-            
+        
         else if progress >= delay {
+            
+            progressState = .InProgress
             
             let position = (progress - delay) / duration
             
@@ -90,22 +107,22 @@ class DirectAnimation: ConcreteAnimation, PropertyAnimation {
             if let fromValue = fromValue {
                 object.setValue(
                     (fromValue as! Interpolatable).interpolate(
-                        toValue,
+                        toValue as! Interpolatable,
                         (curve ?? Curve.linear).block(position)
-                    ) as? AnyObject,
+                    ).objectValue,
                     forKey: key
                 )
             }
+            
         } else if let fromValue = fromValue {
-            object.setValue(fromValue, forKey: key)
+            progressState = .Beginning
+            object.setValue(fromValue as? NSObject, forKey: key)
         }
         
     }
     
     func displayDidUpdate() {
-        
         update(abs(animationStart?.timeIntervalSinceNow ?? 0.0) + position)
-        
     }
     
 }

@@ -21,6 +21,12 @@ class AnimationBuilder: AnimationGroup {
         return builders.last!
     }
     
+    var _duration: NSTimeInterval = 0.0
+    var _delay: NSTimeInterval = 0.0
+    
+    override var duration: NSTimeInterval { return _duration }
+    override var delay: NSTimeInterval { return _delay }
+    
     enum AnimationBuilderState {
         case Waiting
         case Collecting
@@ -45,8 +51,8 @@ class AnimationBuilder: AnimationGroup {
     init(duration: NSTimeInterval, delay: NSTimeInterval, animation: Void -> Void, curve: Curve?, completion: ((finished: Bool) -> Void)?) {
         self.animation = animation
         super.init(animations: [], completion: completion)
-        self.duration = duration
-        self.delay = delay
+        self._duration = duration
+        self._delay = delay
         self.curve = curve
     }
         
@@ -203,13 +209,8 @@ class AnimationBuilder: AnimationGroup {
             
         }
         
-        self.animations = animations
-        
-        self.animations.forEach { (animation) -> () in
-            animation.delegate = self
-            animation.postpone()
-        }
-        
+        animations.forEach({ and(animation: $0) })
+                
         buildState = .Done
         
     }

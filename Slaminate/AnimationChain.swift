@@ -27,21 +27,18 @@ class AnimationChain: ConcreteAnimation, AnimationDelegate {
                 return c + animation.delay + animation.duration
             })
         }
-        set {}
     }
     
     @objc override var delay: NSTimeInterval {
         get {
             return 0.0
         }
-        set {}
     }
     
     @objc override var finished: Bool {
         @objc(isFinished) get {
             return self.animations.all({ $0.finished && $0.progressState == .End })
         }
-        set {}
     }
     
     override var position: NSTimeInterval {
@@ -56,15 +53,17 @@ class AnimationChain: ConcreteAnimation, AnimationDelegate {
     
     override func commitAnimation() {
         state = .Comited
+        guard progressState.rawValue < AnimationProgressState.End.rawValue else { return }
         progressState = .InProgress
         animateNext()
     }
     
-    override func then(animation animation: Animation) -> Animation {
-        if let animation = animation as? DelegatedAnimation {
+    override func then(animations animations: [Animation]) -> Animation {
+        animations.forEach { animation in
+            let animation = animation as! DelegatedAnimation
             animation.postpone()
             animation.delegate = self
-            animations.append(animation)
+            self.animations.append(animation)
         }
         return self
     }
@@ -77,9 +76,18 @@ class AnimationChain: ConcreteAnimation, AnimationDelegate {
         }
     }
     
-    func animationCompleted(animation: Animation, finished: Bool) {
+    func animation(animation: Animation, didCompleteWithFinishState finished: Bool) {
         guard state == .Comited else { return }
         animateNext()
+    }
+    
+    func animation(animation: Animation, didChangeProgressState: AnimationProgressState) {
+        if animations.count == 0 || animations.first?.progressState == .Beginning {
+            progressState = .Beginning
+        } else if animations.last?.progressState == .End {
+            progressState = .End
+        }
+        progressState = .InProgress
     }
     
 }

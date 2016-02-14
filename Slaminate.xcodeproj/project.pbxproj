@@ -22,6 +22,7 @@
 		A1591B771C6B0384001687F6 /* Curve.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D7045B1C664EC0009F7C8F /* Curve.swift */; };
 		A1591B781C6B0384001687F6 /* Animation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D704531C664D48009F7C8F /* Animation.swift */; };
 		A15C8F601C6C872500B2EB74 /* AnimationChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15C8F5F1C6C872500B2EB74 /* AnimationChain.swift */; };
+		A165B2E71C70DDB200ADEB38 /* BuildIns.swift in Sources */ = {isa = PBXBuildFile; fileRef = A165B2E61C70DDB200ADEB38 /* BuildIns.swift */; };
 		A1EF9F2B1C6B47820045AE18 /* ConstraintPresenceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1EF9F2A1C6B47820045AE18 /* ConstraintPresenceInfo.swift */; };
 		A1FB7ACC1C6DF67D0078BD8B /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1FB7ACB1C6DF67D0078BD8B /* Array.swift */; };
 		A1FB7ACE1C6DF8610078BD8B /* ConstraintConstantAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1FB7ACD1C6DF8610078BD8B /* ConstraintConstantAnimation.swift */; };
@@ -38,6 +39,7 @@
 		A15402EA1C6662450035AB8C /* Interpolation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Interpolation.swift; sourceTree = "<group>"; };
 		A1591B641C6B0329001687F6 /* Slaminate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Slaminate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A15C8F5F1C6C872500B2EB74 /* AnimationChain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationChain.swift; sourceTree = "<group>"; };
+		A165B2E61C70DDB200ADEB38 /* BuildIns.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BuildIns.swift; sourceTree = "<group>"; };
 		A18F35231C69361C005D2343 /* UIView+CommonAncestor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+CommonAncestor.swift"; sourceTree = "<group>"; };
 		A18F35251C6938B2005D2343 /* PropertyInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyInfo.swift; sourceTree = "<group>"; };
 		A18F35271C693C41005D2343 /* CurvedAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurvedAnimation.swift; sourceTree = "<group>"; };
@@ -128,6 +130,7 @@
 				A15402EA1C6662450035AB8C /* Interpolation.swift */,
 				A1D7045B1C664EC0009F7C8F /* Curve.swift */,
 				A1D704531C664D48009F7C8F /* Animation.swift */,
+				A165B2E61C70DDB200ADEB38 /* BuildIns.swift */,
 			);
 			name = Animations;
 			sourceTree = "<group>";
@@ -239,6 +242,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A1591B721C6B0384001687F6 /* NSObject+Swizzle.swift in Sources */,
+				A165B2E71C70DDB200ADEB38 /* BuildIns.swift in Sources */,
 				A1591B6E1C6B0381001687F6 /* UIView+CommonAncestor.swift in Sources */,
 				A1591B701C6B0384001687F6 /* CurvedAnimation.swift in Sources */,
 				A1591B751C6B0384001687F6 /* DirectAnimation.swift in Sources */,

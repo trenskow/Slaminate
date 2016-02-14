@@ -47,18 +47,14 @@ class LayerAnimation: DirectAnimation {
     
     var animation: CurvedAnimation?
     
-    required init(duration: NSTimeInterval, delay: NSTimeInterval, object: NSObject, key: String, toValue: AnyObject, curve: Curve) {
+    required init(duration: NSTimeInterval, delay: NSTimeInterval, object: NSObject, key: String, toValue: Any, curve: Curve) {
         self.layer = object as! CALayer
         super.init(duration: duration, delay: delay, object: object, key: key, toValue: toValue, curve: curve)
-    }
-        
-    override func animationDidStart(anim: CAAnimation) {
-        object.setValue(toValue, forKey: key)
     }
     
     override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
         animation?.delegate = nil
-        finished = flag
+        _finished = flag
         progressState = .End
     }
     
@@ -67,7 +63,7 @@ class LayerAnimation: DirectAnimation {
         fromValue = fromValue ?? object.valueForKey(key)
         
         animation = CurvedAnimation(keyPath: key)
-        animation?.duration = duration - max(0.0, position - delay)
+        animation?.duration = duration
         animation?.position = max(0.0, position - delay)
         animation?.fromValue = fromValue as? Interpolatable
         animation?.toValue = toValue as? Interpolatable
@@ -77,11 +73,15 @@ class LayerAnimation: DirectAnimation {
         
         layer.addAnimation(animation!, forKey: "animation_\(key)")
         
+        object.setValue((fromValue as! Interpolatable).interpolate(toValue as! Interpolatable, curve.block(1.0)).objectValue!, forKey: key)
+        
+        progressState = .InProgress
+        
     }
     
     override func commitAnimation() {
         state = .Comited
-        progressState = .InProgress
+        guard progressState.rawValue < AnimationProgressState.End.rawValue else { return }
         if (delay - position) > 0.0 {
             delayTimer = NSTimer(
                 timeInterval: delay - position,

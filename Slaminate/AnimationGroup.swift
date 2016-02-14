@@ -18,7 +18,7 @@ class AnimationGroup: ConcreteAnimation, AnimationDelegate {
         self.init(animations: [], completion: completion)
     }
         
-    var animations: [DelegatedAnimation]
+    private var animations: [DelegatedAnimation]
     
     init(animations: [DelegatedAnimation], completion: ((finished: Bool) -> Void)?) {
         self.animations = animations ?? []
@@ -43,9 +43,32 @@ class AnimationGroup: ConcreteAnimation, AnimationDelegate {
         }
     }
     
+    @objc(isFinished) override var finished: Bool {
+        return animations.reduce(true, combine: { (c, animation) -> Bool in
+            return c && animation.finished
+        })
+    }
+    
+    override var duration: NSTimeInterval {
+        get {
+            return animations.reduce(0.0) { (c, animation) -> NSTimeInterval in
+                return max(c, animation.delay + animation.duration)
+            } - delay
+        }
+    }
+    
+    override var delay: NSTimeInterval {
+        get {
+            guard animations.count > 0 else { return 0.0 }
+            return animations.reduce(NSTimeInterval.infinity, combine: { (c, animation) -> NSTimeInterval in
+                return min(c, animation.delay)
+            })
+        }
+    }
+    
     override func commitAnimation() {
         state = .Comited
-        progressState = .InProgress
+        guard progressState.rawValue < AnimationProgressState.End.rawValue else { return }
         let nonCompleteAnimations = animations.filter { $0.progressState != .End }
         if nonCompleteAnimations.count > 0 {
             animations.forEach { ($0 as! ConcreteAnimation).commitAnimation() }
@@ -54,22 +77,32 @@ class AnimationGroup: ConcreteAnimation, AnimationDelegate {
         }
     }
     
-    override func and(animation animation: Animation) -> Animation {
-        animation.postpone()
-        animations.append(animation as! DelegatedAnimation)
+    override func and(animations animations: [Animation]) -> Animation {
+        animations.forEach { animation in
+            animation.postpone()
+            if let animation = animation as? DelegatedAnimation {
+                self.animations.append(animation)
+                animation.delegate = self
+            }
+        }
         return self
     }
     
     internal func completeAnimation(finished: Bool) {
-        self.finished = finished
         self.progressState = .End
     }
     
-    func animationCompleted(animation: Animation, finished: Bool) {
+    func animation(animation: Animation, didCompleteWithFinishState finished: Bool) {
         let finished = self.finished && finished
         if animations.all({ $0.progressState == .End }) {
             completeAnimation(finished)
         }
+    }
+    
+    func animation(animation: Animation, didChangeProgressState: AnimationProgressState) {
+        progressState = AnimationProgressState(rawValue: animations.reduce(AnimationProgressState.End.rawValue, combine: { (c, animation) -> Int in
+            return min(c, animation.state.rawValue)
+        }))!
     }
     
 }

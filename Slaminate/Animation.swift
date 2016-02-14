@@ -33,6 +33,15 @@ public typealias CompletionHandler = (finished: Bool) -> Void
     case End
 }
 
+class EventEmitter {
+    
+}
+
+@objc public enum AnimationEvent: Int {
+    case Begin
+    case End
+}
+
 /*!
 A protocol representing an animation.
 */
@@ -43,18 +52,22 @@ A protocol representing an animation.
     var duration:NSTimeInterval { get }
     var delay:NSTimeInterval { get }
     var position:NSTimeInterval { get set }
+    func on(event: AnimationEvent, then: Animation -> Void) -> Animation
     func then(duration duration: NSTimeInterval, animation: Void -> Void, curve: Curve?, delay: NSTimeInterval, completion: CompletionHandler?) -> Animation
     func then(animation animation: Animation) -> Animation
+    func then(animations animations: [Animation]) -> Animation
     func then(completion completion: CompletionHandler) -> Animation
     func and(duration duration: NSTimeInterval, animation: Void -> Void, curve: Curve?, delay: NSTimeInterval, completion: CompletionHandler?) -> Animation
     func and(animation animation: Animation) -> Animation
+    func and(animations animations: [Animation]) -> Animation
     func begin()
     func begin(reversed: Bool)
     func postpone() -> Animation
 }
 
 protocol AnimationDelegate: class {
-    func animationCompleted(animation: Animation, finished: Bool)
+    func animation(animation: Animation, didCompleteWithFinishState finished: Bool)
+    func animation(animation: Animation, didChangeProgressState: AnimationProgressState)
 }
 
 protocol DelegatedAnimation: Animation {
@@ -65,9 +78,9 @@ protocol PropertyAnimation: DelegatedAnimation {
     static func canAnimate(object: NSObject, key: String) -> Bool
     var object: NSObject { get }
     var key: String { get }
-    var toValue: AnyObject { get }
+    var toValue: Any { get }
     var curve: Curve { get }
-    init(duration: NSTimeInterval, delay: NSTimeInterval, object: NSObject, key: String, toValue: AnyObject, curve: Curve)
+    init(duration: NSTimeInterval, delay: NSTimeInterval, object: NSObject, key: String, toValue: Any, curve: Curve)
 }
 
 extension Array where Element: Animation {
