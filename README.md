@@ -64,7 +64,7 @@ Now you can do stuff like this.
 		func transitionOut() -> Animation
 	}
 	
-	class myViewController: UIViewController, Transitionable {
+	class MyViewController: UIViewController, Transitionable {
 		var myFirstTransitioningView: Transitionable!
 		var mySecondTransitioningView: Transitionable!
 		func transitionIn() -> Animations {
@@ -76,9 +76,10 @@ Now you can do stuff like this.
 	
 	class MyContainerViewController {
 		public override func addChildViewController(childViewController: UIViewController) {
-			let oldViewController = self.childViewControllers.last! as! Transitionable
+			let oldViewController = self.childViewControllers.last
 			super.addChildViewController(childViewController)
-			if let newViewController = childViewController as? Transitionable {
+			if let oldViewController = oldViewController as? Tranistionable
+			   let newViewController = childViewController as? Transitionable {
 				oldViewController.transitionOut()
 				.then(newViewController.transitionIn()).
 				.on(.End, then: { _ in
@@ -90,7 +91,33 @@ Now you can do stuff like this.
 
 See what happened? We **organized the animations** of our application!
 
-#### Oh – and this...
+#### Oh - and this...
+
+You could create something like an navigation controller like this. The `position` offset lets you apply a position in time of the animation.
+
+	class MyNavigationController {
+		var panGesture: UIScreenEdgePanGestureRecognizer
+		var animation: Animation?
+		..
+		func panGestureStateChanged:(gestureRecognizer: UIScreenEdgePanGestureRecognizer) {
+			switch gestureRecognizer.state {
+			case .Began:
+				// Create animation for popping
+				animation = slaminate(...).postpone()
+			case .Changed:
+				let location = gestureRecognizer.locationInView(self.view.window)
+				// We calculate the delta and set the position of the animation
+				animation.position = (location. x / self.view.window.bounds.size.width) * location.x
+			case .Ended:
+				// Animate the animation from whatever the current position is
+				animation.begin()
+			default:
+				break
+			}
+		}
+	}
+
+#### Oh – and this, too...
 
 You can also animate non-UI properties by using `setValue(_, forKey:)`.
 
