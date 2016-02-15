@@ -137,7 +137,7 @@ You can also animate non-UI properties by using `setValue(_, forKey:)`.
 
 #### More things are coming - like convenience methods for showing and hiding views easily!
 
-Things are still very new, and the implementation is very hack, but give it a spin. It works!
+Things are still very new, and the implementation is very hacky, but give it a spin. It works!
 
 ----
 
