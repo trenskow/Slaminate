@@ -93,7 +93,9 @@ See what happened? We **organized the animations** of our application!
 
 #### Oh - and this...
 
-You could create something like an navigation controller like this. The `position` offset lets you apply a position in time of the animation.
+The `position` offset lets you apply a position in time of the animation – and when you can `begin()` the animation will take off from that position.
+
+Sp you could create something like an navigation controller pan gesture dismiss like this. 
 
 	class MyNavigationController {
 		var panGesture: UIScreenEdgePanGestureRecognizer
