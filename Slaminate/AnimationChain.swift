@@ -73,12 +73,12 @@ class AnimationChain: ConcreteAnimation {
         }
     }
     
-    func animation(animation: Animation, didCompleteWithFinishState finished: Bool) {
+    override func childAnimation(animation: Animation, didCompleteWithFinishState finished: Bool) {
         guard state == .Comited else { return }
         animateNext()
     }
     
-    func animation(animation: Animation, didChangeProgressState: AnimationProgressState) {
+    override func childAnimation(animation: Animation, didChangeProgressState: AnimationProgressState) {
         if animations.count == 0 || animations.first?.progressState == .Beginning {
             progressState = .Beginning
         } else if animations.last?.progressState == .End {

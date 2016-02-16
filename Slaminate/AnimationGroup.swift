@@ -89,14 +89,14 @@ class AnimationGroup: ConcreteAnimation {
         self.progressState = .End
     }
     
-    func animation(animation: Animation, didCompleteWithFinishState finished: Bool) {
+    override func childAnimation(animation: Animation, didCompleteWithFinishState finished: Bool) {
         let finished = self.finished && finished
         if animations.all({ $0.progressState == .End }) {
             completeAnimation(finished)
         }
     }
     
-    func animation(animation: Animation, didChangeProgressState: AnimationProgressState) {
+    override func childAnimation(animation: Animation, didChangeProgressState: AnimationProgressState) {
         progressState = AnimationProgressState(rawValue: animations.reduce(AnimationProgressState.End.rawValue, combine: { (c, animation) -> Int in
             return min(c, animation.state.rawValue)
         }))!

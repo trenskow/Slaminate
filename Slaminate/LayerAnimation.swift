@@ -51,11 +51,7 @@ class LayerAnimation: DirectAnimation {
         self.layer = object as! CALayer
         super.init(duration: duration, delay: delay, object: object, key: key, toValue: toValue, curve: curve)
     }
-    
-    override func animationDidStart(anim: CAAnimation) {
         
-    }
-    
     override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
         animation?.delegate = nil
         _finished = flag
