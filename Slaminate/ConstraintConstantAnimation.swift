@@ -12,7 +12,7 @@ class ConstraintConstantAnimation: DirectAnimation {
         return key == "constant" && object as? NSLayoutConstraint != nil
     }
     
-    override func commitAnimation() {
+    override func commit() {
         state = .Comited
         completeAnimation()
     }

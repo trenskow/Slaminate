@@ -150,15 +150,13 @@ class AnimationBuilder: AnimationGroup {
         
         if let first = views.first {
             
-            var common = views.reduce(first.1 != nil ? first.0.commonAncestor(first.1!)! : first.0, combine: { (c, views) -> UIView in
+            let common = views.reduce(first.1 != nil ? first.0.commonAncestor(first.1!)! : first.0, combine: { (c, views) -> UIView in
                 var first = c.commonAncestor(views.0)
                 if let _ = views.1 {
                     first = first?.commonAncestor(views.1!)
                 }
                 return first!
             })
-            
-            common = common.superview ?? common
             
             common.updateConstraints()
             common.layoutSubviews()
@@ -174,7 +172,7 @@ class AnimationBuilder: AnimationGroup {
         }
         
         buildState = .Resetting
-        
+                
         propertyInfos.applyFromValues()
         
         buildState = .Building
@@ -217,25 +215,19 @@ class AnimationBuilder: AnimationGroup {
     
     func build() {
         guard buildState == .Building else { return }
-        
         AnimationBuilder.builders.append(self)
-        
         buildState = .Collecting
-        
+        let enabled = UIView.areAnimationsEnabled()
+        UIView.setAnimationsEnabled(false)
         animation()
-        
         collectAnimations()
-        
+        UIView.setAnimationsEnabled(enabled)
         AnimationBuilder.builders.removeLast()
-        
     }
     
-    override func commitAnimation() {
-        
+    override func commit() {
         build()
-        
-        super.commitAnimation()
-        
+        super.commit()
     }
     
     override func completeAnimation(finished: Bool) {

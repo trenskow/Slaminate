@@ -23,7 +23,7 @@ class CurvedAnimation: CAKeyframeAnimation {
             }
             
             keyTimes.append(1.0)
-            values.append(toValue.interpolate(toValue, curve.block(1.0)).objectValue!)
+            values.append(fromValue.interpolate(toValue, curve.block(1.0)).objectValue!)
             
             self.keyTimes = keyTimes
             self.values = values

@@ -68,7 +68,7 @@ class DirectAnimation: ConcreteAnimation, PropertyAnimation {
         }
     }
     
-    override func commitAnimation() {
+    override func commit() {
         state = .Comited
         guard progressState.rawValue < AnimationProgressState.End.rawValue else { return }
         animationStart = NSDate()
@@ -77,7 +77,9 @@ class DirectAnimation: ConcreteAnimation, PropertyAnimation {
     }
     
     func completeAnimation() {
-        object.setValue(toValue as? NSObject, forKey: key)
+        if let fromValue = fromValue {
+            object.setValue((fromValue as! Interpolatable).interpolate(toValue as! Interpolatable, 1.0).objectValue!, forKey: key)
+        }
         progressState = .End
         displayLink?.invalidate()
         displayLink = nil
@@ -116,7 +118,7 @@ class DirectAnimation: ConcreteAnimation, PropertyAnimation {
             
         } else if let fromValue = fromValue {
             progressState = .Beginning
-            object.setValue(fromValue as? NSObject, forKey: key)
+            object.setValue((fromValue as! Interpolatable).interpolate(toValue as! Interpolatable, 0.0).objectValue!, forKey: key)
         }
         
     }

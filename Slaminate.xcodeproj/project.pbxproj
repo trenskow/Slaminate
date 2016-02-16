@@ -66,8 +66,8 @@
 		A1117A811C6EE73A006828D7 /* Animation Builder */ = {
 			isa = PBXGroup;
 			children = (
-				A18F35251C6938B2005D2343 /* PropertyInfo.swift */,
 				A1EF9F2A1C6B47820045AE18 /* ConstraintPresenceInfo.swift */,
+				A18F35251C6938B2005D2343 /* PropertyInfo.swift */,
 				A113ACEB1C692C5200C3EDBB /* AnimationBuilder.swift */,
 				A113ACE91C692BFC00C3EDBB /* NSObject+Swizzle.swift */,
 			);

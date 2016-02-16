@@ -51,7 +51,7 @@ class LayerAnimation: DirectAnimation {
         self.layer = object as! CALayer
         super.init(duration: duration, delay: delay, object: object, key: key, toValue: toValue, curve: curve)
     }
-    
+        
     override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
         animation?.delegate = nil
         _finished = flag
@@ -73,13 +73,13 @@ class LayerAnimation: DirectAnimation {
         
         layer.addAnimation(animation!, forKey: "animation_\(key)")
         
-        object.setValue((fromValue as! Interpolatable).interpolate(toValue as! Interpolatable, curve.block(1.0)).objectValue!, forKey: key)
-        
         progressState = .InProgress
+        
+        object.setValue((fromValue as! Interpolatable).interpolate(toValue as! Interpolatable, curve.block(1.0)).objectValue!, forKey: key)
         
     }
     
-    override func commitAnimation() {
+    override func commit() {
         state = .Comited
         guard progressState.rawValue < AnimationProgressState.End.rawValue else { return }
         if (delay - position) > 0.0 {

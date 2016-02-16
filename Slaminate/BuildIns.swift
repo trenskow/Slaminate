@@ -12,13 +12,11 @@ import UIKit
     
     private weak var view: UIView?
     private var hide: Bool
-    private var duration: NSTimeInterval
     private var curve: Curve
+    private var duration: NSTimeInterval
     private var delay: NSTimeInterval
-    private var completion: CompletionHandler?
     
-    private var animationGroup: AnimationGroup!
-    
+    private var animationGroup: AnimationGroup
     public var animation: Animation { return animationGroup }
     
     internal init(view: UIView, hide: Bool, duration: NSTimeInterval, curve: Curve?, delay: NSTimeInterval, completion: CompletionHandler?) {
@@ -27,45 +25,42 @@ import UIKit
         self.duration = duration
         self.curve = curve ?? Curve.linear
         self.delay = delay
-        self.completion = completion
-        super.init()
-        self.performSelector(Selector("fade"), withObject: nil, afterDelay: 0.0)
         self.animationGroup = AnimationGroup(completion: completion)
+        super.init()
+        self.performSelector(Selector("fade"), withObject: nil, afterDelay: 0.0, inModes: [NSRunLoopCommonModes])
+        self.animation.and(animation: LayerAnimation(
+            duration: self.duration,
+            delay: self.delay,
+            object: view.layer,
+            key: "hidden",
+            fromValue: false,
+            toValue: true,
+            curve: Curve(block: { t in
+                return self.hide ? (t == 1.0 ? 1.0 : 0.0) : 0.0
+            })
+        ))
     }
     
     private func cancelFade() {
         NSObject.cancelPreviousPerformRequestsWithTarget(self)
     }
     
-    public func fade() -> BuildIns {
+    public var fade: Void -> BuildIns {
         cancelFade()
-        if let view = self.view where view.hidden != hide {
-            animation.and(animations:
-                [
-                    LayerAnimation(
-                        duration: duration,
-                        delay: delay,
-                        object: view.layer,
-                        key: "opacity",
-                        fromValue: hide ? 1.0 : 0.0,
-                        toValue: hide ? 0.0 : 1.0,
-                        curve: curve
-                    ),
-                    LayerAnimation(
-                        duration: duration,
-                        delay: delay,
-                        object: view.layer,
-                        key: "hidden",
-                        fromValue: false,
-                        toValue: true,
-                        curve: Curve(block: { t in
-                            return t == (self.hide ? 1.0 : 0.0) ? 1.0 : 0.0
-                        })
-                    )
-                ]
-            )
+        return {
+            if let view = self.view where view.hidden != self.hide {
+                self.animation.and(animation: LayerAnimation(
+                    duration: self.duration,
+                    delay: self.delay,
+                    object: view.layer,
+                    key: "opacity",
+                    fromValue: self.hide ? 1.0 : 0.0,
+                    toValue: self.hide ? 0.0 : 1.0,
+                    curve: self.curve
+                ))
+            }
+            return self
         }
-        return self
     }
     
     @objc public enum MoveDirection: Int {
@@ -75,76 +70,85 @@ import UIKit
         case Left
     }
     
-    public func move(direction: MoveDirection = .Top, fromOutsideViewBounds viewBounds: UIView? = nil) -> BuildIns {
+    public var move: (direction: MoveDirection, fromOutsideViewBounds: UIView?) -> BuildIns {
         cancelFade()
-        let animation = AnimationGroup(animations: [], completion: completion)
-        if let view = view, superlayer = view.layer.superlayer where view.hidden != hide {
-            let edges = UIEdgeInsets(
-                top: view.layer.bounds.size.height * view.layer.anchorPoint.y,
-                left: view.layer.bounds.size.width * view.layer.anchorPoint.x,
-                bottom: view.layer.bounds.size.height * (1.0 - view.layer.anchorPoint.y),
-                right: view.layer.bounds.size.width * (1.0 - view.layer.anchorPoint.x)
-            )
-            let layerBounds = (viewBounds ?? view).layer
-            let bounds = superlayer.convertRect(layerBounds.bounds, fromLayer: layerBounds)
-            let originalPosition = view.layer.position
-            var fromValue = view.layer.position
-            var toValue: CGPoint
-            switch direction {
-            case .Top:
-                toValue = CGPoint(
-                    x: view.layer.position.x,
-                    y: bounds.origin.y - edges.bottom
+        return { (direction, viewBounds) in
+            if let view = self.view, superlayer = view.layer.superlayer where view.hidden != self.hide {
+                let edges = UIEdgeInsets(
+                    top: view.layer.bounds.size.height * view.layer.anchorPoint.y,
+                    left: view.layer.bounds.size.width * view.layer.anchorPoint.x,
+                    bottom: view.layer.bounds.size.height * (1.0 - view.layer.anchorPoint.y),
+                    right: view.layer.bounds.size.width * (1.0 - view.layer.anchorPoint.x)
                 )
-            case .Right:
-                toValue = CGPoint(
-                    x: bounds.origin.x - edges.left,
-                    y: view.layer.position.y
-                )
-            case .Bottom:
-                toValue = CGPoint(
-                    x: view.layer.position.x,
-                    y: bounds.origin.y + bounds.size.height + edges.top
-                )
-            case .Left:
-                toValue = CGPoint(
-                    x: bounds.origin.x + bounds.size.width + edges.right,
-                    y: view.layer.position.y
-                )
-            }
-            if !hide { swap(&fromValue, &toValue) }
-            animation.and(animations:
-                [
-                    LayerAnimation(
-                        duration: duration,
-                        delay: delay,
-                        object: view.layer,
-                        key: "position",
-                        fromValue: fromValue,
-                        toValue: toValue,
-                        curve: curve
-                    ),
-                    LayerAnimation(
-                        duration: duration,
-                        delay: delay,
-                        object: view.layer,
-                        key: "hidden",
-                        fromValue: false,
-                        toValue: true,
-                        curve: Curve(block: { t in
-                            return t == (self.hide ? 1.0 : 0.0) ? 1.0 : 0.0
-                        })
+                let layerBounds = (viewBounds ?? view).layer
+                let bounds = superlayer.convertRect(layerBounds.bounds, fromLayer: layerBounds)
+                let originalPosition = view.layer.position
+                var fromValue = view.layer.position
+                var toValue: CGPoint
+                switch direction {
+                case .Top:
+                    toValue = CGPoint(
+                        x: view.layer.position.x,
+                        y: bounds.origin.y - edges.bottom
                     )
-                ]
-            )
-            animation.on(.Begin, then: { _ in
-                view.layer.position = originalPosition
-            })
-            animation.on(.End, then: { _ in
-                view.layer.position = originalPosition
-            })
+                case .Right:
+                    toValue = CGPoint(
+                        x: bounds.origin.x - edges.left,
+                        y: view.layer.position.y
+                    )
+                case .Bottom:
+                    toValue = CGPoint(
+                        x: view.layer.position.x,
+                        y: bounds.origin.y + bounds.size.height + edges.top
+                    )
+                case .Left:
+                    toValue = CGPoint(
+                        x: bounds.origin.x + bounds.size.width + edges.right,
+                        y: view.layer.position.y
+                    )
+                }
+                if !self.hide { swap(&fromValue, &toValue) }
+                self.animation.and(animation: LayerAnimation(
+                    duration: self.duration,
+                    delay: self.delay,
+                    object: view.layer,
+                    key: "position",
+                    fromValue: fromValue,
+                    toValue: toValue,
+                    curve: self.curve
+                ))
+                self.animation.on(.Begin, then: { _ in
+                    view.layer.position = originalPosition
+                })
+                self.animation.on(.End, then: { _ in
+                    view.layer.position = originalPosition
+                })
+            }
+            return self
         }
-        return self
+    }
+    
+    public var pop: Void -> BuildIns {
+        cancelFade()
+        return {
+            if let view = self.view where view.hidden != self.hide {
+                var fromValue: CGFloat = 0.9
+                var toValue: CGFloat = 1.0
+                if self.hide {
+                    swap(&fromValue, &toValue)
+                }
+                self.animation.and(animation: LayerAnimation(
+                    duration: self.duration,
+                    delay: self.delay,
+                    object: view.layer,
+                    key: "transform.scale",
+                    fromValue: fromValue,
+                    toValue: toValue,
+                    curve: self.curve)
+                );
+            }
+            return self;
+        }
     }
     
 }
