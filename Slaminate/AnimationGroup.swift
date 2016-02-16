@@ -6,7 +6,7 @@
 //  Copyright © 2016 Trenskow.io. All rights reserved.
 //
 
-class AnimationGroup: ConcreteAnimation, AnimationDelegate {
+class AnimationGroup: ConcreteAnimation {
     
     var completion: (Bool -> Void)?
     
@@ -24,7 +24,7 @@ class AnimationGroup: ConcreteAnimation, AnimationDelegate {
         self.animations = animations ?? []
         self.completion = completion
         super.init()
-        animations.forEach({ $0.delegate = self })
+        animations.forEach({ $0.owner = self })
     }
     
     override var progressState: AnimationProgressState {
@@ -66,24 +66,21 @@ class AnimationGroup: ConcreteAnimation, AnimationDelegate {
         }
     }
     
-    override func commitAnimation() {
+    override func commit() {
         state = .Comited
         guard progressState.rawValue < AnimationProgressState.End.rawValue else { return }
-        let nonCompleteAnimations = animations.filter { $0.progressState != .End }
+        let nonCompleteAnimations = animations.map({ $0 as! ConcreteAnimation }).filter { $0.progressState != .End }
         if nonCompleteAnimations.count > 0 {
-            animations.forEach { ($0 as! ConcreteAnimation).commitAnimation() }
+            animations.forEach { $0.commit() }
         } else {
             completeAnimation(true)
         }
     }
     
     override func and(animations animations: [Animation]) -> Animation {
-        animations.forEach { animation in
-            animation.postpone()
-            if let animation = animation as? DelegatedAnimation {
-                self.animations.append(animation)
-                animation.delegate = self
-            }
+        animations.map({ $0 as! DelegatedAnimation }).forEach { animation in
+            self.animations.append(animation)
+            animation.owner = self
         }
         return self
     }

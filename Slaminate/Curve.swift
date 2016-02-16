@@ -163,38 +163,60 @@ public class Curve : NSObject {
     
 }
 
+private let cp0 = CGPoint(x: 0.0, y: 0.0)
+private let cp3 = CGPoint(x: 1.0, y: 1.0)
+
 extension Curve {
     
-    public convenience init(controlPoints: [CGPoint]) {
-        assert(controlPoints.count > 1, "controlPoints must have at least two points.")
+    private static func evaluateAtParameterWithCoefficients(t: CGFloat, coefficients: [CGFloat]) -> CGFloat {
+        return coefficients[0] + t * coefficients[1] + t * t * coefficients[2] + t * t * t * coefficients[3]
+    }
+    
+    private static func evaluateDerivationAtParameterWithCoefficients(t: CGFloat, coefficients: [CGFloat]) -> CGFloat {
+        return coefficients[1] + 2 * t * coefficients[2] + 3 * t * t * coefficients[3]
+    }
+    
+    private static func calcParameterViaNewtonRaphsonUsingXAndCoefficientsForX(x: CGFloat, coefficientX: [CGFloat]) -> CGFloat {
+        
+        var t: CGFloat = x
+        for _ in 0..<10 {
+            let x2 = evaluateAtParameterWithCoefficients(t, coefficients: coefficientX) - x
+            let d = evaluateDerivationAtParameterWithCoefficients(t, coefficients: coefficientX)
+            let dt = x2 / d
+            t -= dt
+        }
+        return !t.isNaN ? t : 1.0
+    }
+    
+    public convenience init(cp1: CGPoint, cp2: CGPoint) {
+        let coefficientsX = [
+            cp0.x,
+            -3.0 * cp0.x + 3.0 * cp1.x,
+            3.0 * cp0.x - 6.0 * cp1.x + 3.0 * cp2.x,
+            -cp0.x + 3.0 * cp1.x - 3.0 * cp2.x + cp3.x
+        ]
+        let coefficientsY = [
+            cp0.y,
+            -3.0 * cp0.y + 3.0 * cp1.y,
+            3.0 * cp0.y - 6.0 * cp1.y + 3.0 * cp2.y,
+            -cp0.y + 3.0 * cp1.y - 3.0 * cp2.y + cp3.y
+        ]
         self.init(block: { position in
-            var points = controlPoints
-            while points.count > 1 {
-                var newPoints = [CGPoint]()
-                for idx in 0..<points.count - 1 {
-                    newPoints.append(
-                        CGPoint(
-                            x: points[idx].x.interpolate(points[idx+1].x, position) as! CGFloat,
-                            y: points[idx].y.interpolate(points[idx+1].y, position) as! CGFloat
-                        )
-                    )
-                }
-                points = newPoints
-            }
-            return Double(points.first!.y)
+            let t = Curve.calcParameterViaNewtonRaphsonUsingXAndCoefficientsForX(CGFloat(position), coefficientX: coefficientsX);
+            return Double(Curve.evaluateAtParameterWithCoefficients(t, coefficients: coefficientsY))
         })
     }
     
     public convenience init(mediaTimingFunction: String) {
         switch mediaTimingFunction {
         case kCAMediaTimingFunctionDefault:
-            self.init(controlPoints: [CGPoint(), CGPoint(x: 0.25, y: 0.0), CGPoint(x: 0.25, y: 1.0)])
+            self.init(cp1: CGPoint(x: 0.25, y: 0.1), cp2: CGPoint(x: 0.25, y: 1.0))
         case kCAMediaTimingFunctionEaseIn:
-            self.init(controlPoints: [CGPoint(), CGPoint(x: 0.42, y: 0.0), CGPoint(x: 1.0, y: 1.0)])
+            self.init(cp1: CGPoint(x: 0.42, y: 0.0), cp2: CGPoint(x: 1.0, y: 1.0))
         case kCAMediaTimingFunctionEaseOut:
-            self.init(controlPoints: [CGPoint(), CGPoint(x: 0.0, y: 0.0), CGPoint(x: 0.58, y: 1.0)])
+            self.init(cp1: CGPoint(x: 0.0, y: 0.0), cp2: CGPoint(x: 0.58, y: 1.0))
         case kCAMediaTimingFunctionEaseInEaseOut:
-            self.init(controlPoints: [CGPoint(), CGPoint(x: 0.42, y: 0.0), CGPoint(x: 1.0, y: 1.0)])
+            self.init(cp1: CGPoint(x: 0.42, y: 0.0), cp2: CGPoint(x: 1.0, y: 1.0))
         default:
             self.init(block: { $0 })
         }

@@ -33,10 +33,6 @@ public typealias CompletionHandler = (finished: Bool) -> Void
     case End
 }
 
-class EventEmitter {
-    
-}
-
 @objc public enum AnimationEvent: Int {
     case Begin
     case End
@@ -60,18 +56,15 @@ A protocol representing an animation.
     func and(duration duration: NSTimeInterval, animation: Void -> Void, curve: Curve?, delay: NSTimeInterval, completion: CompletionHandler?) -> Animation
     func and(animation animation: Animation) -> Animation
     func and(animations animations: [Animation]) -> Animation
-    func begin()
-    func begin(reversed: Bool)
+    func go()
     func postpone() -> Animation
 }
 
-protocol AnimationDelegate: class {
-    func animation(animation: Animation, didCompleteWithFinishState finished: Bool)
-    func animation(animation: Animation, didChangeProgressState: AnimationProgressState)
-}
-
 protocol DelegatedAnimation: Animation {
-    weak var delegate: AnimationDelegate? { get set }
+    weak var owner: DelegatedAnimation? { get set }
+    func childAnimation(animation: Animation, didCompleteWithFinishState finished: Bool)
+    func childAnimation(animation: Animation, didChangeProgressState: AnimationProgressState)
+    func commit()
 }
 
 protocol PropertyAnimation: DelegatedAnimation {
@@ -93,13 +86,22 @@ extension Array where Element: Animation {
         return nil
     }
     mutating func remove(element: Element) {
-        if let index = indexOf(element) {
+        while let index = indexOf(element) {
             removeAtIndex(index)
         }
     }
 }
 
 extension NSObject {
+    public class func slaminate(duration duration: NSTimeInterval, animation: Void -> Void, curve: Curve? = nil, delay: NSTimeInterval = 0.0, completion: ((finished: Bool) -> Void)? = nil) -> Animation {
+        return AnimationBuilder(
+            duration: duration,
+            delay: delay,
+            animation: animation,
+            curve: curve,
+            completion: completion
+        )
+    }
     public func setValue(value: AnyObject?, forKey key: String, duration: NSTimeInterval, curve: Curve? = nil, delay: NSTimeInterval = 0.0, completion: ((finished: Bool) -> Void)? = nil) -> Animation {
         return slaminate(duration: duration, animation: { [weak self] in self?.setValue(value, forKey: key) }, curve: curve, delay: delay, completion: completion)
     }

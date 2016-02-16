@@ -8,7 +8,7 @@
 
 import Foundation
 
-class AnimationChain: ConcreteAnimation, AnimationDelegate {
+class AnimationChain: ConcreteAnimation {
     
     var animations: [DelegatedAnimation]
     
@@ -16,8 +16,7 @@ class AnimationChain: ConcreteAnimation, AnimationDelegate {
         self.animations = animations
         super.init()
         self.animations.forEach { (animation) -> () in
-            animation.delegate = self
-            animation.postpone()
+            animation.owner = self
         }
     }
     
@@ -51,7 +50,7 @@ class AnimationChain: ConcreteAnimation, AnimationDelegate {
         }
     }
     
-    override func commitAnimation() {
+    override func commit() {
         state = .Comited
         guard progressState.rawValue < AnimationProgressState.End.rawValue else { return }
         progressState = .InProgress
@@ -59,10 +58,8 @@ class AnimationChain: ConcreteAnimation, AnimationDelegate {
     }
     
     override func then(animations animations: [Animation]) -> Animation {
-        animations.forEach { animation in
-            let animation = animation as! DelegatedAnimation
-            animation.postpone()
-            animation.delegate = self
+        animations.map({ $0 as! DelegatedAnimation }).forEach { animation in
+            animation.owner = self
             self.animations.append(animation)
         }
         return self
@@ -70,7 +67,7 @@ class AnimationChain: ConcreteAnimation, AnimationDelegate {
     
     private func animateNext() {
         if let nextAnimation = animations.filter({ $0.progressState != .End }).first as? ConcreteAnimation {
-            nextAnimation.commitAnimation()
+            nextAnimation.commit()
         } else {
             progressState = .End
         }

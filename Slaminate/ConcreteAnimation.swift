@@ -22,6 +22,7 @@ class ConcreteAnimation: NSObject, DelegatedAnimation {
     
     override init() {
         super.init()
+        ongoingAnimations.append(self)
         begin()
     }
     
@@ -42,9 +43,9 @@ class ConcreteAnimation: NSObject, DelegatedAnimation {
     var progressState: AnimationProgressState = .Beginning {
         didSet {
             if progressState != oldValue {
-                delegate?.animation(self, didChangeProgressState: progressState)
+                owner?.childAnimation(self, didChangeProgressState: progressState)
                 if progressState == .End {
-                    delegate?.animation(self, didCompleteWithFinishState: finished)
+                    owner?.childAnimation(self, didCompleteWithFinishState: finished)
                     emit(.End)
                     ongoingAnimations.remove(self)
                 } else if oldValue == .Beginning && progressState == .InProgress || oldValue == .InProgress && progressState == .Beginning {
@@ -56,7 +57,14 @@ class ConcreteAnimation: NSObject, DelegatedAnimation {
     
     var state: AnimationState = .Waiting
     
-    weak var delegate: AnimationDelegate?
+    weak var owner: DelegatedAnimation? {
+        didSet {
+            if owner != nil {
+                ongoingAnimations.remove(self)
+                postpone()
+            }
+        }
+    }
     
     var eventListeners = [EventListener]()
     
@@ -93,7 +101,7 @@ class ConcreteAnimation: NSObject, DelegatedAnimation {
     }
     
     @objc func then(completion completion: CompletionHandler) -> Animation {
-        return AnimationGroup(animations: [self], completion: completion)
+        return AnimationChain(animations: [self, AnimationGroup(animations: [], completion: completion)])
     }
     
     @objc func and(duration duration: NSTimeInterval, animation: Void -> Void, curve: Curve?, delay: NSTimeInterval, completion: CompletionHandler?) -> Animation {
@@ -117,17 +125,23 @@ class ConcreteAnimation: NSObject, DelegatedAnimation {
         )
     }
     
+    func childAnimation(animation: Animation, didCompleteWithFinishState finished: Bool) {}
+    func childAnimation(animation: Animation, didChangeProgressState: AnimationProgressState) {}
+    
     func begin() {
         begin(false)
     }
     
     func begin(reversed: Bool) {
         
+        guard owner == nil else {
+            fatalError("Cannot begin a non-independent animation.")
+        }
+        
         postpone()
         
         if !reversed {
-            ongoingAnimations.append(self)
-            self.performSelector(Selector("commitAnimation"), withObject: nil, afterDelay: 0.0)
+            self.performSelector(Selector("go"), withObject: nil, afterDelay: 0.0, inModes: [NSRunLoopCommonModes])
         } else {
             _ = DirectAnimation(duration: position, delay: 0.0, object: self, key: "position", toValue: 0.0, curve: Curve.linear)
         }
@@ -135,15 +149,22 @@ class ConcreteAnimation: NSObject, DelegatedAnimation {
     }
     
     func postpone() -> Animation {
-        ongoingAnimations.remove(self)
         NSObject.cancelPreviousPerformRequestsWithTarget(
             self,
-            selector: Selector("commitAnimation"),
+            selector: Selector("go"),
             object: nil
         )
         return self
     }
     
-    func commitAnimation() {}
+    func go() {
+        guard owner == nil else {
+            owner?.go()
+            return
+        }
+        commit()
+    }
+    
+    func commit() {}
     
 }
