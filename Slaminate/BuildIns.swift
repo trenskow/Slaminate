@@ -179,7 +179,7 @@ import UIKit
                 ))
             
             // Fade by default
-            doFade = doFade ?? (!doFade && !doMove && !doPop)
+            doFade = doFade || (!doMove && !doPop)
             
             if doFade {
                 buildFade()
