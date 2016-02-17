@@ -181,11 +181,11 @@ class AnimationBuilder: AnimationGroup {
         
         buildState = .Building
         
-        var animations = [DelegatedAnimation]()
+        var animations = [Animation]()
         
         for propertyInfo in propertyInfos {
             
-            var animation: DelegatedAnimation?
+            var animation: Animation?
             
             if let value = propertyInfo.toValue {
                 

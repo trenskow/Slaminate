@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A1117A801C6EE08C006828D7 /* ConcreteAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1117A7F1C6EE08C006828D7 /* ConcreteAnimation.swift */; };
 		A1591B6C1C6B037D001687F6 /* Slaminate.h in Headers */ = {isa = PBXBuildFile; fileRef = A1D704431C664D14009F7C8F /* Slaminate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A1591B6D1C6B0381001687F6 /* Swizzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E954D1C689B5600C303CC /* Swizzle.swift */; };
 		A1591B6E1C6B0381001687F6 /* UIView+CommonAncestor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18F35231C69361C005D2343 /* UIView+CommonAncestor.swift */; };
@@ -29,7 +28,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		A1117A7F1C6EE08C006828D7 /* ConcreteAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConcreteAnimation.swift; sourceTree = "<group>"; };
 		A113ACE91C692BFC00C3EDBB /* NSObject+Swizzle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObject+Swizzle.swift"; sourceTree = "<group>"; };
 		A113ACEB1C692C5200C3EDBB /* AnimationBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationBuilder.swift; sourceTree = "<group>"; };
 		A14E954D1C689B5600C303CC /* Swizzle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Swizzle.swift; sourceTree = "<group>"; };
@@ -69,18 +67,19 @@
 				A1EF9F2A1C6B47820045AE18 /* ConstraintPresenceInfo.swift */,
 				A18F35251C6938B2005D2343 /* PropertyInfo.swift */,
 				A113ACEB1C692C5200C3EDBB /* AnimationBuilder.swift */,
-				A113ACE91C692BFC00C3EDBB /* NSObject+Swizzle.swift */,
 			);
 			name = "Animation Builder";
 			sourceTree = "<group>";
 		};
-		A1117A821C6EE747006828D7 /* Animation Group */ = {
+		A1117A821C6EE747006828D7 /* Animation Groups */ = {
 			isa = PBXGroup;
 			children = (
 				A1117A811C6EE73A006828D7 /* Animation Builder */,
 				A15402E81C665FA40035AB8C /* AnimationGroup.swift */,
+				A15C8F5F1C6C872500B2EB74 /* AnimationChain.swift */,
+				A165B2E61C70DDB200ADEB38 /* BuildIns.swift */,
 			);
-			name = "Animation Group";
+			name = "Animation Groups";
 			sourceTree = "<group>";
 		};
 		A1117A831C6EE74F006828D7 /* Property Animations */ = {
@@ -93,15 +92,14 @@
 			name = "Property Animations";
 			sourceTree = "<group>";
 		};
-		A1117A841C6EE763006828D7 /* Concrete Animations */ = {
+		A1117A841C6EE763006828D7 /* Animations */ = {
 			isa = PBXGroup;
 			children = (
-				A1117A821C6EE747006828D7 /* Animation Group */,
+				A1117A821C6EE747006828D7 /* Animation Groups */,
 				A1117A831C6EE74F006828D7 /* Property Animations */,
-				A15C8F5F1C6C872500B2EB74 /* AnimationChain.swift */,
-				A1117A7F1C6EE08C006828D7 /* ConcreteAnimation.swift */,
+				A1D704531C664D48009F7C8F /* Animation.swift */,
 			);
-			name = "Concrete Animations";
+			name = Animations;
 			sourceTree = "<group>";
 		};
 		A1117A851C6EE789006828D7 /* Layer animations */ = {
@@ -118,21 +116,19 @@
 			children = (
 				A14E954D1C689B5600C303CC /* Swizzle.swift */,
 				A18F35231C69361C005D2343 /* UIView+CommonAncestor.swift */,
+				A113ACE91C692BFC00C3EDBB /* NSObject+Swizzle.swift */,
 				A1FB7ACB1C6DF67D0078BD8B /* Array.swift */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
 		};
-		A1117A871C6EE804006828D7 /* Animations */ = {
+		A1AEACE01C74ADFA00EB7E82 /* Curves & Interpolation */ = {
 			isa = PBXGroup;
 			children = (
-				A1117A841C6EE763006828D7 /* Concrete Animations */,
 				A15402EA1C6662450035AB8C /* Interpolation.swift */,
 				A1D7045B1C664EC0009F7C8F /* Curve.swift */,
-				A1D704531C664D48009F7C8F /* Animation.swift */,
-				A165B2E61C70DDB200ADEB38 /* BuildIns.swift */,
 			);
-			name = Animations;
+			name = "Curves & Interpolation";
 			sourceTree = "<group>";
 		};
 		A1D704361C664D14009F7C8F = {
@@ -155,7 +151,8 @@
 			isa = PBXGroup;
 			children = (
 				A1117A861C6EE7F3006828D7 /* Helpers */,
-				A1117A871C6EE804006828D7 /* Animations */,
+				A1AEACE01C74ADFA00EB7E82 /* Curves & Interpolation */,
+				A1117A841C6EE763006828D7 /* Animations */,
 				A1D704431C664D14009F7C8F /* Slaminate.h */,
 				A1D704451C664D14009F7C8F /* Info.plist */,
 			);
@@ -255,7 +252,6 @@
 				A1591B741C6B0384001687F6 /* LayerAnimation.swift in Sources */,
 				A1591B6D1C6B0381001687F6 /* Swizzle.swift in Sources */,
 				A1591B6F1C6B0381001687F6 /* PropertyInfo.swift in Sources */,
-				A1117A801C6EE08C006828D7 /* ConcreteAnimation.swift in Sources */,
 				A1591B781C6B0384001687F6 /* Animation.swift in Sources */,
 				A1591B731C6B0384001687F6 /* Interpolation.swift in Sources */,
 				A1FB7ACE1C6DF8610078BD8B /* ConstraintConstantAnimation.swift in Sources */,

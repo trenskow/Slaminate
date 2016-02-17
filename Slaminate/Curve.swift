@@ -24,6 +24,7 @@ public class Curve : NSObject {
     internal let block: CurveBlock
     
     public static let boolean = Curve(block: { ($0 < 0.5 ? 0.0 : 1.0) })
+    public static let reversed = Curve(block: { 1.0 - $0 })
     
     public static let linear = Curve(block: { $0 } )
     

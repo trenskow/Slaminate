@@ -8,7 +8,7 @@
 
 import Foundation
 
-class DirectAnimation: ConcreteAnimation, PropertyAnimation {
+class DirectAnimation: Animation, PropertyAnimation {
     
     class func canAnimate(object: NSObject, key: String) -> Bool {
         guard object as? NSLayoutConstraint == nil else { return false }

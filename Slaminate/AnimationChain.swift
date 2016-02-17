@@ -8,11 +8,11 @@
 
 import Foundation
 
-class AnimationChain: ConcreteAnimation {
+public class AnimationChain: Animation {
     
-    var animations: [DelegatedAnimation]
+    var animations: [Animation]
     
-    init(animations: [DelegatedAnimation]) {
+    init(animations: [Animation]) {
         self.animations = animations
         super.init()
         self.animations.forEach { (animation) -> () in
@@ -57,8 +57,8 @@ class AnimationChain: ConcreteAnimation {
         animateNext()
     }
     
-    override func then(animations animations: [Animation]) -> Animation {
-        animations.map({ $0 as! DelegatedAnimation }).forEach { animation in
+    override public func then(animations animations: [Animation]) -> Animation {
+        animations.forEach { animation in
             animation.owner = self
             self.animations.append(animation)
         }
@@ -66,7 +66,7 @@ class AnimationChain: ConcreteAnimation {
     }
     
     private func animateNext() {
-        if let nextAnimation = animations.filter({ $0.progressState != .End }).first as? ConcreteAnimation {
+        if let nextAnimation = animations.filter({ $0.progressState != .End }).first {
             nextAnimation.commit()
         } else {
             progressState = .End
