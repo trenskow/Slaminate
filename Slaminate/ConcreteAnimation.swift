@@ -82,7 +82,7 @@ class ConcreteAnimation: NSObject, DelegatedAnimation {
         return self
     }
     
-    @objc func then(duration duration: NSTimeInterval, animation: Void -> Void, curve: Curve?, delay: NSTimeInterval, completion: ((finished: Bool) -> Void)?) -> Animation {
+    @objc func then(duration duration: NSTimeInterval, animation: Void -> Void, curve: Curve? = nil, delay: NSTimeInterval = 0.0, completion: ((finished: Bool) -> Void)? = nil) -> Animation {
         return then(animation: slaminate(
             duration: duration,
             animation: animation,
@@ -104,7 +104,7 @@ class ConcreteAnimation: NSObject, DelegatedAnimation {
         return AnimationChain(animations: [self, AnimationGroup(animations: [], completion: completion)])
     }
     
-    @objc func and(duration duration: NSTimeInterval, animation: Void -> Void, curve: Curve?, delay: NSTimeInterval, completion: CompletionHandler?) -> Animation {
+    @objc func and(duration duration: NSTimeInterval, animation: Void -> Void, curve: Curve? = nil, delay: NSTimeInterval = 0.0, completion: CompletionHandler? = nil) -> Animation {
         return and(animation: slaminate(
             duration: duration,
             animation: animation,

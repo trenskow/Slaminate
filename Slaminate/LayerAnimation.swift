@@ -51,7 +51,11 @@ class LayerAnimation: DirectAnimation {
         self.layer = object as! CALayer
         super.init(duration: duration, delay: delay, object: object, key: key, toValue: toValue, curve: curve)
     }
-        
+    
+    override func animationDidStart(anim: CAAnimation) {
+        object.setValue((fromValue as! Interpolatable).interpolate(toValue as! Interpolatable, curve.block(1.0)).objectValue!, forKey: key)
+    }
+    
     override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
         animation?.delegate = nil
         _finished = flag
@@ -74,8 +78,6 @@ class LayerAnimation: DirectAnimation {
         layer.addAnimation(animation!, forKey: "animation_\(key)")
         
         progressState = .InProgress
-        
-        object.setValue((fromValue as! Interpolatable).interpolate(toValue as! Interpolatable, curve.block(1.0)).objectValue!, forKey: key)
         
     }
     

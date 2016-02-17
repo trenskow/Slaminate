@@ -114,7 +114,7 @@ class AnimationBuilder: AnimationGroup {
         if key == "constant" {
             setObjectFromToValue(object, key: key, fromValue: fromValue, toValue: toValue)
         }
-        
+
     }
     
     func addConstraintPresence(view: UIView, constraint: NSLayoutConstraint, added: Bool) {
@@ -150,13 +150,17 @@ class AnimationBuilder: AnimationGroup {
         
         if let first = views.first {
             
-            let common = views.reduce(first.1 != nil ? first.0.commonAncestor(first.1!)! : first.0, combine: { (c, views) -> UIView in
+            var common = views.reduce(first.1 != nil ? first.0.commonAncestor(first.1!)! : first.0, combine: { (c, views) -> UIView in
                 var first = c.commonAncestor(views.0)
                 if let _ = views.1 {
                     first = first?.commonAncestor(views.1!)
                 }
                 return first!
             })
+            
+            if let superview = common.superview where superview as? UIWindow == nil {
+                common = superview
+            }
             
             common.updateConstraints()
             common.layoutSubviews()
