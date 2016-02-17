@@ -15,8 +15,6 @@ private struct EventListener {
     var then: Animation -> Void
 }
 
-public typealias CompletionHandler = (finished: Bool) -> Void
-
 @objc public enum AnimationState: Int {
     case Waiting = 0
     case Comited
@@ -29,9 +27,11 @@ public typealias CompletionHandler = (finished: Bool) -> Void
 }
 
 @objc public enum AnimationEvent: Int {
-    case Begin
-    case End
+    case Begun
+    case Completed
 }
+
+public typealias CompletionHandler = (finished: Bool) -> Void
 
 /*!
 A protocol representing an animation.
@@ -44,7 +44,7 @@ A protocol representing an animation.
         begin()
     }
     
-    @objc(isFinished) var finished: Bool { return false }
+    @objc(isFinished) public var finished: Bool { return false }
     
     var duration: NSTimeInterval { return 0.0 }
     var delay: NSTimeInterval { return 0.0 }
@@ -69,10 +69,10 @@ A protocol representing an animation.
                 owner?.childAnimation(self, didChangeProgressState: progressState)
                 if progressState == .End {
                     owner?.childAnimation(self, didCompleteWithFinishState: finished)
-                    emit(.End)
+                    emit(.Completed)
                     ongoingAnimations.remove(self)
                 } else if oldValue == .Beginning && progressState == .InProgress || oldValue == .InProgress && progressState == .Beginning {
-                    emit(.Begin)
+                    emit(.Begun)
                 }
             }
         }
@@ -99,7 +99,7 @@ A protocol representing an animation.
         eventListeners.filter({ $0.event == event }).forEach({ $0.then(self) })
     }
     
-    @objc func on(event: AnimationEvent, then: Animation -> Void) -> Animation {
+    @objc public func on(event: AnimationEvent, then: Animation -> Void) -> Animation {
         eventListeners.append(
             EventListener(
                 event: event,
@@ -108,14 +108,13 @@ A protocol representing an animation.
         )
         return self
     }
-        
-    public func then(duration duration: NSTimeInterval, animation: Void -> Void, curve: Curve?, delay: NSTimeInterval, completion: CompletionHandler?) -> Animation {
+    
+    public func then(duration duration: NSTimeInterval, animation: Void -> Void, curve: Curve?, delay: NSTimeInterval) -> Animation {
         return then(animation: AnimationBuilder(
             duration: duration,
             delay: delay,
-            animation: animation,
             curve: curve,
-            completion: completion
+            animation: animation
             )
         )
     }
@@ -128,20 +127,15 @@ A protocol representing an animation.
         return AnimationChain(animations: [self] + animations)
     }
     
-    public func then(completion completion: CompletionHandler) -> Animation {
-        return AnimationGroup(animations: [self], completion: completion)
-    }
-    
-    public func and(duration duration: NSTimeInterval, animation: Void -> Void, curve: Curve?, delay: NSTimeInterval, completion: CompletionHandler?) -> Animation {
+    public func and(duration duration: NSTimeInterval, animation: Void -> Void, curve: Curve?, delay: NSTimeInterval) -> Animation {
         return AnimationChain(
             animations: [
                 self,
                 AnimationBuilder(
                     duration: duration,
                     delay: delay,
-                    animation: animation,
                     curve: curve,
-                    completion: completion
+                    animation: animation
                 )
             ]
         )
@@ -152,10 +146,7 @@ A protocol representing an animation.
     }
     
     public func and(animations animations: [Animation]) -> Animation {
-        return AnimationGroup(
-            animations: [self] + animations,
-            completion: nil
-        )
+        return AnimationGroup(animations: [self] + animations)
     }
     
     func begin() {
@@ -223,16 +214,15 @@ extension Array where Element: Animation {
 }
 
 extension NSObject {
-    public class func slaminate(duration duration: NSTimeInterval, animation: Void -> Void, curve: Curve? = nil, delay: NSTimeInterval = 0.0, completion: ((finished: Bool) -> Void)? = nil) -> Animation {
+    public class func slaminate(duration duration: NSTimeInterval, curve: Curve? = nil, delay: NSTimeInterval = 0.0, animation: Void -> Void) -> Animation {
         return AnimationBuilder(
             duration: duration,
             delay: delay,
-            animation: animation,
             curve: curve,
-            completion: completion
+            animation: animation
         )
     }
-    public func setValue(value: AnyObject?, forKey key: String, duration: NSTimeInterval, curve: Curve? = nil, delay: NSTimeInterval = 0.0, completion: ((finished: Bool) -> Void)? = nil) -> Animation {
-        return NSObject.slaminate(duration: duration, animation: { [weak self] in self?.setValue(value, forKey: key) }, curve: curve, delay: delay, completion: completion)
+    public func setValue(value: AnyObject?, forKey key: String, duration: NSTimeInterval, curve: Curve? = nil, delay: NSTimeInterval = 0.0) -> Animation {
+        return NSObject.slaminate(duration: duration, curve: curve, delay: delay, animation: { [weak self] in self?.setValue(value, forKey: key) })
     }
 }

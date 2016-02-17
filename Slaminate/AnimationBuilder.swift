@@ -48,9 +48,9 @@ class AnimationBuilder: AnimationGroup {
     let animation: Void -> Void
     var curve: Curve?
     
-    init(duration: NSTimeInterval, delay: NSTimeInterval, animation: Void -> Void, curve: Curve?, completion: ((finished: Bool) -> Void)?) {
+    init(duration: NSTimeInterval, delay: NSTimeInterval, curve: Curve?, animation: Void -> Void) {
         self.animation = animation
-        super.init(animations: [], completion: completion)
+        super.init(animations: [])
         self._duration = duration
         self._delay = delay
         self.curve = curve

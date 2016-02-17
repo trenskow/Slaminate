@@ -25,13 +25,13 @@ import UIKit
     
     private var build: Bool = false
     
-    internal init(view: UIView, hide: Bool, duration: NSTimeInterval, curve: Curve?, delay: NSTimeInterval, completion: CompletionHandler?) {
+    internal init(view: UIView, hide: Bool, duration: NSTimeInterval, curve: Curve?, delay: NSTimeInterval) {
         self.view = view
         self.hide = hide
         self._duration = duration
         self.curve = curve ?? Curve.linear
         self._delay = delay
-        super.init(animations: [], completion: completion)
+        super.init(animations: [])
     }
     
     public var fade: Void -> BuildIns {
@@ -123,10 +123,10 @@ import UIKit
                 toValue: toValue,
                 curve: self.curve
             ))
-            self.on(.Begin, then: { _ in
+            self.on(.Begun, then: { _ in
                 view.layer.position = originalPosition
             })
-            self.on(.End, then: { _ in
+            self.on(.Completed, then: { _ in
                 view.layer.position = originalPosition
             })
         }
@@ -188,13 +188,13 @@ import UIKit
 }
 
 extension UIView {
-    public func setHidden(hidden: Bool, duration: NSTimeInterval, curve: Curve? = nil, delay: NSTimeInterval = 0.0, completion: CompletionHandler? = nil) -> BuildIns {
-        return BuildIns(view: self, hide: hidden, duration: duration, curve: curve, delay: delay, completion: completion)
+    public func setHidden(hidden: Bool, duration: NSTimeInterval, curve: Curve? = nil, delay: NSTimeInterval = 0.0) -> BuildIns {
+        return BuildIns(view: self, hide: hidden, duration: duration, curve: curve, delay: delay)
     }
-    public func show(duration: NSTimeInterval, curve: Curve? = nil, delay: NSTimeInterval = 0.0, completion: CompletionHandler? = nil) -> BuildIns {
-        return setHidden(false, duration: duration, curve: curve, delay: delay, completion: completion)
+    public func show(duration: NSTimeInterval, curve: Curve? = nil, delay: NSTimeInterval = 0.0) -> BuildIns {
+        return setHidden(false, duration: duration, curve: curve, delay: delay)
     }
-    public func hide(duration: NSTimeInterval, curve: Curve? = nil, delay: NSTimeInterval = 0.0, completion: CompletionHandler? = nil) -> BuildIns {
-        return setHidden(true, duration: duration, curve: curve, delay: delay, completion: completion)
+    public func hide(duration: NSTimeInterval, curve: Curve? = nil, delay: NSTimeInterval = 0.0) -> BuildIns {
+        return setHidden(true, duration: duration, curve: curve, delay: delay)
     }
 }

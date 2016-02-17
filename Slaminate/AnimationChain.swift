@@ -34,7 +34,7 @@ public class AnimationChain: Animation {
         }
     }
     
-    @objc override var finished: Bool {
+    @objc override public var finished: Bool {
         @objc(isFinished) get {
             return self.animations.all({ $0.finished && $0.progressState == .End })
         }

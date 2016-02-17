@@ -8,31 +8,16 @@
 
 public class AnimationGroup: Animation {
     
-    var completion: (Bool -> Void)?
-    
     override convenience init() {
-        self.init(animations: [], completion: nil)
+        self.init(animations: [])
     }
     
-    convenience init(completion: ((finished: Bool) -> Void)?) {
-        self.init(animations: [], completion: completion)
-    }
-        
     private var animations: [Animation]
     
-    init(animations: [Animation], completion: ((finished: Bool) -> Void)?) {
+    init(animations: [Animation]) {
         self.animations = animations ?? []
-        self.completion = completion
         super.init()
         animations.forEach({ $0.owner = self })
-    }
-    
-    override var progressState: AnimationProgressState {
-        didSet {
-            if let completion = completion where progressState != oldValue && progressState == .End {
-                completion(finished)
-            }
-        }
     }
     
     override var position: NSTimeInterval {
@@ -43,7 +28,7 @@ public class AnimationGroup: Animation {
         }
     }
     
-    @objc(isFinished) override var finished: Bool {
+    @objc(isFinished) override public var finished: Bool {
         return animations.reduce(true, combine: { (c, animation) -> Bool in
             return c && animation.finished
         })
