@@ -23,7 +23,7 @@ import UIKit
     private var moveDirection: MoveDirection = .Top
     private var moveViewBounds: UIView?
     
-    private var build: Bool = false
+    private var isBuild: Bool = false
     
     internal init(view: UIView, hide: Bool, duration: NSTimeInterval, curve: Curve?, delay: NSTimeInterval) {
         self.view = view
@@ -32,6 +32,14 @@ import UIKit
         self.curve = curve ?? Curve.linear
         self._delay = delay
         super.init(animations: [])
+    }
+    
+    override var position: NSTimeInterval {
+        didSet {
+            if position > 0.0 {
+                build()
+            }
+        }
     }
     
     public var fade: Void -> BuildIns {
@@ -151,11 +159,12 @@ import UIKit
         }
     }
     
-    override func commit() {
-        if let view = view where !build {
-            
-            build = true
-            
+    private func build() {
+        guard !isBuild else { return }
+        
+        isBuild = true
+        
+        if let view = view {
             // We need to hide no matter what.
             self.and(animation: LayerAnimation(
                 duration: self._duration,
@@ -167,7 +176,7 @@ import UIKit
                 curve: Curve(block: { t in
                     return self.hide ? (t == 1.0 ? 1.0 : 0.0) : 0.0
                 })
-            ))
+                ))
             
             // Fade by default
             doFade = doFade ?? (!doFade && !doMove && !doPop)
@@ -182,6 +191,10 @@ import UIKit
                 buildPop()
             }
         }
+    }
+    
+    override func commit() {
+        build()
         super.commit()
     }
     

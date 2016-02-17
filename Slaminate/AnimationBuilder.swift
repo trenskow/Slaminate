@@ -55,7 +55,7 @@ class AnimationBuilder: AnimationGroup {
         self._delay = delay
         self.curve = curve
     }
-        
+    
     override var position: NSTimeInterval {
         didSet {
             if position > 0.0 {
