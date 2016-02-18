@@ -26,7 +26,7 @@ public class AnimationBuildIns: AnimationGroup {
     
     private var isBuild: Bool = false
     
-    internal init(view: UIView, hide: Bool, duration: NSTimeInterval, curve: Curve?, delay: NSTimeInterval) {
+    init(view: UIView, hide: Bool, duration: NSTimeInterval, curve: Curve?, delay: NSTimeInterval) {
         self.view = view
         self.hide = hide
         self._duration = duration

@@ -8,19 +8,19 @@
 
 import Foundation
 
-internal var ongoingAnimations = [Animation]()
+var ongoingAnimations = [Animation]()
 
 private struct EventListener {
     var event: AnimationEvent
     var then: Animation -> Void
 }
 
-@objc public enum AnimationState: Int {
+enum AnimationState: Int {
     case Waiting = 0
     case Comited
 }
 
-@objc public enum AnimationProgressState: Int {
+enum AnimationProgressState: Int {
     case Beginning = 0
     case InProgress
     case End
@@ -33,9 +33,6 @@ private struct EventListener {
 
 public typealias CompletionHandler = (finished: Bool) -> Void
 
-/*!
-A protocol representing an animation.
-*/
 @objc(SLAAnimation)
 public class Animation: NSObject {
     
@@ -81,7 +78,7 @@ public class Animation: NSObject {
     
     var state: AnimationState = .Waiting
     
-    internal weak var owner: Animation? {
+    weak var owner: Animation? {
         didSet {
             if owner != nil {
                 ongoingAnimations.remove(self)
@@ -90,9 +87,9 @@ public class Animation: NSObject {
         }
     }
     
-    internal func childAnimation(animation: Animation, didCompleteWithFinishState finished: Bool) {}
-    internal func childAnimation(animation: Animation, didChangeProgressState: AnimationProgressState) {}
-    internal func commit() {}
+    func childAnimation(animation: Animation, didCompleteWithFinishState finished: Bool) {}
+    func childAnimation(animation: Animation, didChangeProgressState: AnimationProgressState) {}
+    func commit() {}
     
     private var eventListeners = [EventListener]()
     
@@ -233,6 +230,6 @@ extension NSObject {
         )
     }
     public func setValue(value: AnyObject?, forKey key: String, duration: NSTimeInterval, curve: Curve? = nil, delay: NSTimeInterval = 0.0) -> Animation {
-        return NSObject.slaminate(duration: duration, curve: curve, delay: delay, animation: { [weak self] in self?.setValue(value, forKey: key) })
+        return slaminate(duration: duration, curve: curve, delay: delay, animation: { [weak self] in self?.setValue(value, forKey: key) })
     }
 }

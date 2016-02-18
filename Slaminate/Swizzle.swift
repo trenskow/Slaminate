@@ -6,13 +6,13 @@
 //  Copyright © 2016 Trenskow.io. All rights reserved.
 //
 
-internal protocol MethodInfo {
+protocol MethodInfo {
     var method: Method { get }
     var implementation: IMP { get }
     init(cls: AnyClass, selector: Selector);
 }
 
-internal struct InstanceMethod: MethodInfo {
+struct InstanceMethod: MethodInfo {
     var method: Method
     var implementation: IMP
     init(cls: AnyClass, selector: Selector) {
@@ -21,7 +21,7 @@ internal struct InstanceMethod: MethodInfo {
     }
 }
 
-internal struct ClassMethod: MethodInfo {
+struct ClassMethod: MethodInfo {
     var method: Method
     var implementation: IMP
     init(cls: AnyClass, selector: Selector) {
@@ -30,11 +30,11 @@ internal struct ClassMethod: MethodInfo {
     }
 }
 
-internal protocol Swizzled {
+protocol Swizzled {
     var enabled: Bool { get set }
 }
 
-internal struct Swizzle<T where T: MethodInfo>: Swizzled {
+struct Swizzle<T where T: MethodInfo>: Swizzled {
     var foundation: MethodInfo
     var slaminate: MethodInfo
     init(cls: AnyClass, _ selectorName: String) {

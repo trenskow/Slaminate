@@ -71,7 +71,7 @@ public class AnimationGroup: Animation {
         return self
     }
     
-    internal func completeAnimation(finished: Bool) {
+    func completeAnimation(finished: Bool) {
         self.progressState = .End
     }
     

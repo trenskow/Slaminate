@@ -12,7 +12,7 @@ extension NSObject {
     
     private static var instanceSwizzles:[InstanceSwizzle]!
     
-    internal static var swizzled = false {
+    static var swizzled = false {
         didSet {
             if instanceSwizzles == nil {
                 instanceSwizzles = [

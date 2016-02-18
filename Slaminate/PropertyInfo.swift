@@ -8,7 +8,7 @@
 
 import Foundation
 
-internal protocol PropertyInfoProtocol: Equatable, Hashable {
+protocol PropertyInfoProtocol: Equatable, Hashable {
     var object: NSObject { get set }
     var key: String { get set }
     var fromValue: NSObject? { get set }
@@ -38,7 +38,7 @@ func ==<T: PropertyInfoProtocol>(lhs: T, rhs: (NSObject, String)) -> Bool {
     return lhs.object == rhs.0 && lhs.key == rhs.1
 }
 
-internal struct PropertyInfo: PropertyInfoProtocol {
+struct PropertyInfo: PropertyInfoProtocol {
     var object: NSObject
     var key: String
     var fromValue: NSObject?

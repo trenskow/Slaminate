@@ -54,7 +54,7 @@ class DirectAnimation: Animation, PropertyAnimation {
         self._delay = delay
     }
     
-    internal convenience init(duration: NSTimeInterval, delay: NSTimeInterval, object: NSObject, key: String, fromValue: Any, toValue: Any, curve: Curve) {
+    convenience init(duration: NSTimeInterval, delay: NSTimeInterval, object: NSObject, key: String, fromValue: Any, toValue: Any, curve: Curve) {
         self.init(duration: duration, delay: delay, object: object, key: key, toValue: toValue, curve: curve)
         self.fromValue = fromValue
         self.fromValueIsConcrete = true
