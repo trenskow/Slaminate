@@ -19,6 +19,7 @@ private func combineInOut(inCurve: Curve, _ outCurve: Curve) -> Curve {
     })
 }
 
+@objc(SLACurve)
 public class Curve : NSObject {
     
     internal let block: CurveBlock

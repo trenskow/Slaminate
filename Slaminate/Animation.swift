@@ -36,7 +36,8 @@ public typealias CompletionHandler = (finished: Bool) -> Void
 /*!
 A protocol representing an animation.
 */
-@objc public class Animation: NSObject {
+@objc(SLAAnimation)
+public class Animation: NSObject {
     
     override init() {
         super.init()
@@ -46,10 +47,10 @@ A protocol representing an animation.
     
     @objc(isFinished) public var finished: Bool { return false }
     
-    var duration: NSTimeInterval { return 0.0 }
-    var delay: NSTimeInterval { return 0.0 }
+    public var duration: NSTimeInterval { return 0.0 }
+    public var delay: NSTimeInterval { return 0.0 }
     
-    @objc var position: NSTimeInterval = 0.0 {
+    @objc public var position: NSTimeInterval = 0.0 {
         didSet {
             if position != oldValue {
                 if position <= 0.0 {
@@ -99,7 +100,7 @@ A protocol representing an animation.
         eventListeners.filter({ $0.event == event }).forEach({ $0.then(self) })
     }
     
-    @objc public func on(event: AnimationEvent, then: Animation -> Void) -> Animation {
+    @objc public func on(event: AnimationEvent, then: (animation: Animation) -> Void) -> Animation {
         eventListeners.append(
             EventListener(
                 event: event,
@@ -109,7 +110,7 @@ A protocol representing an animation.
         return self
     }
     
-    public func then(duration duration: NSTimeInterval, animation: Void -> Void, curve: Curve?, delay: NSTimeInterval) -> Animation {
+    public func then(duration duration: NSTimeInterval, curve: Curve?, delay: NSTimeInterval, animation: Void -> Void) -> Animation {
         return then(animation: AnimationBuilder(
             duration: duration,
             delay: delay,
@@ -127,7 +128,7 @@ A protocol representing an animation.
         return AnimationChain(animations: [self] + animations)
     }
     
-    public func and(duration duration: NSTimeInterval, animation: Void -> Void, curve: Curve?, delay: NSTimeInterval) -> Animation {
+    public func and(duration duration: NSTimeInterval, curve: Curve?, delay: NSTimeInterval, animation: Void -> Void) -> Animation {
         return AnimationChain(
             animations: [
                 self,
@@ -211,6 +212,15 @@ extension Array where Element: Animation {
             removeAtIndex(index)
         }
     }
+}
+
+public func slaminate(duration duration: NSTimeInterval, curve: Curve?, delay: NSTimeInterval = 0.0, animation: Void -> Void) -> Animation {
+    return AnimationBuilder(
+        duration: duration,
+        delay: delay,
+        curve: curve,
+        animation: animation
+    )
 }
 
 extension NSObject {

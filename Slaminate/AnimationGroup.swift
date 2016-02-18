@@ -6,21 +6,22 @@
 //  Copyright © 2016 Trenskow.io. All rights reserved.
 //
 
+@objc(SLAAnimationGroup)
 public class AnimationGroup: Animation {
-    
-    override convenience init() {
-        self.init(animations: [])
-    }
     
     private var animations: [Animation]
     
-    init(animations: [Animation]) {
+    public init(animations: [Animation]) {
         self.animations = animations ?? []
         super.init()
         animations.forEach({ $0.owner = self })
     }
     
-    override var position: NSTimeInterval {
+    override public convenience init() {
+        self.init(animations: [])
+    }
+    
+    override public var position: NSTimeInterval {
         didSet {
             animations.forEach({ (animation) in
                 animation.position = max(0.0, min(animation.delay + animation.duration, position))
@@ -34,7 +35,7 @@ public class AnimationGroup: Animation {
         })
     }
     
-    override var duration: NSTimeInterval {
+    override public var duration: NSTimeInterval {
         get {
             return animations.reduce(0.0) { (c, animation) -> NSTimeInterval in
                 return max(c, animation.delay + animation.duration)
@@ -42,7 +43,7 @@ public class AnimationGroup: Animation {
         }
     }
     
-    override var delay: NSTimeInterval {
+    override public var delay: NSTimeInterval {
         get {
             guard animations.count > 0 else { return 0.0 }
             return animations.reduce(NSTimeInterval.infinity, combine: { (c, animation) -> NSTimeInterval in

@@ -8,6 +8,7 @@
 
 import Foundation
 
+@objc(SLAAnimationChain)
 public class AnimationChain: Animation {
     
     var animations: [Animation]
@@ -20,7 +21,7 @@ public class AnimationChain: Animation {
         }
     }
     
-    @objc override var duration: NSTimeInterval {
+    @objc override public var duration: NSTimeInterval {
         get {
             return self.animations.reduce(0.0, combine: { (c, animation) -> NSTimeInterval in
                 return c + animation.delay + animation.duration
@@ -28,7 +29,7 @@ public class AnimationChain: Animation {
         }
     }
     
-    @objc override var delay: NSTimeInterval {
+    @objc override public var delay: NSTimeInterval {
         get {
             return 0.0
         }
@@ -40,7 +41,7 @@ public class AnimationChain: Animation {
         }
     }
     
-    override var position: NSTimeInterval {
+    override public var position: NSTimeInterval {
         didSet {
             var total = 0.0
             animations.forEach { (animation) in

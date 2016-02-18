@@ -8,7 +8,8 @@
 
 import UIKit
 
-@objc public class BuildIns: AnimationGroup {
+@objc(SLAAnimationBuildIns)
+public class AnimationBuildIns: AnimationGroup {
     
     private weak var view: UIView?
     private var hide: Bool
@@ -34,7 +35,7 @@ import UIKit
         super.init(animations: [])
     }
     
-    override var position: NSTimeInterval {
+    override public var position: NSTimeInterval {
         didSet {
             if position > 0.0 {
                 build()
@@ -42,7 +43,7 @@ import UIKit
         }
     }
     
-    public var fade: Void -> BuildIns {
+    public var fade: Void -> AnimationBuildIns {
         return {
             self.doFade = true
             return self
@@ -56,7 +57,7 @@ import UIKit
         case Left
     }
     
-    public var move: (direction: MoveDirection, fromOutsideViewBounds: UIView?) -> BuildIns {
+    public var move: (direction: MoveDirection, fromOutsideViewBounds: UIView?) -> AnimationBuildIns {
         return { (direction, viewBounds) in
             self.doMove = true
             self.moveDirection = direction
@@ -65,7 +66,7 @@ import UIKit
         }
     }
     
-    public var pop: Void -> BuildIns {
+    public var pop: Void -> AnimationBuildIns {
         return {
             self.doPop = true
             return self
@@ -201,13 +202,13 @@ import UIKit
 }
 
 extension UIView {
-    public func setHidden(hidden: Bool, duration: NSTimeInterval, curve: Curve? = nil, delay: NSTimeInterval = 0.0) -> BuildIns {
-        return BuildIns(view: self, hide: hidden, duration: duration, curve: curve, delay: delay)
+    public func setHidden(hidden: Bool, duration: NSTimeInterval, curve: Curve? = nil, delay: NSTimeInterval = 0.0) -> AnimationBuildIns {
+        return AnimationBuildIns(view: self, hide: hidden, duration: duration, curve: curve, delay: delay)
     }
-    public func show(duration: NSTimeInterval, curve: Curve? = nil, delay: NSTimeInterval = 0.0) -> BuildIns {
+    public func show(duration: NSTimeInterval, curve: Curve? = nil, delay: NSTimeInterval = 0.0) -> AnimationBuildIns {
         return setHidden(false, duration: duration, curve: curve, delay: delay)
     }
-    public func hide(duration: NSTimeInterval, curve: Curve? = nil, delay: NSTimeInterval = 0.0) -> BuildIns {
+    public func hide(duration: NSTimeInterval, curve: Curve? = nil, delay: NSTimeInterval = 0.0) -> AnimationBuildIns {
         return setHidden(true, duration: duration, curve: curve, delay: delay)
     }
 }
