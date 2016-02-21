@@ -17,13 +17,9 @@ private struct EventListener {
 
 enum AnimationState: Int {
     case Waiting = 0
-    case Comited
-}
-
-enum AnimationProgressState: Int {
-    case Beginning = 0
-    case InProgress
-    case End
+    case Delayed
+    case Animating
+    case Complete
 }
 
 @objc public enum AnimationEvent: Int {
@@ -36,45 +32,19 @@ public typealias CompletionHandler = (finished: Bool) -> Void
 @objc(SLAAnimation)
 public class Animation: NSObject {
     
-    override init() {
+    init(delay: NSTimeInterval = 0.0) {
+        self.delay = delay
         super.init()
         ongoingAnimations.append(self)
-        begin()
+        performSelector(Selector("go"), withObject: nil, afterDelay: 0.0, inModes: [NSRunLoopCommonModes])
     }
     
-    @objc(isFinished) public var finished: Bool { return false }
+    @objc(isFinished) public var finished: Bool = false
     
     public var duration: NSTimeInterval { return 0.0 }
-    public var delay: NSTimeInterval { return 0.0 }
+    public var delay: NSTimeInterval = 0.0
     
-    @objc public var position: NSTimeInterval = 0.0 {
-        didSet {
-            if position != oldValue {
-                if position <= 0.0 {
-                    progressState = .Beginning
-                } else if position > 0.0 && position < delay + duration {
-                    progressState = .InProgress
-                } else {
-                    progressState = .End
-                }
-            }
-        }
-    }
-    
-    var progressState: AnimationProgressState = .Beginning {
-        didSet {
-            if progressState != oldValue {
-                owner?.childAnimation(self, didChangeProgressState: progressState)
-                if progressState == .End {
-                    owner?.childAnimation(self, didCompleteWithFinishState: finished)
-                    emit(.Completed)
-                    ongoingAnimations.remove(self)
-                } else if oldValue == .Beginning && progressState == .InProgress || oldValue == .InProgress && progressState == .Beginning {
-                    emit(.Begun)
-                }
-            }
-        }
-    }
+    @objc public var position: NSTimeInterval = 0.0
     
     var state: AnimationState = .Waiting
     
@@ -88,8 +58,6 @@ public class Animation: NSObject {
     }
     
     func childAnimation(animation: Animation, didCompleteWithFinishState finished: Bool) {}
-    func childAnimation(animation: Animation, didChangeProgressState: AnimationProgressState) {}
-    func commit() {}
     
     private var eventListeners = [EventListener]()
     
@@ -147,26 +115,6 @@ public class Animation: NSObject {
         return AnimationGroup(animations: [self] + animations)
     }
     
-    func begin() {
-        begin(false)
-    }
-    
-    func begin(reversed: Bool) {
-        
-        guard owner == nil else {
-            fatalError("Cannot begin a non-independent animation.")
-        }
-        
-        postpone()
-        
-        if !reversed {
-            self.performSelector(Selector("go"), withObject: nil, afterDelay: 0.0, inModes: [NSRunLoopCommonModes])
-        } else {
-            _ = DirectAnimation(duration: position, delay: 0.0, object: self, key: "position", toValue: 0.0, curve: Curve.linear)
-        }
-        
-    }
-    
     public func postpone() -> Animation {
         NSObject.cancelPreviousPerformRequestsWithTarget(
             self,
@@ -176,12 +124,39 @@ public class Animation: NSObject {
         return self
     }
     
-    public func go() {
-        guard owner == nil else {
-            owner?.go()
-            return
-        }
+    func complete(finished: Bool) {
+        self.finished = finished
+        state = .Complete
+        emit(.Completed)
+        owner?.childAnimation(self, didCompleteWithFinishState: finished)
+    }
+    
+    func commit() {}
+    
+    func precommit() {
+        state = .Animating
+        emit(.Begun)
         commit()
+    }
+    
+    func preflight() {
+        if delay - position > 0.0 {
+            state = .Delayed
+            performSelector(Selector("precommit"), withObject: nil, afterDelay: delay - position, inModes: [NSRunLoopCommonModes])
+        } else {
+            precommit()
+        }
+    }
+    
+    public func begin() {
+        preflight()
+    }
+    
+    public func go() -> Animation {
+        guard owner == nil else { return owner!.go() }
+        guard state == .Waiting else { fatalError("Cannot start an animation that is already started.") }
+        begin()
+        return self
     }
     
 }

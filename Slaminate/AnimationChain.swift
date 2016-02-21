@@ -28,19 +28,7 @@ public class AnimationChain: Animation {
             })
         }
     }
-    
-    @objc override public var delay: NSTimeInterval {
-        get {
-            return 0.0
-        }
-    }
-    
-    @objc override public var finished: Bool {
-        @objc(isFinished) get {
-            return self.animations.all({ $0.finished && $0.progressState == .End })
-        }
-    }
-    
+        
     override public var position: NSTimeInterval {
         didSet {
             var total = 0.0
@@ -52,9 +40,6 @@ public class AnimationChain: Animation {
     }
     
     override func commit() {
-        state = .Comited
-        guard progressState.rawValue < AnimationProgressState.End.rawValue else { return }
-        progressState = .InProgress
         animateNext()
     }
     
@@ -67,25 +52,16 @@ public class AnimationChain: Animation {
     }
     
     private func animateNext() {
-        if let nextAnimation = animations.filter({ $0.progressState != .End }).first {
-            nextAnimation.commit()
+        if let nextAnimation = animations.filter({ $0.state == .Waiting }).first {
+            nextAnimation.begin()
         } else {
-            progressState = .End
+            complete(animations.reduce(true, combine: { $0 && $1.finished }))
         }
     }
     
     override func childAnimation(animation: Animation, didCompleteWithFinishState finished: Bool) {
-        guard state == .Comited else { return }
+        guard state == .Animating else { return }
         animateNext()
-    }
-    
-    override func childAnimation(animation: Animation, didChangeProgressState: AnimationProgressState) {
-        if animations.count == 0 || animations.first?.progressState == .Beginning {
-            progressState = .Beginning
-        } else if animations.last?.progressState == .End {
-            progressState = .End
-        }
-        progressState = .InProgress
     }
     
 }

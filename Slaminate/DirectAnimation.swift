@@ -26,21 +26,19 @@ class DirectAnimation: Animation, PropertyAnimation {
     var animationStart: NSDate?
     var displayLink: CADisplayLink?
     
-    var _finished: Bool = false
     var _duration: NSTimeInterval = 0.0
-    var _delay: NSTimeInterval = 0.0
     
-    @objc(isFinished) override var finished: Bool { return _finished }
     override var duration: NSTimeInterval { return _duration }
-    override var delay: NSTimeInterval { return _delay }
     
-    override var progressState: AnimationProgressState {
+    override var position: NSTimeInterval {
         didSet {
-            if progressState != oldValue {
-                if !fromValueIsConcrete && progressState == .Beginning {
+            guard position != oldValue else { return }
+            if position == 0.0 && oldValue > 0.0 {
+                if !fromValueIsConcrete {
                     invalidatedFromValue = true
                 }
             }
+            update(position)
         }
     }
     
@@ -51,7 +49,7 @@ class DirectAnimation: Animation, PropertyAnimation {
         self.curve = curve
         super.init()
         self._duration = duration
-        self._delay = delay
+        self.delay = delay
     }
     
     convenience init(duration: NSTimeInterval, delay: NSTimeInterval, object: NSObject, key: String, fromValue: Any, toValue: Any, curve: Curve) {
@@ -60,42 +58,29 @@ class DirectAnimation: Animation, PropertyAnimation {
         self.fromValueIsConcrete = true
     }
     
-    override var position: NSTimeInterval {
-        didSet {
-            if position != oldValue {
-                update(position)
-            }
-        }
-    }
-    
     override func commit() {
-        state = .Comited
-        guard progressState.rawValue < AnimationProgressState.End.rawValue else { return }
         animationStart = NSDate()
         displayLink = CADisplayLink(target: self, selector: Selector("displayDidUpdate"))
         displayLink?.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSRunLoopCommonModes)
     }
     
-    func completeAnimation() {
+    override func complete(finished: Bool) {
         if let fromValue = fromValue {
             object.setValue((fromValue as! Interpolatable).interpolate(toValue as! Interpolatable, 1.0).objectValue!, forKey: key)
         }
-        progressState = .End
         displayLink?.invalidate()
         displayLink = nil
         animationStart = nil
-        _finished = true
+        super.complete(finished)
     }
     
     func update(progress: Double) {
         
-        if progress >= delay + duration {
-            completeAnimation()
+        if progress >= duration {
+            complete(true)
         }
         
-        else if progress >= delay {
-            
-            progressState = .InProgress
+        else if progress >= 0.0 {
             
             let position = (progress - delay) / duration
             
@@ -117,7 +102,6 @@ class DirectAnimation: Animation, PropertyAnimation {
             }
             
         } else if let fromValue = fromValue {
-            progressState = .Beginning
             object.setValue((fromValue as! Interpolatable).interpolate(toValue as! Interpolatable, 0.0).objectValue!, forKey: key)
         }
         

@@ -13,8 +13,7 @@ class ConstraintConstantAnimation: DirectAnimation {
     }
     
     override func commit() {
-        state = .Comited
-        completeAnimation()
+        complete(true)
     }
     
 }

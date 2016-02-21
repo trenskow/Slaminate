@@ -58,11 +58,10 @@ class LayerAnimation: DirectAnimation {
     
     override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
         animation?.delegate = nil
-        _finished = flag
-        progressState = .End
+        complete(flag)
     }
     
-    func startAnimation() {
+    override func commit() {
         
         fromValue = fromValue ?? object.valueForKey(key)
         
@@ -77,25 +76,6 @@ class LayerAnimation: DirectAnimation {
         
         layer.addAnimation(animation!, forKey: "animation_\(key)")
         
-        progressState = .InProgress
-        
-    }
-    
-    override func commit() {
-        state = .Comited
-        guard progressState.rawValue < AnimationProgressState.End.rawValue else { return }
-        if (delay - position) > 0.0 {
-            delayTimer = NSTimer(
-                timeInterval: delay - position,
-                target: self,
-                selector: Selector("startAnimation"),
-                userInfo: nil,
-                repeats: false
-            )
-            NSRunLoop.mainRunLoop().addTimer(delayTimer!, forMode: NSRunLoopCommonModes)
-        } else {
-            startAnimation()
-        }
     }
     
 }

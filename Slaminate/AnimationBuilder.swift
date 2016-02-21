@@ -22,10 +22,8 @@ class AnimationBuilder: AnimationGroup {
     }
     
     var _duration: NSTimeInterval = 0.0
-    var _delay: NSTimeInterval = 0.0
     
     override var duration: NSTimeInterval { return _duration }
-    override var delay: NSTimeInterval { return _delay }
     
     enum AnimationBuilderState {
         case Waiting
@@ -52,7 +50,7 @@ class AnimationBuilder: AnimationGroup {
         self.animation = animation
         super.init(animations: [])
         self._duration = duration
-        self._delay = delay
+        self.delay = delay
         self.curve = curve
     }
     
@@ -190,15 +188,15 @@ class AnimationBuilder: AnimationGroup {
             if let value = propertyInfo.toValue {
                 
                 if LayerAnimation.canAnimate(propertyInfo.object, key: propertyInfo.key) {
-                    animation = LayerAnimation(duration: duration, delay: delay, object: propertyInfo.object, key: propertyInfo.key, toValue: value, curve: curve ?? Curve.linear)
+                    animation = LayerAnimation(duration: duration, delay: 0.0, object: propertyInfo.object, key: propertyInfo.key, toValue: value, curve: curve ?? Curve.linear)
                 }
                 
                 else if ConstraintConstantAnimation.canAnimate(propertyInfo.object, key: propertyInfo.key) {
-                    animation = ConstraintConstantAnimation(duration: duration, delay: delay, object: propertyInfo.object, key: propertyInfo.key, toValue: value, curve: curve ?? Curve.linear)
+                    animation = ConstraintConstantAnimation(duration: duration, delay: 0.0, object: propertyInfo.object, key: propertyInfo.key, toValue: value, curve: curve ?? Curve.linear)
                 }
                     
                 else if DirectAnimation.canAnimate(propertyInfo.object, key: propertyInfo.key) {
-                    animation = DirectAnimation(duration: duration, delay: delay, object: propertyInfo.object, key: propertyInfo.key, toValue: value, curve: curve ?? Curve.linear)
+                    animation = DirectAnimation(duration: duration, delay: 0.0, object: propertyInfo.object, key: propertyInfo.key, toValue: value, curve: curve ?? Curve.linear)
                 }
                 
             }
@@ -234,10 +232,10 @@ class AnimationBuilder: AnimationGroup {
         super.commit()
     }
     
-    override func completeAnimation(finished: Bool) {
+    override func complete(finished: Bool) {
         constraintInfos.applyToValues()
         constraintPresenceInfos.applyPresent(true)
-        super.completeAnimation(finished)
+        super.complete(finished)
     }
     
 }

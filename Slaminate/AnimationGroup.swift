@@ -17,7 +17,7 @@ public class AnimationGroup: Animation {
         animations.forEach({ $0.owner = self })
     }
     
-    override public convenience init() {
+    public convenience init() {
         self.init(animations: [])
     }
     
@@ -29,12 +29,6 @@ public class AnimationGroup: Animation {
         }
     }
     
-    @objc(isFinished) override public var finished: Bool {
-        return animations.reduce(true, combine: { (c, animation) -> Bool in
-            return c && animation.finished
-        })
-    }
-    
     override public var duration: NSTimeInterval {
         get {
             return animations.reduce(0.0) { (c, animation) -> NSTimeInterval in
@@ -43,23 +37,12 @@ public class AnimationGroup: Animation {
         }
     }
     
-    override public var delay: NSTimeInterval {
-        get {
-            guard animations.count > 0 else { return 0.0 }
-            return animations.reduce(NSTimeInterval.infinity, combine: { (c, animation) -> NSTimeInterval in
-                return min(c, animation.delay)
-            })
-        }
-    }
-    
     override func commit() {
-        state = .Comited
-        guard progressState.rawValue < AnimationProgressState.End.rawValue else { return }
-        let nonCompleteAnimations = animations.filter { $0.progressState != .End }
+        let nonCompleteAnimations = animations.filter { $0.state == .Waiting }
         if nonCompleteAnimations.count > 0 {
-            animations.forEach { $0.commit() }
+            animations.forEach { $0.begin() }
         } else {
-            completeAnimation(true)
+            complete(true)
         }
     }
     
@@ -71,21 +54,14 @@ public class AnimationGroup: Animation {
         return self
     }
     
-    func completeAnimation(finished: Bool) {
-        self.progressState = .End
+    override func complete(finished: Bool) {
+        super.complete(finished)
     }
     
     override func childAnimation(animation: Animation, didCompleteWithFinishState finished: Bool) {
-        let finished = self.finished && finished
-        if animations.all({ $0.progressState == .End }) {
-            completeAnimation(finished)
+        if animations.all({ $0.state == .Complete }) {
+            complete(animations.reduce(true, combine: { $0 && $1.finished } ))
         }
-    }
-    
-    override func childAnimation(animation: Animation, didChangeProgressState: AnimationProgressState) {
-        progressState = AnimationProgressState(rawValue: animations.reduce(AnimationProgressState.End.rawValue, combine: { (c, animation) -> Int in
-            return min(c, animation.state.rawValue)
-        }))!
     }
     
 }
