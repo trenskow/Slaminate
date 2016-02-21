@@ -47,9 +47,9 @@ class LayerAnimation: DirectAnimation {
     
     var animation: CurvedAnimation?
     
-    required init(duration: NSTimeInterval, delay: NSTimeInterval, object: NSObject, key: String, toValue: Any, curve: Curve) {
+    required init(duration: NSTimeInterval, object: NSObject, key: String, toValue: Any, curve: Curve) {
         self.layer = object as! CALayer
-        super.init(duration: duration, delay: delay, object: object, key: key, toValue: toValue, curve: curve)
+        super.init(duration: duration, object: object, key: key, toValue: toValue, curve: curve)
     }
     
     override func animationDidStart(anim: CAAnimation) {
@@ -63,7 +63,7 @@ class LayerAnimation: DirectAnimation {
     
     override func commit() {
         
-        fromValue = fromValue ?? object.valueForKey(key)
+        fromValue = fromValue ?? (layer.presentationLayer() ?? layer).valueForKey(key)
         
         animation = CurvedAnimation(keyPath: key)
         animation?.duration = duration

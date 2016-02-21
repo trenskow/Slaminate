@@ -46,11 +46,10 @@ class AnimationBuilder: AnimationGroup {
     let animation: Void -> Void
     var curve: Curve?
     
-    init(duration: NSTimeInterval, delay: NSTimeInterval, curve: Curve?, animation: Void -> Void) {
+    init(duration: NSTimeInterval, curve: Curve?, animation: Void -> Void) {
         self.animation = animation
         super.init(animations: [])
         self._duration = duration
-        self.delay = delay
         self.curve = curve
     }
     
@@ -188,15 +187,15 @@ class AnimationBuilder: AnimationGroup {
             if let value = propertyInfo.toValue {
                 
                 if LayerAnimation.canAnimate(propertyInfo.object, key: propertyInfo.key) {
-                    animation = LayerAnimation(duration: duration, delay: 0.0, object: propertyInfo.object, key: propertyInfo.key, toValue: value, curve: curve ?? Curve.linear)
+                    animation = LayerAnimation(duration: duration, object: propertyInfo.object, key: propertyInfo.key, toValue: value, curve: curve ?? Curve.linear)
                 }
                 
                 else if ConstraintConstantAnimation.canAnimate(propertyInfo.object, key: propertyInfo.key) {
-                    animation = ConstraintConstantAnimation(duration: duration, delay: 0.0, object: propertyInfo.object, key: propertyInfo.key, toValue: value, curve: curve ?? Curve.linear)
+                    animation = ConstraintConstantAnimation(duration: duration, object: propertyInfo.object, key: propertyInfo.key, toValue: value, curve: curve ?? Curve.linear)
                 }
                     
                 else if DirectAnimation.canAnimate(propertyInfo.object, key: propertyInfo.key) {
-                    animation = DirectAnimation(duration: duration, delay: 0.0, object: propertyInfo.object, key: propertyInfo.key, toValue: value, curve: curve ?? Curve.linear)
+                    animation = DirectAnimation(duration: duration, object: propertyInfo.object, key: propertyInfo.key, toValue: value, curve: curve ?? Curve.linear)
                 }
                 
             }

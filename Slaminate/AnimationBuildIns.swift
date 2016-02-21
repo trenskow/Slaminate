@@ -15,7 +15,6 @@ public class AnimationBuildIns: AnimationGroup {
     private var hide: Bool
     private var curve: Curve
     private var _duration: NSTimeInterval
-    private var _delay: NSTimeInterval
     
     private var doFade: Bool = false
     private var doMove: Bool = false
@@ -31,7 +30,6 @@ public class AnimationBuildIns: AnimationGroup {
         self.hide = hide
         self._duration = duration
         self.curve = curve ?? Curve.linear
-        self._delay = delay
         super.init(animations: [])
     }
     
@@ -77,7 +75,6 @@ public class AnimationBuildIns: AnimationGroup {
         if let view = self.view where view.hidden != self.hide {
             self.and(animation: LayerAnimation(
                 duration: self._duration,
-                delay: self._delay,
                 object: view.layer,
                 key: "opacity",
                 fromValue: self.hide ? 1.0 : 0.0,
@@ -88,7 +85,7 @@ public class AnimationBuildIns: AnimationGroup {
     }
     
     private func buildMove() {
-        if let view = self.view, superlayer = view.layer.superlayer where view.hidden != self.hide {
+        if let view = self.view, superlayer = view.layer.superlayer where view.hidden != hide {
             let edges = UIEdgeInsets(
                 top: view.layer.bounds.size.height * view.layer.anchorPoint.y,
                 left: view.layer.bounds.size.width * view.layer.anchorPoint.x,
@@ -122,20 +119,19 @@ public class AnimationBuildIns: AnimationGroup {
                     y: view.layer.position.y
                 )
             }
-            if !self.hide { swap(&fromValue, &toValue) }
-            self.and(animation: LayerAnimation(
-                duration: self._duration,
-                delay: self._delay,
+            if !hide { swap(&fromValue, &toValue) }
+            and(animation: LayerAnimation(
+                duration: _duration,
                 object: view.layer,
                 key: "position",
                 fromValue: fromValue,
                 toValue: toValue,
-                curve: self.curve
+                curve: curve
             ))
-            self.on(.Begun, then: { _ in
+            completed({ (finished) -> Void in
                 view.layer.position = originalPosition
             })
-            self.on(.Completed, then: { _ in
+            started({
                 view.layer.position = originalPosition
             })
         }
@@ -150,7 +146,6 @@ public class AnimationBuildIns: AnimationGroup {
             }
             self.and(animation: LayerAnimation(
                 duration: self._duration,
-                delay: self._delay,
                 object: view.layer,
                 key: "transform.scale",
                 fromValue: fromValue,
@@ -169,7 +164,6 @@ public class AnimationBuildIns: AnimationGroup {
             // We need to hide no matter what.
             self.and(animation: LayerAnimation(
                 duration: self._duration,
-                delay: self._delay,
                 object: view.layer,
                 key: "hidden",
                 fromValue: false,

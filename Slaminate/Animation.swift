@@ -22,8 +22,8 @@ enum AnimationState: Int {
     case Complete
 }
 
-@objc public enum AnimationEvent: Int {
-    case Begun
+public enum AnimationEvent {
+    case Start
     case Completed
 }
 
@@ -32,8 +32,7 @@ public typealias CompletionHandler = (finished: Bool) -> Void
 @objc(SLAAnimation)
 public class Animation: NSObject {
     
-    init(delay: NSTimeInterval = 0.0) {
-        self.delay = delay
+    override init() {
         super.init()
         ongoingAnimations.append(self)
         performSelector(Selector("go"), withObject: nil, afterDelay: 0.0, inModes: [NSRunLoopCommonModes])
@@ -65,7 +64,7 @@ public class Animation: NSObject {
         eventListeners.filter({ $0.event == event }).forEach({ $0.then(self) })
     }
     
-    @objc public func on(event: AnimationEvent, then: (animation: Animation) -> Void) -> Animation {
+    private func on(event: AnimationEvent, then: (animation: Animation) -> Void) -> Animation {
         eventListeners.append(
             EventListener(
                 event: event,
@@ -75,10 +74,28 @@ public class Animation: NSObject {
         return self
     }
     
-    public func then(duration duration: NSTimeInterval, curve: Curve?, delay: NSTimeInterval, animation: Void -> Void) -> Animation {
+    public func completed(completion: (finished: Bool) -> Void) -> Animation {
+        on(.Completed) { [weak self] (animation) -> Void in
+            completion(finished: self?.finished ?? true)
+        }
+        return self
+    }
+    
+    public func started(closure: Void -> Void) -> Animation {
+        on(.Start) { (animation) -> Void in
+            closure()
+        }
+        return self
+    }
+    
+    public func delayed(delay: NSTimeInterval) -> Animation {
+        self.delay = delay
+        return self
+    }
+    
+    public func then(duration duration: NSTimeInterval, curve: Curve?, animation: Void -> Void) -> Animation {
         return then(animation: AnimationBuilder(
             duration: duration,
-            delay: delay,
             curve: curve,
             animation: animation
             )
@@ -93,13 +110,12 @@ public class Animation: NSObject {
         return AnimationChain(animations: [self] + animations)
     }
     
-    public func and(duration duration: NSTimeInterval, curve: Curve?, delay: NSTimeInterval, animation: Void -> Void) -> Animation {
+    public func and(duration duration: NSTimeInterval, curve: Curve?, animation: Void -> Void) -> Animation {
         return AnimationChain(
             animations: [
                 self,
                 AnimationBuilder(
                     duration: duration,
-                    delay: delay,
                     curve: curve,
                     animation: animation
                 )
@@ -123,7 +139,7 @@ public class Animation: NSObject {
         )
         return self
     }
-    
+        
     func complete(finished: Bool) {
         self.finished = finished
         state = .Complete
@@ -135,7 +151,7 @@ public class Animation: NSObject {
     
     func precommit() {
         state = .Animating
-        emit(.Begun)
+        emit(.Start)
         commit()
     }
     
@@ -155,6 +171,7 @@ public class Animation: NSObject {
     public func go() -> Animation {
         guard owner == nil else { return owner!.go() }
         guard state == .Waiting else { fatalError("Cannot start an animation that is already started.") }
+        postpone()
         begin()
         return self
     }
@@ -167,7 +184,7 @@ protocol PropertyAnimation {
     var key: String { get }
     var toValue: Any { get }
     var curve: Curve { get }
-    init(duration: NSTimeInterval, delay: NSTimeInterval, object: NSObject, key: String, toValue: Any, curve: Curve)
+    init(duration: NSTimeInterval, object: NSObject, key: String, toValue: Any, curve: Curve)
 }
 
 extension Array where Element: Animation {
@@ -186,25 +203,23 @@ extension Array where Element: Animation {
     }
 }
 
-public func slaminate(duration duration: NSTimeInterval, curve: Curve?, delay: NSTimeInterval = 0.0, animation: Void -> Void) -> Animation {
+public func Slaminate(duration duration: NSTimeInterval, curve: Curve?, animation: Void -> Void) -> Animation {
     return AnimationBuilder(
         duration: duration,
-        delay: delay,
         curve: curve,
         animation: animation
     )
 }
 
 extension NSObject {
-    public class func slaminate(duration duration: NSTimeInterval, curve: Curve? = nil, delay: NSTimeInterval = 0.0, animation: Void -> Void) -> Animation {
+    public class func slaminate(duration duration: NSTimeInterval, curve: Curve? = nil, animation: Void -> Void) -> Animation {
         return AnimationBuilder(
             duration: duration,
-            delay: delay,
             curve: curve,
             animation: animation
         )
     }
-    public func setValue(value: AnyObject?, forKey key: String, duration: NSTimeInterval, curve: Curve? = nil, delay: NSTimeInterval = 0.0) -> Animation {
-        return slaminate(duration: duration, curve: curve, delay: delay, animation: { [weak self] in self?.setValue(value, forKey: key) })
+    public func setValue(value: AnyObject?, forKey key: String, duration: NSTimeInterval, curve: Curve? = nil) -> Animation {
+        return Slaminate(duration: duration, curve: curve, animation: { [weak self] in self?.setValue(value, forKey: key) })
     }
 }

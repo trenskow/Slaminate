@@ -42,18 +42,17 @@ class DirectAnimation: Animation, PropertyAnimation {
         }
     }
     
-    required init(duration: NSTimeInterval, delay: NSTimeInterval, object: NSObject, key: String, toValue: Any, curve: Curve) {
+    required init(duration: NSTimeInterval, object: NSObject, key: String, toValue: Any, curve: Curve) {
         self.object = object
         self.key = key
         self.toValue = toValue
         self.curve = curve
         super.init()
         self._duration = duration
-        self.delay = delay
     }
     
-    convenience init(duration: NSTimeInterval, delay: NSTimeInterval, object: NSObject, key: String, fromValue: Any, toValue: Any, curve: Curve) {
-        self.init(duration: duration, delay: delay, object: object, key: key, toValue: toValue, curve: curve)
+    convenience init(duration: NSTimeInterval, object: NSObject, key: String, fromValue: Any, toValue: Any, curve: Curve) {
+        self.init(duration: duration, object: object, key: key, toValue: toValue, curve: curve)
         self.fromValue = fromValue
         self.fromValueIsConcrete = true
     }
@@ -65,9 +64,6 @@ class DirectAnimation: Animation, PropertyAnimation {
     }
     
     override func complete(finished: Bool) {
-        if let fromValue = fromValue {
-            object.setValue((fromValue as! Interpolatable).interpolate(toValue as! Interpolatable, 1.0).objectValue!, forKey: key)
-        }
         displayLink?.invalidate()
         displayLink = nil
         animationStart = nil
@@ -77,6 +73,7 @@ class DirectAnimation: Animation, PropertyAnimation {
     func update(progress: Double) {
         
         if progress >= duration {
+            object.setValue((fromValue as! Interpolatable).interpolate(toValue as! Interpolatable, 1.0).objectValue!, forKey: key)
             complete(true)
         }
         

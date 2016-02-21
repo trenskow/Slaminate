@@ -17,7 +17,7 @@ public class AnimationGroup: Animation {
         animations.forEach({ $0.owner = self })
     }
     
-    public convenience init() {
+    public convenience override init() {
         self.init(animations: [])
     }
     
