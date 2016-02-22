@@ -10,13 +10,6 @@ import Foundation
 
 var ongoingAnimations = [Animation]()
 
-enum AnimationState: Int {
-    case Waiting = 0
-    case Delayed
-    case Animating
-    case Complete
-}
-
 public func +(lhs: Animation, rhs: Animation) -> Animation {
     return lhs.and(animation: rhs)
 }
@@ -28,7 +21,8 @@ public func |(lhs: Animation, rhs: Animation) -> Animation {
 @objc(SLAAnimation)
 public class Animation: NSObject {
     
-    override init() {
+    init(duration: NSTimeInterval = 0.0) {
+        self.duration = duration
         super.init()
         ongoingAnimations.append(self)
         performSelector(Selector("go"), withObject: nil, afterDelay: 0.0, inModes: [NSRunLoopCommonModes])
@@ -36,12 +30,32 @@ public class Animation: NSObject {
     
     @objc(isFinished) public var finished: Bool = false
     
-    public var duration: NSTimeInterval { return 0.0 }
+    public var duration: NSTimeInterval
     public var delay: NSTimeInterval = 0.0
     
-    @objc public var position: NSTimeInterval = 0.0
+    private var _speed: Double = 1.0
+    var speed: Double {
+        get {
+            guard owner == nil else { return owner!.speed }
+            return _speed
+        }
+        set {
+            _speed = speed;
+        }
+    }
     
-    var state: AnimationState = .Waiting
+    var _position: NSTimeInterval = 0.0
+    @objc public var position: NSTimeInterval {
+        get { return _position }
+        set {
+            guard newValue != _position else { return }
+            setPosition(newValue, apply: true)
+        }
+    }
+    
+    func setPosition(position: NSTimeInterval, apply: Bool = false) {
+        _position = position
+    }
     
     weak var owner: Animation? {
         didSet {
@@ -102,7 +116,7 @@ public class Animation: NSObject {
     public func then(duration duration: NSTimeInterval, curve: Curve?, animation: Void -> Void) -> Animation {
         return then(animation: AnimationBuilder(
             duration: duration,
-            curve: curve,
+            curve: curve ?? Curve.linear,
             animation: animation
             )
         )
@@ -122,7 +136,7 @@ public class Animation: NSObject {
                 self,
                 AnimationBuilder(
                     duration: duration,
-                    curve: curve,
+                    curve: curve ?? Curve.linear,
                     animation: animation
                 )
             ]
@@ -148,7 +162,7 @@ public class Animation: NSObject {
         
     func complete(finished: Bool) {
         self.finished = finished
-        state = .Complete
+        setPosition(delay + duration)
         emit(.Completed)
         owner?.childAnimation(self, didCompleteWithFinishState: finished)
     }
@@ -156,15 +170,14 @@ public class Animation: NSObject {
     func commit() {}
     
     func precommit() {
-        state = .Animating
+        setPosition(max(_position, delay))
         emit(.Start)
         commit()
     }
     
     func preflight() {
         if delay - position > 0.0 {
-            state = .Delayed
-            performSelector(Selector("precommit"), withObject: nil, afterDelay: delay - position, inModes: [NSRunLoopCommonModes])
+            performSelector(Selector("precommit"), withObject: nil, afterDelay: (delay - position) / speed, inModes: [NSRunLoopCommonModes])
         } else {
             precommit()
         }
@@ -175,8 +188,12 @@ public class Animation: NSObject {
     }
     
     public func go() -> Animation {
-        guard owner == nil else { return owner!.go() }
-        guard state == .Waiting else { fatalError("Cannot start an animation that is already started.") }
+        return go(speed: 1.0)
+    }
+    
+    public func go(speed speed: Double) -> Animation {
+        guard owner == nil else { return owner!.go(speed: speed) }
+        _speed = speed
         postpone()
         begin()
         return self
@@ -203,7 +220,7 @@ extension Array where Element: Animation {
 public func Slaminate(duration duration: NSTimeInterval, curve: Curve?, animation: Void -> Void) -> Animation {
     return AnimationBuilder(
         duration: duration,
-        curve: curve,
+        curve: curve ?? Curve.linear,
         animation: animation
     )
 }
@@ -212,7 +229,7 @@ extension NSObject {
     public class func slaminate(duration duration: NSTimeInterval, curve: Curve? = nil, animation: Void -> Void) -> Animation {
         return AnimationBuilder(
             duration: duration,
-            curve: curve,
+            curve: curve ?? Curve.linear,
             animation: animation
         )
     }

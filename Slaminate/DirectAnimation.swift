@@ -26,20 +26,15 @@ class DirectAnimation: Animation, PropertyAnimation {
     var animationStart: NSDate?
     var displayLink: CADisplayLink?
     
-    var _duration: NSTimeInterval = 0.0
-    
-    override var duration: NSTimeInterval { return _duration }
-    
-    override var position: NSTimeInterval {
-        didSet {
-            guard position != oldValue else { return }
-            if position == 0.0 && oldValue > 0.0 {
-                if !fromValueIsConcrete {
-                    invalidatedFromValue = true
-                }
+    override func setPosition(position: NSTimeInterval, apply: Bool) {
+        defer { super.setPosition(position, apply: apply) }
+        guard apply else { return }
+        if position == 0.0 && _position > 0.0 {
+            if !fromValueIsConcrete {
+                invalidatedFromValue = true
             }
-            update(position)
         }
+        update(position - delay)
     }
     
     required init(duration: NSTimeInterval, object: NSObject, key: String, toValue: Any, curve: Curve) {
@@ -47,8 +42,7 @@ class DirectAnimation: Animation, PropertyAnimation {
         self.key = key
         self.toValue = toValue
         self.curve = curve
-        super.init()
-        self._duration = duration
+        super.init(duration: duration)
     }
     
     convenience init(duration: NSTimeInterval, object: NSObject, key: String, fromValue: Any, toValue: Any, curve: Curve) {
@@ -58,7 +52,7 @@ class DirectAnimation: Animation, PropertyAnimation {
     }
     
     override func commit() {
-        animationStart = NSDate()
+        animationStart = NSDate(timeIntervalSinceNow: -position + delay)
         displayLink = CADisplayLink(target: self, selector: Selector("displayDidUpdate"))
         displayLink?.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSRunLoopCommonModes)
     }
@@ -70,18 +64,18 @@ class DirectAnimation: Animation, PropertyAnimation {
         super.complete(finished)
     }
     
-    func update(progress: Double) {
+    func update(position: Double) {
         
-        if progress >= duration {
-            object.setValue((fromValue as! Interpolatable).interpolate(toValue as! Interpolatable, 1.0).objectValue!, forKey: key)
+        let position = position / duration * speed
+        
+        if position >= 1.0 {
+            object.setValue((fromValue as! Interpolatable).interpolate(toValue as! Interpolatable, curve.block(1.0)).objectValue!, forKey: key)
             complete(true)
         }
         
-        else if progress >= 0.0 {
+        else if position > 0.0 {
             
-            let position = (progress - delay) / duration
-            
-            if invalidatedFromValue && position > 0.0 {
+            if invalidatedFromValue {
                 fromValue = nil
                 invalidatedFromValue = false
             }
@@ -92,20 +86,20 @@ class DirectAnimation: Animation, PropertyAnimation {
                 object.setValue(
                     (fromValue as! Interpolatable).interpolate(
                         toValue as! Interpolatable,
-                        (curve ?? Curve.linear).block(position)
+                        curve.block(position)
                     ).objectValue,
                     forKey: key
                 )
             }
             
         } else if let fromValue = fromValue {
-            object.setValue((fromValue as! Interpolatable).interpolate(toValue as! Interpolatable, 0.0).objectValue!, forKey: key)
+            object.setValue((fromValue as! Interpolatable).interpolate(toValue as! Interpolatable, curve.block(0.0)).objectValue!, forKey: key)
         }
         
     }
     
     func displayDidUpdate() {
-        update(abs(animationStart?.timeIntervalSinceNow ?? 0.0) + position)
+        self.position = abs(animationStart?.timeIntervalSinceNow ?? 0.0) - delay
     }
     
 }

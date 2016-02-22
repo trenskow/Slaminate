@@ -21,10 +21,6 @@ class AnimationBuilder: AnimationGroup {
         return builders.last!
     }
     
-    var _duration: NSTimeInterval = 0.0
-    
-    override var duration: NSTimeInterval { return _duration }
-    
     enum AnimationBuilderState {
         case Waiting
         case Collecting
@@ -44,20 +40,27 @@ class AnimationBuilder: AnimationGroup {
     var constraintPresenceInfos = [ConstraintPresenceInfo]()
     
     let animation: Void -> Void
-    var curve: Curve?
+    var applyDuration: NSTimeInterval
+    var applyCurve: Curve
     
-    init(duration: NSTimeInterval, curve: Curve?, animation: Void -> Void) {
+    init(duration: NSTimeInterval, curve: Curve, animation: Void -> Void) {
         self.animation = animation
+        self.applyCurve = curve
+        self.applyDuration = duration
         super.init(animations: [])
-        self._duration = duration
-        self.curve = curve
     }
     
-    override var position: NSTimeInterval {
-        didSet {
-            if position > 0.0 {
-                build()
-            }
+    override var duration: NSTimeInterval {
+        get { return applyDuration }
+        set {
+            applyDuration = newValue
+            animations.forEach({ $0.duration = newValue })
+        }
+    }
+        
+    override func setPosition(position: NSTimeInterval, apply: Bool) {
+        if position > 0.0 {
+            build()
         }
     }
     
@@ -187,15 +190,15 @@ class AnimationBuilder: AnimationGroup {
             if let value = propertyInfo.toValue {
                 
                 if LayerAnimation.canAnimate(propertyInfo.object, key: propertyInfo.key) {
-                    animation = LayerAnimation(duration: duration, object: propertyInfo.object, key: propertyInfo.key, toValue: value, curve: curve ?? Curve.linear)
+                    animation = LayerAnimation(duration: applyDuration, object: propertyInfo.object, key: propertyInfo.key, toValue: value, curve: applyCurve ?? Curve.linear)
                 }
                 
                 else if ConstraintConstantAnimation.canAnimate(propertyInfo.object, key: propertyInfo.key) {
-                    animation = ConstraintConstantAnimation(duration: duration, object: propertyInfo.object, key: propertyInfo.key, toValue: value, curve: curve ?? Curve.linear)
+                    animation = ConstraintConstantAnimation(duration: applyDuration, object: propertyInfo.object, key: propertyInfo.key, toValue: value, curve: applyCurve ?? Curve.linear)
                 }
                     
                 else if DirectAnimation.canAnimate(propertyInfo.object, key: propertyInfo.key) {
-                    animation = DirectAnimation(duration: duration, object: propertyInfo.object, key: propertyInfo.key, toValue: value, curve: curve ?? Curve.linear)
+                    animation = DirectAnimation(duration: applyDuration, object: propertyInfo.object, key: propertyInfo.key, toValue: value, curve: applyCurve ?? Curve.linear)
                 }
                 
             }

@@ -9,7 +9,7 @@
 @objc(SLAAnimationGroup)
 public class AnimationGroup: Animation {
     
-    private var animations: [Animation]
+    var animations: [Animation]
     
     public init(animations: [Animation]) {
         self.animations = animations ?? []
@@ -17,28 +17,37 @@ public class AnimationGroup: Animation {
         animations.forEach({ $0.owner = self })
     }
     
-    public convenience override init() {
+    public convenience init() {
         self.init(animations: [])
     }
-    
-    override public var position: NSTimeInterval {
-        didSet {
-            animations.forEach({ (animation) in
-                animation.position = max(0.0, min(animation.delay + animation.duration, position))
-            })
-        }
+        
+    override func setPosition(position: NSTimeInterval, apply: Bool) {
+        defer { super.setPosition(position, apply: apply) }
+        guard apply else { return }
+        animations.forEach({ (animation) in
+            animation.position = max(0.0, min(animation.delay + animation.duration, position - delay))
+        })
     }
     
     override public var duration: NSTimeInterval {
         get {
             return animations.reduce(0.0) { (c, animation) -> NSTimeInterval in
                 return max(c, animation.delay + animation.duration)
-            } - delay
+            }
+        }
+        set {
+            let duration = self.duration
+            let delta = newValue - duration
+            animations.forEach { (animation) -> () in
+                let animationPart = (animation.delay + animation.duration) / duration
+                animation.delay += (delta * animationPart) * (animation.delay / (animation.delay + animation.duration))
+                animation.duration += (delta * animationPart) * (animation.duration / (animation.delay + animation.duration))
+            }
         }
     }
     
     override func commit() {
-        let nonCompleteAnimations = animations.filter { $0.state == .Waiting }
+        let nonCompleteAnimations = animations.filter { $0.position < 1.0 }
         if nonCompleteAnimations.count > 0 {
             animations.forEach { $0.begin() }
         } else {
@@ -47,6 +56,9 @@ public class AnimationGroup: Animation {
     }
     
     override public func and(animations animations: [Animation]) -> Animation {
+        guard !(self is AnimationBuilder) && !(self is AnimationBuildIns) else {
+            return super.and(animations: animations)
+        }
         animations.forEach { animation in
             self.animations.append(animation)
             animation.owner = self
@@ -59,7 +71,7 @@ public class AnimationGroup: Animation {
     }
     
     override func childAnimation(animation: Animation, didCompleteWithFinishState finished: Bool) {
-        if animations.all({ $0.state == .Complete }) {
+        if animations.all({ $0.position >= $0.delay + $0.duration }) {
             complete(animations.reduce(true, combine: { $0 && $1.finished } ))
         }
     }

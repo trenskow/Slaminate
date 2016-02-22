@@ -12,6 +12,7 @@ import Foundation
 public class AnimationChain: Animation {
     
     var animations: [Animation]
+    private var commited: Bool = false
     
     init(animations: [Animation]) {
         self.animations = animations
@@ -20,26 +21,36 @@ public class AnimationChain: Animation {
             animation.owner = self
         }
     }
-    
+        
     @objc override public var duration: NSTimeInterval {
         get {
             return self.animations.reduce(0.0, combine: { (c, animation) -> NSTimeInterval in
                 return c + animation.delay + animation.duration
             })
         }
+        set {
+            let duration = self.duration
+            let delta = newValue - duration
+            animations.forEach { (animation) -> () in
+                let animationPart = (animation.delay + animation.duration) / duration
+                animation.delay += (delta * animationPart) * (animation.delay / (animation.delay + animation.duration))
+                animation.duration += (delta * animationPart) * (animation.duration / (animation.delay + animation.duration))
+            }
+        }
     }
         
-    override public var position: NSTimeInterval {
-        didSet {
-            var total = 0.0
-            animations.forEach { (animation) in
-                animation.position = max(0.0, min(animation.delay + animation.duration, position - total - delay))
-                total += animation.delay + animation.duration
-            }
+    override func setPosition(position: NSTimeInterval, apply: Bool) {
+        defer { super.setPosition(position, apply: apply) }
+        guard apply else { return }
+        _ = animations.reduce(delay) { (total, animation) -> NSTimeInterval in
+            let full = animation.delay + animation.duration
+            animation.position = max(0.0, min(full, position - total))
+            return total + full
         }
     }
     
     override func commit() {
+        commited = true
         animateNext()
     }
     
@@ -52,7 +63,8 @@ public class AnimationChain: Animation {
     }
     
     private func animateNext() {
-        if let nextAnimation = animations.filter({ $0.state == .Waiting }).first {
+        guard commited else { return }
+        if let nextAnimation = animations.filter({ $0.position < $0.delay + $0.duration }).first {
             nextAnimation.begin()
         } else {
             complete(animations.reduce(true, combine: { $0 && $1.finished }))
@@ -60,7 +72,6 @@ public class AnimationChain: Animation {
     }
     
     override func childAnimation(animation: Animation, didCompleteWithFinishState finished: Bool) {
-        guard state == .Animating else { return }
         animateNext()
     }
     

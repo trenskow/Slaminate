@@ -71,6 +71,7 @@ class LayerAnimation: DirectAnimation {
         animation?.fromValue = fromValue as? Interpolatable
         animation?.toValue = toValue as? Interpolatable
         animation?.curve = curve
+        animation?.speed = Float(speed)
         animation?.delegate = self
         animation?.removedOnCompletion = true
         
