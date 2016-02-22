@@ -44,7 +44,7 @@ public class AnimationChain: Animation {
         guard apply else { return }
         _ = animations.reduce(delay) { (total, animation) -> NSTimeInterval in
             let full = animation.delay + animation.duration
-            animation.position = max(0.0, min(full, position - total))
+            animation.setPosition(max(0.0, min(full, position - total)), apply: apply)
             return total + full
         }
     }

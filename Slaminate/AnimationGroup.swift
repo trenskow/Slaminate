@@ -24,8 +24,11 @@ public class AnimationGroup: Animation {
     override func setPosition(position: NSTimeInterval, apply: Bool) {
         defer { super.setPosition(position, apply: apply) }
         guard apply else { return }
-        animations.forEach({ (animation) in
-            animation.position = max(0.0, min(animation.delay + animation.duration, position - delay))
+        animations.forEach({
+            $0.setPosition(
+                max(0.0, min($0.delay + $0.duration, position - delay)),
+                apply: apply
+            )
         })
     }
     

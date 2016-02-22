@@ -66,6 +66,13 @@ class DirectAnimation: Animation, PropertyAnimation {
     
     func update(position: Double) {
         
+        if invalidatedFromValue {
+            fromValue = nil
+            invalidatedFromValue = false
+        }
+        
+        fromValue = fromValue ?? object.valueForKey(key)
+        
         let position = position / duration * speed
         
         if position >= 1.0 {
@@ -74,13 +81,6 @@ class DirectAnimation: Animation, PropertyAnimation {
         }
         
         else if position > 0.0 {
-            
-            if invalidatedFromValue {
-                fromValue = nil
-                invalidatedFromValue = false
-            }
-            
-            fromValue = fromValue ?? object.valueForKey(key)
             
             if let fromValue = fromValue {
                 object.setValue(

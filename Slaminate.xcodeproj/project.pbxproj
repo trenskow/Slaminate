@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A14F64561C7BA5870087BA4B /* ReversedAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14F64551C7BA5870087BA4B /* ReversedAnimation.swift */; };
 		A1591B6C1C6B037D001687F6 /* Slaminate.h in Headers */ = {isa = PBXBuildFile; fileRef = A1D704431C664D14009F7C8F /* Slaminate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A1591B6D1C6B0381001687F6 /* Swizzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E954D1C689B5600C303CC /* Swizzle.swift */; };
 		A1591B6E1C6B0381001687F6 /* UIView+CommonAncestor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18F35231C69361C005D2343 /* UIView+CommonAncestor.swift */; };
@@ -32,6 +33,7 @@
 		A113ACE91C692BFC00C3EDBB /* NSObject+Swizzle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObject+Swizzle.swift"; sourceTree = "<group>"; };
 		A113ACEB1C692C5200C3EDBB /* AnimationBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationBuilder.swift; sourceTree = "<group>"; };
 		A14E954D1C689B5600C303CC /* Swizzle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Swizzle.swift; sourceTree = "<group>"; };
+		A14F64551C7BA5870087BA4B /* ReversedAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReversedAnimation.swift; sourceTree = "<group>"; };
 		A15402E41C6655400035AB8C /* LayerAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayerAnimation.swift; sourceTree = "<group>"; };
 		A15402E61C665F6D0035AB8C /* DirectAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DirectAnimation.swift; sourceTree = "<group>"; };
 		A15402E81C665FA40035AB8C /* AnimationGroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationGroup.swift; sourceTree = "<group>"; };
@@ -91,6 +93,7 @@
 				A1FB7ACD1C6DF8610078BD8B /* ConstraintConstantAnimation.swift */,
 				A15402E61C665F6D0035AB8C /* DirectAnimation.swift */,
 				A17A19241C7A74D30036F485 /* PropertyAnimation.swift */,
+				A14F64551C7BA5870087BA4B /* ReversedAnimation.swift */,
 			);
 			name = "Property Animations";
 			sourceTree = "<group>";
@@ -259,6 +262,7 @@
 				A1591B781C6B0384001687F6 /* Animation.swift in Sources */,
 				A1591B731C6B0384001687F6 /* Interpolation.swift in Sources */,
 				A1FB7ACE1C6DF8610078BD8B /* ConstraintConstantAnimation.swift in Sources */,
+				A14F64561C7BA5870087BA4B /* ReversedAnimation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

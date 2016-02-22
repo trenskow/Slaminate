@@ -33,6 +33,13 @@ public class Animation: NSObject {
     public var duration: NSTimeInterval
     public var delay: NSTimeInterval = 0.0
     
+    public var reversed: Bool {
+        @objc(isReversed) get {
+            guard owner == nil else { return owner!.reversed }
+            return false
+        }
+    }
+    
     private var _speed: Double = 1.0
     var speed: Double {
         get {
@@ -48,13 +55,19 @@ public class Animation: NSObject {
     @objc public var position: NSTimeInterval {
         get { return _position }
         set {
-            guard newValue != _position else { return }
             setPosition(newValue, apply: true)
         }
     }
     
     func setPosition(position: NSTimeInterval, apply: Bool = false) {
+        guard position != _position else { return }
+        if apply && ((position > 0.0 && _position == 0.0) || (position == 00 && _position > 0.0)) {
+            emit(.Start)
+        } else if position >= delay + duration {
+            emit(.Completed)
+        }
         _position = position
+        if apply { postpone() }
     }
     
     weak var owner: Animation? {
@@ -94,17 +107,13 @@ public class Animation: NSObject {
         return self
     }
     
-    public func completed(completion: (finished: Bool) -> Void) -> Animation {
-        on(.Completed) { [weak self] (animation) -> Void in
-            completion(finished: self?.finished ?? true)
-        }
+    public func completed(closure: (animation: Animation) -> Void) -> Animation {
+        on(.Completed, then: closure)
         return self
     }
     
-    public func started(closure: Void -> Void) -> Animation {
-        on(.Start) { (animation) -> Void in
-            closure()
-        }
+    public func started(closure: (animation: Animation) -> Void) -> Animation {
+        on(.Start, then:  closure)
         return self
     }
     
@@ -151,27 +160,29 @@ public class Animation: NSObject {
         return AnimationGroup(animations: [self] + animations)
     }
     
-    public func postpone() -> Animation {
+    private func postpone() {
         NSObject.cancelPreviousPerformRequestsWithTarget(
             self,
             selector: Selector("go"),
             object: nil
         )
-        return self
     }
         
     func complete(finished: Bool) {
         self.finished = finished
         setPosition(delay + duration)
-        emit(.Completed)
-        owner?.childAnimation(self, didCompleteWithFinishState: finished)
+        if let owner = owner {
+            owner.childAnimation(self, didCompleteWithFinishState: finished)
+        } else {
+            ongoingAnimations.remove(self)
+        }
+        
     }
     
     func commit() {}
     
     func precommit() {
         setPosition(max(_position, delay))
-        emit(.Start)
         commit()
     }
     
@@ -192,13 +203,23 @@ public class Animation: NSObject {
     }
     
     public func go(speed speed: Double) -> Animation {
+        var speed = speed
+        if speed < 0.01 && speed > -0.01 { speed = 1.0 }
         guard owner == nil else { return owner!.go(speed: speed) }
+        guard speed > 0.0 else { return reverse().go(speed: -speed) }
         _speed = speed
         postpone()
         begin()
+        if position == 0.0 {
+            emit(.Start)
+        }
         return self
     }
     
+    func reverse() -> Animation {
+        return ReversedAnimation(animation: self)
+    }
+        
 }
 
 extension Array where Element: Animation {
