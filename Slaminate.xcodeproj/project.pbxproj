@@ -22,6 +22,7 @@
 		A1591B781C6B0384001687F6 /* Animation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1D704531C664D48009F7C8F /* Animation.swift */; };
 		A15C8F601C6C872500B2EB74 /* AnimationChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15C8F5F1C6C872500B2EB74 /* AnimationChain.swift */; };
 		A165B2E71C70DDB200ADEB38 /* AnimationBuildIns.swift in Sources */ = {isa = PBXBuildFile; fileRef = A165B2E61C70DDB200ADEB38 /* AnimationBuildIns.swift */; };
+		A17A19251C7A74D30036F485 /* PropertyAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17A19241C7A74D30036F485 /* PropertyAnimation.swift */; };
 		A1EF9F2B1C6B47820045AE18 /* ConstraintPresenceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1EF9F2A1C6B47820045AE18 /* ConstraintPresenceInfo.swift */; };
 		A1FB7ACC1C6DF67D0078BD8B /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1FB7ACB1C6DF67D0078BD8B /* Array.swift */; };
 		A1FB7ACE1C6DF8610078BD8B /* ConstraintConstantAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1FB7ACD1C6DF8610078BD8B /* ConstraintConstantAnimation.swift */; };
@@ -38,6 +39,7 @@
 		A1591B641C6B0329001687F6 /* Slaminate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Slaminate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A15C8F5F1C6C872500B2EB74 /* AnimationChain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationChain.swift; sourceTree = "<group>"; };
 		A165B2E61C70DDB200ADEB38 /* AnimationBuildIns.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationBuildIns.swift; sourceTree = "<group>"; };
+		A17A19241C7A74D30036F485 /* PropertyAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyAnimation.swift; sourceTree = "<group>"; };
 		A18F35231C69361C005D2343 /* UIView+CommonAncestor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+CommonAncestor.swift"; sourceTree = "<group>"; };
 		A18F35251C6938B2005D2343 /* PropertyInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyInfo.swift; sourceTree = "<group>"; };
 		A18F35271C693C41005D2343 /* CurvedAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurvedAnimation.swift; sourceTree = "<group>"; };
@@ -88,6 +90,7 @@
 				A1117A851C6EE789006828D7 /* Layer animations */,
 				A1FB7ACD1C6DF8610078BD8B /* ConstraintConstantAnimation.swift */,
 				A15402E61C665F6D0035AB8C /* DirectAnimation.swift */,
+				A17A19241C7A74D30036F485 /* PropertyAnimation.swift */,
 			);
 			name = "Property Animations";
 			sourceTree = "<group>";
@@ -241,6 +244,7 @@
 				A1591B721C6B0384001687F6 /* NSObject+Swizzle.swift in Sources */,
 				A165B2E71C70DDB200ADEB38 /* AnimationBuildIns.swift in Sources */,
 				A1591B6E1C6B0381001687F6 /* UIView+CommonAncestor.swift in Sources */,
+				A17A19251C7A74D30036F485 /* PropertyAnimation.swift in Sources */,
 				A1591B701C6B0384001687F6 /* CurvedAnimation.swift in Sources */,
 				A1591B751C6B0384001687F6 /* DirectAnimation.swift in Sources */,
 				A1FB7ACC1C6DF67D0078BD8B /* Array.swift in Sources */,

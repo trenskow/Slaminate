@@ -33,7 +33,7 @@ public class AnimationChain: Animation {
         didSet {
             var total = 0.0
             animations.forEach { (animation) in
-                animation.position = max(0.0, min(animation.delay + animation.duration, position - total))
+                animation.position = max(0.0, min(animation.delay + animation.duration, position - total - delay))
                 total += animation.delay + animation.duration
             }
         }

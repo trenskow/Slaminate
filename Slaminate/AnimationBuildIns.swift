@@ -41,11 +41,9 @@ public class AnimationBuildIns: AnimationGroup {
         }
     }
     
-    public var fade: Void -> AnimationBuildIns {
-        return {
-            self.doFade = true
-            return self
-        }
+    public func fade() -> AnimationBuildIns {
+        self.doFade = true
+        return self
     }
     
     @objc public enum MoveDirection: Int {
@@ -55,20 +53,16 @@ public class AnimationBuildIns: AnimationGroup {
         case Left
     }
     
-    public var move: (direction: MoveDirection, fromOutsideViewBounds: UIView?) -> AnimationBuildIns {
-        return { (direction, viewBounds) in
-            self.doMove = true
-            self.moveDirection = direction
-            self.moveViewBounds = viewBounds ?? self.view
-            return self
-        }
+    public func move(direction direction: MoveDirection, outsideViewBounds viewBounds: UIView? = nil) -> AnimationBuildIns {
+        self.doMove = true
+        self.moveDirection = direction
+        self.moveViewBounds = viewBounds ?? self.view
+        return self
     }
     
-    public var pop: Void -> AnimationBuildIns {
-        return {
-            self.doPop = true
-            return self
-        }
+    public func pop() -> AnimationBuildIns {
+        self.doPop = true
+        return self
     }
     
     private func buildFade() {
@@ -103,7 +97,7 @@ public class AnimationBuildIns: AnimationGroup {
                     x: view.layer.position.x,
                     y: bounds.origin.y - edges.bottom
                 )
-            case .Right:
+            case .Left:
                 toValue = CGPoint(
                     x: bounds.origin.x - edges.left,
                     y: view.layer.position.y
@@ -113,7 +107,7 @@ public class AnimationBuildIns: AnimationGroup {
                     x: view.layer.position.x,
                     y: bounds.origin.y + bounds.size.height + edges.top
                 )
-            case .Left:
+            case .Right:
                 toValue = CGPoint(
                     x: bounds.origin.x + bounds.size.width + edges.right,
                     y: view.layer.position.y

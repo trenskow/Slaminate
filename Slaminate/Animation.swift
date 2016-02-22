@@ -10,11 +10,6 @@ import Foundation
 
 var ongoingAnimations = [Animation]()
 
-private struct EventListener {
-    var event: AnimationEvent
-    var then: Animation -> Void
-}
-
 enum AnimationState: Int {
     case Waiting = 0
     case Delayed
@@ -22,12 +17,13 @@ enum AnimationState: Int {
     case Complete
 }
 
-public enum AnimationEvent {
-    case Start
-    case Completed
+public func +(lhs: Animation, rhs: Animation) -> Animation {
+    return lhs.and(animation: rhs)
 }
 
-public typealias CompletionHandler = (finished: Bool) -> Void
+public func |(lhs: Animation, rhs: Animation) -> Animation {
+    return lhs.then(animation: rhs)
+}
 
 @objc(SLAAnimation)
 public class Animation: NSObject {
@@ -57,6 +53,16 @@ public class Animation: NSObject {
     }
     
     func childAnimation(animation: Animation, didCompleteWithFinishState finished: Bool) {}
+    
+    private enum AnimationEvent {
+        case Start
+        case Completed
+    }
+    
+    private struct EventListener {
+        var event: AnimationEvent
+        var then: Animation -> Void
+    }
     
     private var eventListeners = [EventListener]()
     
@@ -176,15 +182,6 @@ public class Animation: NSObject {
         return self
     }
     
-}
-
-protocol PropertyAnimation {
-    static func canAnimate(object: NSObject, key: String) -> Bool
-    var object: NSObject { get }
-    var key: String { get }
-    var toValue: Any { get }
-    var curve: Curve { get }
-    init(duration: NSTimeInterval, object: NSObject, key: String, toValue: Any, curve: Curve)
 }
 
 extension Array where Element: Animation {
