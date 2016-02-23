@@ -19,11 +19,11 @@ class CurvedAnimation: CAKeyframeAnimation {
             
             for var time: NSTimeInterval = self.position ; time < duration ; time += NSTimeInterval(1.0 / (60.0 / speed)) {
                 keyTimes.append((time - self.position) / self.duration)
-                values.append(fromValue.interpolate(toValue, curve.block(time / self.duration)).objectValue!)
+                values.append(fromValue.interpolate(toValue, curve.transform(time / self.duration)).objectValue!)
             }
             
             keyTimes.append(1.0)
-            values.append(fromValue.interpolate(toValue, curve.block(1.0)).objectValue!)
+            values.append(fromValue.interpolate(toValue, curve.transform(1.0)).objectValue!)
             
             self.keyTimes = keyTimes
             self.values = values

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A13C26AF1C7D021900F0ABC4 /* CALayer+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13C26AE1C7D021900F0ABC4 /* CALayer+Additions.swift */; };
 		A14F64561C7BA5870087BA4B /* ReversedAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14F64551C7BA5870087BA4B /* ReversedAnimation.swift */; };
 		A1591B6C1C6B037D001687F6 /* Slaminate.h in Headers */ = {isa = PBXBuildFile; fileRef = A1D704431C664D14009F7C8F /* Slaminate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A1591B6D1C6B0381001687F6 /* Swizzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E954D1C689B5600C303CC /* Swizzle.swift */; };
@@ -32,6 +33,7 @@
 /* Begin PBXFileReference section */
 		A113ACE91C692BFC00C3EDBB /* NSObject+Swizzle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObject+Swizzle.swift"; sourceTree = "<group>"; };
 		A113ACEB1C692C5200C3EDBB /* AnimationBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationBuilder.swift; sourceTree = "<group>"; };
+		A13C26AE1C7D021900F0ABC4 /* CALayer+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CALayer+Additions.swift"; sourceTree = "<group>"; };
 		A14E954D1C689B5600C303CC /* Swizzle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Swizzle.swift; sourceTree = "<group>"; };
 		A14F64551C7BA5870087BA4B /* ReversedAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReversedAnimation.swift; sourceTree = "<group>"; };
 		A15402E41C6655400035AB8C /* LayerAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayerAnimation.swift; sourceTree = "<group>"; };
@@ -120,6 +122,7 @@
 		A1117A861C6EE7F3006828D7 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				A13C26AE1C7D021900F0ABC4 /* CALayer+Additions.swift */,
 				A14E954D1C689B5600C303CC /* Swizzle.swift */,
 				A18F35231C69361C005D2343 /* UIView+CommonAncestor.swift */,
 				A113ACE91C692BFC00C3EDBB /* NSObject+Swizzle.swift */,
@@ -249,6 +252,7 @@
 				A1591B6E1C6B0381001687F6 /* UIView+CommonAncestor.swift in Sources */,
 				A17A19251C7A74D30036F485 /* PropertyAnimation.swift in Sources */,
 				A1591B701C6B0384001687F6 /* CurvedAnimation.swift in Sources */,
+				A13C26AF1C7D021900F0ABC4 /* CALayer+Additions.swift in Sources */,
 				A1591B751C6B0384001687F6 /* DirectAnimation.swift in Sources */,
 				A1FB7ACC1C6DF67D0078BD8B /* Array.swift in Sources */,
 				A15C8F601C6C872500B2EB74 /* AnimationChain.swift in Sources */,

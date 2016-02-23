@@ -127,7 +127,7 @@ public class AnimationBuildIns: AnimationGroup {
                 key: "position",
                 fromValue: fromValue,
                 toValue: toValue,
-                curve: applyCurve + Curve(block: { self.hide ? ($0 == 1.0 ? 0.0 : $0) : ($0 == 0.0 ? 1.0 : $0) })
+                curve: applyCurve + Curve(transform: { self.hide ? ($0 == 1.0 ? 0.0 : $0) : ($0 == 0.0 ? 1.0 : $0) })
             ).completed({ _ in
                 view.layer.position = originalPosition
             }).started({ _ in
@@ -167,7 +167,7 @@ public class AnimationBuildIns: AnimationGroup {
                 key: "hidden",
                 fromValue: false,
                 toValue: true,
-                curve: applyCurve + Curve(block: { t in
+                curve: applyCurve + Curve(transform: { t in
                     return self.hide ? (t == 1.0 ? 1.0 : 0.0) : (t == 0.0 ? 1.0 : 0.0)
                 })
             ))

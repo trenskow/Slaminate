@@ -11,34 +11,9 @@ import Foundation
 class LayerAnimation: DirectAnimation {
     
     override class func canAnimate(object: NSObject, key: String) -> Bool {
-        guard object is CALayer && (object.valueForKey(key) as? Interpolatable)?.canInterpolate == true else {
-            return false;
-        }
-        return [
-            // CALayer Properties
-            "contentsRect",
-            "conetntsCenter",
-            "opacity",
-            "hidden",
-            "masksToBounds",
-            "doubleSided",
-            "cornerRadius",
-            "borderWidth",
-            "borderColor",
-            "backgroundColor",
-            "shadowOpacity",
-            "shadowRadius",
-            "shadowOffset",
-            "shadowColor",
-            "shadowPath",
-            "bounds",
-            "position",
-            "zPosition",
-            "anchorPointZ",
-            "anchorPoint",
-            "transform",
-            "sublayerTransform"
-        ].contains(key);
+        guard (object.valueForKey(key) as? Interpolatable)?.canInterpolate == true else { return false }
+        guard let layer = object as? CoreAnimationKVCExtension else { return false }
+        return layer.dynamicType.animatableKeyPaths.contains(key)
     }
     
     var layer: CALayer
@@ -53,7 +28,7 @@ class LayerAnimation: DirectAnimation {
     }
     
     override func animationDidStart(anim: CAAnimation) {
-        object.setValue((fromValue as! Interpolatable).interpolate(toValue as! Interpolatable, curve.block(1.0)).objectValue!, forKey: key)
+        object.setValue((fromValue as! Interpolatable).interpolate(toValue as! Interpolatable, curve.transform(1.0)).objectValue!, forKey: key)
     }
     
     override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
