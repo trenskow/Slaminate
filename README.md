@@ -34,18 +34,16 @@ With Slaminate you can do something like this.
 
 	slaminate(
 		duration: 0.3,
+		curve: Curve.easeOutBack,
 		animation: {
 			myView.removeConstraint(myOldConstraint)
 			myView.addConstraint(myNewConstraint)
 			myOtherConstraint.constant = 200
 			myView.alpha = 0.3
-		},
-		curve: Curve.easeOutBack,
-		delay: 0.0,
-		completion: { finished in
-			print("Wow?!? Did this just work?!?")
 		}
-	)
+	).completed({ animation in
+		print("Animation complete.")
+	}
 
 You can even group and chain animations – like this.
 
@@ -82,7 +80,7 @@ Now you can do stuff like this.
 			   let newViewController = childViewController as? Transitionable {
 				oldViewController.transitionOut()
 				.then(newViewController.transitionIn()).
-				.on(.End, then: { _ in
+				.completed({ animation in
 					oldViewController.removeFromParentViewController()
 				})
 			}
@@ -93,9 +91,9 @@ See what happened? We **organized the animations** of our application!
 
 #### Oh - and this...
 
-The `position` offset lets you apply a position in time of the animation – and when you can `begin()` the animation will take off from that position.
+The `position` offset lets you apply a position in time of the animation – and when you can `go()` the animation will take off from that position. The `manual()` method tells the animation that it should not start automatically. `go()` also accepts a `speed` parameter, so you can adjust the animation to the speed. Providing a negative speed with reverse the animation.
 
-Sp you could create something like an navigation controller pan gesture dismiss like this. 
+So you could create something like a navigation controller pan gesture dismiss like this. 
 
 	class MyNavigationController {
 		var panGesture: UIScreenEdgePanGestureRecognizer
@@ -105,14 +103,14 @@ Sp you could create something like an navigation controller pan gesture dismiss 
 			switch gestureRecognizer.state {
 			case .Began:
 				// Create animation for popping
-				animation = slaminate(...).postpone()
+				animation = slaminate(...).manual()
 			case .Changed:
 				let location = gestureRecognizer.locationInView(self.view.window)
 				// We calculate the delta and set the position of the animation
 				animation.position = (location. x / self.view.window.bounds.size.width) * location.x
 			case .Ended:
 				// Animate the animation from whatever the current position is
-				animation.begin()
+				animation.go()
 			default:
 				break
 			}
@@ -125,15 +123,11 @@ You can also animate non-UI properties by using `setValue(_, forKey:)`.
 
 	slaminate(
 		duration: 1.0,
+		curve: Curve.easeOutSine,
 		animation: {
 			myAudioPlayer.setValue(0.0, forKey: "volume")
-		},
-		curve: Curve.easeOutSine,
-		delay: 0.0,
-		completion: { finished in
-			myAudioPlayer.stop()
 		}
-	)
+	).completed( { _ in myAudioPlayer.stop() } )
 
 #### More things are coming - like convenience methods for showing and hiding views easily!
 
