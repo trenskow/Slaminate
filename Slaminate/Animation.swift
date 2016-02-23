@@ -67,14 +67,14 @@ public class Animation: NSObject {
             emit(.Completed)
         }
         _position = position
-        if apply { postpone() }
+        if apply { manual() }
     }
     
     weak var owner: Animation? {
         didSet {
             if owner != nil {
                 ongoingAnimations.remove(self)
-                postpone()
+                manual()
             }
         }
     }
@@ -160,12 +160,13 @@ public class Animation: NSObject {
         return AnimationGroup(animations: [self] + animations)
     }
     
-    private func postpone() {
+    public func manual() -> Animation {
         NSObject.cancelPreviousPerformRequestsWithTarget(
             self,
             selector: Selector("go"),
             object: nil
         )
+        return self
     }
         
     func complete(finished: Bool) {
@@ -208,7 +209,7 @@ public class Animation: NSObject {
         guard owner == nil else { return owner!.go(speed: speed) }
         guard speed > 0.0 else { return reverse().go(speed: -speed) }
         _speed = speed
-        postpone()
+        manual()
         begin()
         if position == 0.0 {
             emit(.Start)
