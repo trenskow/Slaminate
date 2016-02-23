@@ -176,8 +176,11 @@ class AnimationBuilder: AnimationGroup {
         }
         
         buildState = .Resetting
-                
-        propertyInfos.applyFromValues()
+        
+        // Apply from value to all but constraints constants.
+        propertyInfos.filter({
+            $0.key != "constant" && !($0.object is NSLayoutConstraint)
+        }).applyFromValues()
         
         buildState = .Building
         

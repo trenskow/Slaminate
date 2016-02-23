@@ -11,7 +11,7 @@ import Foundation
 class DirectAnimation: Animation, PropertyAnimation {
     
     class func canAnimate(object: NSObject, key: String) -> Bool {
-        guard object as? NSLayoutConstraint == nil else { return false }
+        guard !(object is NSLayoutConstraint) else { return false }
         return (object.valueForKey(key) as? Interpolatable)?.canInterpolate == true
     }
     

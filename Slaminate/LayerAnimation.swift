@@ -11,7 +11,7 @@ import Foundation
 class LayerAnimation: DirectAnimation {
     
     override class func canAnimate(object: NSObject, key: String) -> Bool {
-        guard (object as? CALayer) != nil && (object.valueForKey(key) as? Interpolatable)?.canInterpolate == true else {
+        guard object is CALayer && (object.valueForKey(key) as? Interpolatable)?.canInterpolate == true else {
             return false;
         }
         return [
