@@ -196,6 +196,9 @@ public class Animation: NSObject {
     }
     
     public func begin() {
+        if position == 0.0 {
+            emit(.Start)
+        }
         preflight()
     }
     
@@ -211,9 +214,6 @@ public class Animation: NSObject {
         _speed = speed
         manual()
         begin()
-        if position == 0.0 {
-            emit(.Start)
-        }
         return self
     }
     
