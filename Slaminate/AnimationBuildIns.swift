@@ -72,12 +72,6 @@ public class AnimationBuildIns: AnimationGroup {
         return self
     }
     
-    private func add(animation: Animation) -> Animation {
-        animations.append(animation)
-        animation.owner = self
-        return self
-    }
-    
     private func buildFade() {
         if let view = self.view where view.hidden != self.hide {
             add(LayerAnimation(

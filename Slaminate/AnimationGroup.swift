@@ -58,14 +58,16 @@ public class AnimationGroup: Animation {
         }
     }
     
+    func add(animation: Animation) {
+        animations.append(animation)
+        animation.owner = self
+    }
+    
     override public func and(animations animations: [Animation]) -> Animation {
         guard !(self is AnimationBuilder) && !(self is AnimationBuildIns) else {
             return super.and(animations: animations)
         }
-        animations.forEach { animation in
-            self.animations.append(animation)
-            animation.owner = self
-        }
+        animations.forEach(add)
         return self
     }
     

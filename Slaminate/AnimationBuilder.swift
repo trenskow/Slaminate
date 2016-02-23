@@ -62,6 +62,7 @@ class AnimationBuilder: AnimationGroup {
         if position > 0.0 {
             build()
         }
+        super.setPosition(position, apply: apply)
     }
     
     func setObjectFromValue(object: NSObject, key: String, value: NSObject?) -> Bool {
@@ -184,8 +185,6 @@ class AnimationBuilder: AnimationGroup {
         
         buildState = .Building
         
-        var animations = [Animation]()
-        
         for propertyInfo in propertyInfos {
             
             var animation: Animation?
@@ -207,15 +206,13 @@ class AnimationBuilder: AnimationGroup {
             }
             
             if let animation = animation {
-                animations.append(animation)
+                add(animation)
             } else {
                 propertyInfo.applyToValue()
             }
             
         }
         
-        animations.forEach({ and(animation: $0) })
-                
         buildState = .Done
         
     }
