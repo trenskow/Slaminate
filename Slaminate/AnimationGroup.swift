@@ -7,17 +7,17 @@
 //
 
 @objc(SLAAnimationGroup)
-class AnimationGroup: Animation {
+public class AnimationGroup: Animation {
     
     var animations: [Animation]
     
-    init(animations: [Animation]) {
+    public init(animations: [Animation]) {
         self.animations = animations ?? []
         super.init()
         animations.forEach({ $0.owner = self })
     }
     
-    convenience init() {
+    public convenience init() {
         self.init(animations: [])
     }
         
@@ -32,7 +32,7 @@ class AnimationGroup: Animation {
         })
     }
     
-    override var duration: NSTimeInterval {
+    override public var duration: NSTimeInterval {
         get {
             return animations.reduce(0.0) { (c, animation) -> NSTimeInterval in
                 return max(c, animation.delay + animation.duration)
@@ -63,7 +63,7 @@ class AnimationGroup: Animation {
         animation.owner = self
     }
     
-    override func and(animations animations: [Animation]) -> Animation {
+    override public func and(animations animations: [Animation]) -> Animation {
         guard !(self is AnimationBuilder) && !(self is AnimationBuildIns) else {
             return super.and(animations: animations)
         }
