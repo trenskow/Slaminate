@@ -72,7 +72,7 @@ class AnimationBuilder: AnimationGroup {
         }
         
         let idx = propertyInfos.indexOf(object, key: key)
-        propertyInfos[idx].fromValue = propertyInfos[idx].fromValue ?? value
+        propertyInfos[idx].fromValue ??= value
         
         return true
         
@@ -97,7 +97,7 @@ class AnimationBuilder: AnimationGroup {
         }
         
         let idx = propertyInfos.indexOf(object, key: key)
-        propertyInfos[idx].fromValue = propertyInfos[idx].fromValue ?? fromValue
+        propertyInfos[idx].fromValue ??= fromValue
         propertyInfos[idx].toValue = toValue
         
         return true
@@ -109,7 +109,7 @@ class AnimationBuilder: AnimationGroup {
         guard buildState == .Collecting else { return }
         
         let index = constraintInfos.indexOf(object, key: key)
-        constraintInfos[index].fromValue = fromValue
+        constraintInfos[index].fromValue ??= fromValue
         constraintInfos[index].toValue = toValue
         
         if key == "constant" {

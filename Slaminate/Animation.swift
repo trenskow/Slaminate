@@ -123,10 +123,11 @@ public class Animation: NSObject {
     }
     
     public func then(duration duration: NSTimeInterval, curve: Curve?, animation: Void -> Void) -> Animation {
-        return then(animation: AnimationBuilder(
-            duration: duration,
-            curve: curve ?? Curve.linear,
-            animation: animation
+        return then(
+            animation: AnimationBuilder(
+                duration: duration,
+                curve: curve ?? Curve.linear,
+                animation: animation
             )
         )
     }
@@ -140,15 +141,12 @@ public class Animation: NSObject {
     }
     
     public func and(duration duration: NSTimeInterval, curve: Curve?, animation: Void -> Void) -> Animation {
-        return AnimationChain(
-            animations: [
-                self,
-                AnimationBuilder(
-                    duration: duration,
-                    curve: curve ?? Curve.linear,
-                    animation: animation
-                )
-            ]
+        return and(
+            animation: AnimationBuilder(
+                duration: duration,
+                curve: curve ?? Curve.linear,
+                animation: animation
+            )
         )
     }
     
@@ -209,7 +207,9 @@ public class Animation: NSObject {
     public func go(speed speed: Double) -> Animation {
         var speed = speed
         if speed < 0.01 && speed > -0.01 { speed = 1.0 }
-        guard owner == nil else { return owner!.go(speed: speed) }
+        guard owner == nil else {
+            return owner!.go(speed: speed)
+        }
         guard speed > 0.0 else { return reverse().go(speed: -speed) }
         _speed = speed
         manual()

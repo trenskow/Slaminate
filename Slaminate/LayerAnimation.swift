@@ -38,7 +38,7 @@ class LayerAnimation: DirectAnimation {
     
     override func commit() {
         
-        fromValue = fromValue ?? (layer.presentationLayer() ?? layer).valueForKey(key)
+        fromValue ??= (layer.presentationLayer() ?? layer).valueForKey(key)
         
         animation = CurvedAnimation(keyPath: key)
         animation?.duration = duration

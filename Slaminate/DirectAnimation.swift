@@ -29,6 +29,7 @@ class DirectAnimation: Animation, PropertyAnimation {
     override func setPosition(position: NSTimeInterval, apply: Bool) {
         defer { super.setPosition(position, apply: apply) }
         guard apply else { return }
+        guard position != _position else { return }
         if position == 0.0 && _position > 0.0 {
             if !fromValueIsConcrete {
                 invalidatedFromValue = true
@@ -67,33 +68,35 @@ class DirectAnimation: Animation, PropertyAnimation {
     func update(position: Double) {
         
         if invalidatedFromValue {
-            fromValue = nil
+            self.fromValue = nil
             invalidatedFromValue = false
         }
         
-        fromValue = fromValue ?? object.valueForKey(key)
+        self.fromValue ??= object.valueForKey(key)
+        
+        guard let fromValue = fromValue as? Interpolatable, toValue = toValue as? Interpolatable else  {
+            fatalError("Cannot interpolate non-interpolatable types.")
+        }
         
         let position = position / duration * speed
         
         if position >= 1.0 {
-            object.setValue((fromValue as! Interpolatable).interpolate(toValue as! Interpolatable, curve.transform(1.0)).objectValue!, forKey: key)
+            object.setValue(fromValue.interpolate(toValue, curve.transform(1.0)).objectValue!, forKey: key)
             complete(true)
         }
         
         else if position > 0.0 {
             
-            if let fromValue = fromValue {
-                object.setValue(
-                    (fromValue as! Interpolatable).interpolate(
-                        toValue as! Interpolatable,
-                        curve.transform(position)
+            object.setValue(
+                fromValue.interpolate(
+                    toValue,
+                    curve.transform(position)
                     ).objectValue,
-                    forKey: key
-                )
-            }
+                forKey: key
+            )
             
-        } else if let fromValue = fromValue {
-            object.setValue((fromValue as! Interpolatable).interpolate(toValue as! Interpolatable, curve.transform(0.0)).objectValue!, forKey: key)
+        } else {
+            object.setValue(fromValue.interpolate(toValue, curve.transform(0.0)).objectValue!, forKey: key)
         }
         
     }
