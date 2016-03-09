@@ -70,10 +70,6 @@ class AnimationGroup: Animation {
         return self
     }
     
-    override func complete(finished: Bool) {
-        super.complete(finished)
-    }
-    
     override func childAnimation(animation: Animation, didCompleteWithFinishState finished: Bool) {
         if animations.all({ $0.position >= $0.delay + $0.duration }) {
             complete(animations.reduce(true, combine: { $0 && $1.finished } ))

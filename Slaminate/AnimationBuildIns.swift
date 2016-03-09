@@ -10,7 +10,7 @@ import UIKit
 
 public class AnimationBuildIns: Animation {
     
-    private var animationGroup = AnimationGroup()
+    private var animations: Animation
     
     private weak var view: UIView?
     private var hide: Bool
@@ -31,22 +31,21 @@ public class AnimationBuildIns: Animation {
         self.hide = hide
         self.applyDuration = duration
         self.applyCurve = curve
+        self.animations = AnimationGroup()
         super.init()
-        self.animationGroup.owner = self
+        self.animations.owner = self
     }
     
     override public var duration: NSTimeInterval {
-        get { return animationGroup.duration }
-        set { animationGroup.duration = newValue }
-    }
-    
-    override public var delay: NSTimeInterval {
-        get { return animationGroup.delay }
-        set { animationGroup.delay = newValue }
+        get { return applyDuration }
+        set {
+            applyDuration = newValue
+            animations.duration = newValue
+        }
     }
     
     override public var position: NSTimeInterval {
-        get { return animationGroup.position }
+        get { return animations.position }
         set { setPosition(newValue, apply: true) }
     }
     
@@ -54,12 +53,8 @@ public class AnimationBuildIns: Animation {
         if position > 0.0 {
             build()
         }
-        animationGroup.setPosition(position, apply: apply)
-    }
-    
-    override func on(event: AnimationEvent, then: (animation: Animation) -> Void) -> Animation {
-        animationGroup.on(event, then: then)
-        return self
+        animations.setPosition(position, apply: apply)
+        super.setPosition(position, apply: apply)
     }
     
     public func fade() -> AnimationBuildIns {
@@ -88,7 +83,7 @@ public class AnimationBuildIns: Animation {
     
     private func buildFade() {
         if let view = self.view where view.hidden != self.hide {
-            animationGroup.add(LayerAnimation(
+            animations.and(animation: LayerAnimation(
                 duration: applyDuration,
                 object: view.layer,
                 key: "opacity",
@@ -135,7 +130,7 @@ public class AnimationBuildIns: Animation {
                 )
             }
             if !hide { swap(&fromValue, &toValue) }
-            animationGroup.add(LayerAnimation(
+            animations.and(animation: LayerAnimation(
                 duration: applyDuration,
                 object: view.layer,
                 key: "position",
@@ -157,7 +152,7 @@ public class AnimationBuildIns: Animation {
             if self.hide {
                 swap(&fromValue, &toValue)
             }
-            animationGroup.add(LayerAnimation(
+            animations.and(animation: LayerAnimation(
                 duration: applyDuration,
                 object: view.layer,
                 key: "transform.scale",
@@ -175,7 +170,7 @@ public class AnimationBuildIns: Animation {
         
         if let view = view {
             // We need to hide no matter what.
-            animationGroup.add(LayerAnimation(
+            animations.and(animation: LayerAnimation(
                 duration: applyDuration,
                 object: view.layer,
                 key: "hidden",
@@ -200,7 +195,7 @@ public class AnimationBuildIns: Animation {
     
     override func commit() {
         build()
-        animationGroup.begin()
+        animations.begin()
     }
     
     override func childAnimation(animation: Animation, didCompleteWithFinishState finished: Bool) {
