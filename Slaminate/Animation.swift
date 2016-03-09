@@ -18,7 +18,6 @@ public func |(lhs: Animation, rhs: Animation) -> Animation {
     return lhs.then(animation: rhs)
 }
 
-@objc(SLAAnimation)
 public class Animation: NSObject {
     
     init(duration: NSTimeInterval = 0.0) {
@@ -81,7 +80,7 @@ public class Animation: NSObject {
     
     func childAnimation(animation: Animation, didCompleteWithFinishState finished: Bool) {}
     
-    private enum AnimationEvent {
+    enum AnimationEvent {
         case Start
         case Completed
     }
@@ -97,7 +96,7 @@ public class Animation: NSObject {
         eventListeners.filter({ $0.event == event }).forEach({ $0.then(self) })
     }
     
-    private func on(event: AnimationEvent, then: (animation: Animation) -> Void) -> Animation {
+    func on(event: AnimationEvent, then: (animation: Animation) -> Void) -> Animation {
         eventListeners.append(
             EventListener(
                 event: event,

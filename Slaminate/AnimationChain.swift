@@ -8,7 +8,6 @@
 
 import Foundation
 
-@objc(SLAAnimationChain)
 public class AnimationChain: Animation {
     
     var animations: [Animation]

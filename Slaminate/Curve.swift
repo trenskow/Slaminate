@@ -16,7 +16,6 @@ public func |(lhs: Curve, rhs: Curve) -> Curve {
     return lhs.then(rhs)
 }
 
-@objc(SLACurve)
 public class Curve : NSObject {
     
     let transform: CurveBlock
