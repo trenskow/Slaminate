@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class AnimationChain: Animation {
+class AnimationChain: Animation {
     
     var animations: [Animation]
     private var commited: Bool = false
@@ -21,7 +21,7 @@ public class AnimationChain: Animation {
         }
     }
         
-    @objc override public var duration: NSTimeInterval {
+    @objc override var duration: NSTimeInterval {
         get {
             return self.animations.reduce(0.0, combine: { (c, animation) -> NSTimeInterval in
                 return c + animation.delay + animation.duration
@@ -53,7 +53,7 @@ public class AnimationChain: Animation {
         animateNext()
     }
     
-    override public func then(animations animations: [Animation]) -> Animation {
+    override func then(animations animations: [Animation]) -> Animation {
         animations.forEach { animation in
             animation.owner = self
             self.animations.append(animation)
