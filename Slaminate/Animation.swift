@@ -30,7 +30,7 @@ public class Animation: NSObject {
     @objc(isFinished) public var finished: Bool = false
     
     public var duration: NSTimeInterval
-    public var delay: NSTimeInterval = 0.0
+    public internal(set) var delay: NSTimeInterval = 0.0
     
     public var reversed: Bool {
         @objc(isReversed) get {

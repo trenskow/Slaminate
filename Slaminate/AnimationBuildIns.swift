@@ -40,6 +40,11 @@ public class AnimationBuildIns: Animation {
         set { animationGroup.duration = newValue }
     }
     
+    override public var delay: NSTimeInterval {
+        get { return animationGroup.delay }
+        set { animationGroup.delay = newValue }
+    }
+    
     override public var position: NSTimeInterval {
         get { return animationGroup.position }
         set { setPosition(newValue, apply: true) }
@@ -181,10 +186,7 @@ public class AnimationBuildIns: Animation {
                 })
             ))
             
-            // Fade by default
-            doFade = doFade || (!doMove && !doPop)
-            
-            if doFade {
+            if doFade || (!doMove && !doPop) {
                 buildFade()
             }
             if doMove {
@@ -202,7 +204,7 @@ public class AnimationBuildIns: Animation {
     }
     
     override func childAnimation(animation: Animation, didCompleteWithFinishState finished: Bool) {
-        self.childAnimation(animation, didCompleteWithFinishState: finished)
+        complete(finished)
     }
     
 }
