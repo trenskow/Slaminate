@@ -10,19 +10,30 @@ import UIKit
 
 public class AnimationBuildIns: Animation {
     
+    @objc public enum MoveDirection: Int {
+        case Top
+        case Right
+        case Bottom
+        case Left
+    }
+    
+    @objc public enum BlastDirection: Int {
+        case Explode
+        case Implode
+    }
+    
     private var animations: Animation
     
-    private weak var view: UIView?
+    private weak var view: UIView!
     private var hide: Bool
     private var applyDuration: NSTimeInterval
     private var applyCurve: Curve
     
-    private var doFade: Bool = false
-    private var doMove: Bool = false
-    private var doPop: Bool = false
+    private var apply: (fade: Bool, move: Bool, blast: Bool) = (false, false, false)
+    private var applyMoveOptions: (direction: MoveDirection, moveViewBounds: UIView?) = (.Top, nil)
+    private var applyBlastOptionsDirection: BlastDirection = .Explode
     
-    private var moveDirection: MoveDirection = .Top
-    private var moveViewBounds: UIView?
+    private var preserveFromValue: Curve! = nil
     
     private var isBuild: Bool = false
     
@@ -33,6 +44,7 @@ public class AnimationBuildIns: Animation {
         self.applyCurve = curve
         self.animations = AnimationGroup()
         super.init()
+        self.preserveFromValue = Curve(transform: { self.hide ? ($0 == 1.0 ? 0.0 : $0) : ($0 == 0.0 ? 1.0 : $0) })
         self.animations.owner = self
     }
     
@@ -56,58 +68,54 @@ public class AnimationBuildIns: Animation {
         animations.setPosition(position, apply: apply)
         super.setPosition(position, apply: apply)
     }
-    
+        
     public func fade() -> AnimationBuildIns {
-        self.doFade = true
+        apply.fade = true
         return self
-    }
-    
-    @objc public enum MoveDirection: Int {
-        case Top
-        case Right
-        case Bottom
-        case Left
     }
     
     public func move(direction direction: MoveDirection, outsideViewBounds viewBounds: UIView? = nil) -> AnimationBuildIns {
-        self.doMove = true
-        self.moveDirection = direction
-        self.moveViewBounds = viewBounds ?? self.view
+        apply.move = true
+        applyMoveOptions.direction = direction
+        applyMoveOptions.moveViewBounds = viewBounds ?? view
         return self
     }
     
-    public func pop() -> AnimationBuildIns {
-        self.doPop = true
+    public func blast(direction: BlastDirection = .Implode) -> AnimationBuildIns {
+        apply.blast = true
+        applyBlastOptionsDirection = direction
         return self
     }
     
     private func buildFade() {
-        if let view = self.view where view.hidden != self.hide {
+        if view.hidden != hide {
+            var fromValue: CGFloat = CGFloat(self.view.layer.opacity)
+            var toValue: CGFloat = 0.0
+            if !hide { swap(&fromValue, &toValue) }
             animations.and(animation: LayerAnimation(
                 duration: applyDuration,
                 object: view.layer,
                 key: "opacity",
-                fromValue: hide ? 1.0 : 0.0,
-                toValue: hide ? 0.0 : 1.0,
-                curve: applyCurve
+                fromValue: fromValue,
+                toValue: toValue,
+                curve: applyCurve + preserveFromValue
             ))
         }
     }
     
     private func buildMove() {
-        if let view = view, superlayer = view.layer.superlayer where view.hidden != hide {
+        if let superlayer = view.layer.superlayer where view.hidden != hide {
             let edges = UIEdgeInsets(
                 top: view.layer.bounds.size.height * view.layer.anchorPoint.y,
                 left: view.layer.bounds.size.width * view.layer.anchorPoint.x,
                 bottom: view.layer.bounds.size.height * (1.0 - view.layer.anchorPoint.y),
                 right: view.layer.bounds.size.width * (1.0 - view.layer.anchorPoint.x)
             )
-            let layerBounds = (moveViewBounds ?? view).layer
+            let layerBounds = (applyMoveOptions.moveViewBounds ?? view).layer
             let bounds = superlayer.convertRect(layerBounds.bounds, fromLayer: layerBounds)
-            let originalPosition = view.layer.position
             var fromValue = view.layer.position
             var toValue: CGPoint
-            switch moveDirection {
+            switch applyMoveOptions.direction {
             case .Top:
                 toValue = CGPoint(
                     x: view.layer.position.x,
@@ -136,30 +144,24 @@ public class AnimationBuildIns: Animation {
                 key: "position",
                 fromValue: fromValue,
                 toValue: toValue,
-                curve: applyCurve + Curve(transform: { self.hide ? ($0 == 1.0 ? 0.0 : $0) : ($0 == 0.0 ? 1.0 : $0) })
-            ).completed({ _ in
-                view.layer.position = originalPosition
-            }).started({ _ in
-                view.layer.position = originalPosition
-            }))
+                curve: applyCurve + preserveFromValue
+            ))
         }
     }
     
-    private func buildPop() {
-        if let view = view where view.hidden != hide {
-            var fromValue: CGFloat = 0.9
-            var toValue: CGFloat = 1.0
-            if self.hide {
-                swap(&fromValue, &toValue)
-            }
+    private func buildBlast() {
+        if view.hidden != hide {
+            var fromValue: CGFloat = CGFloat((self.view.layer.valueForKeyPath("transform.scale") as! NSNumber).doubleValue)
+            var toValue: CGFloat = (applyBlastOptionsDirection == .Implode ? 0.0 : 2.0)
+            if !hide { swap(&fromValue, &toValue) }
             animations.and(animation: LayerAnimation(
                 duration: applyDuration,
                 object: view.layer,
                 key: "transform.scale",
                 fromValue: fromValue,
                 toValue: toValue,
-                curve: applyCurve)
-            )
+                curve: applyCurve + preserveFromValue
+            ))
         }
     }
     
@@ -168,28 +170,26 @@ public class AnimationBuildIns: Animation {
         
         isBuild = true
         
-        if let view = view {
-            // We need to hide no matter what.
-            animations.and(animation: LayerAnimation(
-                duration: applyDuration,
-                object: view.layer,
-                key: "hidden",
-                fromValue: false,
-                toValue: true,
-                curve: applyCurve + Curve(transform: { t in
-                    return self.hide ? (t == 1.0 ? 1.0 : 0.0) : (t == 0.0 ? 1.0 : 0.0)
-                })
+        // We need to hide no matter what.
+        animations.and(animation: LayerAnimation(
+            duration: applyDuration,
+            object: view.layer,
+            key: "hidden",
+            fromValue: false,
+            toValue: true,
+            curve: applyCurve + Curve(transform: { t in
+                return self.hide ? (t == 1.0 ? 1.0 : 0.0) : (t == 0.0 ? 1.0 : 0.0)
+            })
             ))
-            
-            if doFade || (!doMove && !doPop) {
-                buildFade()
-            }
-            if doMove {
-                buildMove()
-            }
-            if doPop {
-                buildPop()
-            }
+        
+        if apply.fade || (!apply.move && !apply.blast) {
+            buildFade()
+        }
+        if apply.move {
+            buildMove()
+        }
+        if apply.blast {
+            buildBlast()
         }
     }
     
