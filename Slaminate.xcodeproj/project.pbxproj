@@ -29,6 +29,7 @@
 		A1EF9F2B1C6B47820045AE18 /* ConstraintPresenceInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1EF9F2A1C6B47820045AE18 /* ConstraintPresenceInfo.swift */; };
 		A1FB7ACC1C6DF67D0078BD8B /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1FB7ACB1C6DF67D0078BD8B /* Array.swift */; };
 		A1FB7ACE1C6DF8610078BD8B /* ConstraintConstantAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1FB7ACD1C6DF8610078BD8B /* ConstraintConstantAnimation.swift */; };
+		A1FBB8691C8C732B00615A27 /* NullAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1FBB8681C8C732B00615A27 /* NullAnimation.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +57,7 @@
 		A1EF9F2A1C6B47820045AE18 /* ConstraintPresenceInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstraintPresenceInfo.swift; sourceTree = "<group>"; };
 		A1FB7ACB1C6DF67D0078BD8B /* Array.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
 		A1FB7ACD1C6DF8610078BD8B /* ConstraintConstantAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstraintConstantAnimation.swift; sourceTree = "<group>"; };
+		A1FBB8681C8C732B00615A27 /* NullAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NullAnimation.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +110,7 @@
 				A1117A821C6EE747006828D7 /* Animation Groups */,
 				A1117A831C6EE74F006828D7 /* Property Animations */,
 				A1D704531C664D48009F7C8F /* Animation.swift */,
+				A1FBB8681C8C732B00615A27 /* NullAnimation.swift */,
 			);
 			name = Animations;
 			sourceTree = "<group>";
@@ -271,6 +274,7 @@
 				A1591B731C6B0384001687F6 /* Interpolation.swift in Sources */,
 				A1FB7ACE1C6DF8610078BD8B /* ConstraintConstantAnimation.swift in Sources */,
 				A14F64561C7BA5870087BA4B /* ReversedAnimation.swift in Sources */,
+				A1FBB8691C8C732B00615A27 /* NullAnimation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
