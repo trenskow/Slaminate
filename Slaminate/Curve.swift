@@ -167,6 +167,12 @@ public class Curve : NSObject {
         })
     }
     
+    public var reversed: Curve {
+        return Curve(transform: {
+            return 1.0 - self.transform(1.0 - $0)
+        })
+    }
+    
 }
 
 private let cp0 = CGPoint(x: 0.0, y: 0.0)
