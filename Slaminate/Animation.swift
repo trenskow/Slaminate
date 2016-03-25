@@ -20,6 +20,10 @@ public func |(lhs: Animation, rhs: Animation) -> Animation {
 
 public class Animation: NSObject {
     
+    public static var Null: Animation {
+        return Animation()
+    }
+    
     init(duration: NSTimeInterval = 0.0) {
         self.duration = duration
         super.init()
@@ -182,7 +186,11 @@ public class Animation: NSObject {
         
     }
     
-    func commit() {}
+    // This is a dummy method which just ends the animation.
+    // Used only by Animation.Null
+    func commit() {
+        complete(true)
+    }
     
     func precommit() {
         setPosition(max(_position, delay))
