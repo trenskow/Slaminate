@@ -54,7 +54,7 @@ class DirectAnimation: Animation, PropertyAnimation {
     
     override func commit() {
         animationStart = NSDate(timeIntervalSinceNow: -position + delay)
-        displayLink = CADisplayLink(target: self, selector: Selector("displayDidUpdate"))
+        displayLink = CADisplayLink(target: self, selector: #selector(DirectAnimation.displayDidUpdate))
         displayLink?.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSRunLoopCommonModes)
     }
     

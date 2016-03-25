@@ -24,7 +24,7 @@ public class Animation: NSObject {
         self.duration = duration
         super.init()
         ongoingAnimations.append(self)
-        performSelector(Selector("go"), withObject: nil, afterDelay: 0.0, inModes: [NSRunLoopCommonModes])
+        performSelector(#selector(Animation.go as (Animation) -> () -> Animation), withObject: nil, afterDelay: 0.0, inModes: [NSRunLoopCommonModes])
     }
     
     @objc(isFinished) public var finished: Bool = false
@@ -160,7 +160,7 @@ public class Animation: NSObject {
     func postpone() {
         NSObject.cancelPreviousPerformRequestsWithTarget(
             self,
-            selector: Selector("go"),
+            selector: #selector(Animation.go as (Animation) -> () -> Animation),
             object: nil
         )
     }
@@ -191,7 +191,7 @@ public class Animation: NSObject {
     
     func preflight() {
         if delay - position > 0.0 {
-            performSelector(Selector("precommit"), withObject: nil, afterDelay: (delay - position) / speed, inModes: [NSRunLoopCommonModes])
+            performSelector(#selector(Animation.precommit), withObject: nil, afterDelay: (delay - position) / speed, inModes: [NSRunLoopCommonModes])
         } else {
             precommit()
         }

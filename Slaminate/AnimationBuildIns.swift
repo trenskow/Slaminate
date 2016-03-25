@@ -80,8 +80,11 @@ public class AnimationBuildIns: Animation {
     }
     
     public func move(direction direction: MoveDirection, outsideViewBounds viewBounds: UIView? = nil) -> AnimationBuildIns {
-        move(direction: direction, offset: (viewBounds ?? view).layer.bounds.size)
-        return self
+        return move(direction: direction, offset: (viewBounds ?? view).layer.bounds.size)
+    }
+    
+    public func move() -> AnimationBuildIns {
+        return move(direction: .Top, outsideViewBounds: nil)
     }
     
     public func blast(direction: BlastDirection = .Implode) -> AnimationBuildIns {
