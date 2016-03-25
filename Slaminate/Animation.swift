@@ -187,7 +187,8 @@ public class Animation: NSObject {
     }
     
     // This is a dummy method which just ends the animation.
-    // Used only by Animation.Null
+    // Overridden by subclasses to do their own stuff.
+    // Used only by Animation.Null.
     func commit() {
         complete(true)
     }
