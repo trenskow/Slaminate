@@ -20,15 +20,15 @@ public func |(lhs: Animation, rhs: Animation) -> Animation {
 
 public class Animation: NSObject {
     
-    public static var Null: Animation {
-        return Animation()
-    }
-    
-    init(duration: NSTimeInterval = 0.0) {
+    init(duration: NSTimeInterval) {
         self.duration = duration
         super.init()
         ongoingAnimations.append(self)
         performSelector(#selector(Animation.go as (Animation) -> () -> Animation), withObject: nil, afterDelay: 0.0, inModes: [NSRunLoopCommonModes])
+    }
+    
+    public convenience override init() {
+        self.init(duration: 0.0)
     }
     
     @objc(isFinished) public var finished: Bool = false

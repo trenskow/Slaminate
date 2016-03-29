@@ -43,7 +43,7 @@ public class AnimationBuildIns: Animation {
         self.applyDuration = duration
         self.applyCurve = curve
         self.animations = AnimationGroup()
-        super.init()
+        super.init(duration: 0.0)
         self.preserveFromValue = Curve(transform: { self.hide ? ($0 == 1.0 ? 0.0 : $0) : ($0 == 0.0 ? 1.0 : $0) })
         self.animations.owner = self
     }
