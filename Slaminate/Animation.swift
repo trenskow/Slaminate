@@ -71,15 +71,27 @@ public class Animation: NSObject {
         }
     }
     
+    public override class func automaticallyNotifiesObserversForKey(key: String) -> Bool {
+        guard key != "position" else { return false }
+        return super.automaticallyNotifiesObserversForKey(key)
+    }
+    
     func setPosition(position: NSTimeInterval, apply: Bool = false) {
         guard position != _position else { return }
-        if apply && ((position > 0.0 && _position == 0.0) || (position == 00 && _position > 0.0)) {
-            emit(.Started)
-        } else if position >= delay + duration {
-            emit(.Completed)
-        }
+        let oldValue = _position
+        willChangeValueForKey("position")
         _position = position
-        if apply { postpone() }
+        didChangeValueForKey("position")
+        guard apply else { return }
+        if ((position > 0.0 && oldValue == 0.0) || (position == 00 && oldValue > 0.0)) {
+            emit(.Delay)
+        } else if position > delay && oldValue <= delay {
+            emit(.Animation)
+        } else if position >= delay + duration {
+            emit(.Complete)
+        }
+        emit(.Position)
+        postpone()
     }
     
     weak var owner: Animation? {
@@ -93,9 +105,11 @@ public class Animation: NSObject {
     
     func childAnimation(animation: Animation, didCompleteWithFinishState finished: Bool) {}
     
-    enum AnimationEvent {
-        case Started
-        case Completed
+    @objc public enum AnimationEvent: Int {
+        case Position
+        case Delay
+        case Animation
+        case Complete
     }
     
     private struct EventListener {
@@ -109,7 +123,7 @@ public class Animation: NSObject {
         eventListeners.filter({ $0.event == event }).forEach({ $0.then(self) })
     }
     
-    func on(event: AnimationEvent, then: (animation: Animation) -> Void) -> Animation {
+    public func on(event: AnimationEvent, then: (animation: Animation) -> Void) -> Animation {
         eventListeners.append(
             EventListener(
                 event: event,
@@ -118,17 +132,7 @@ public class Animation: NSObject {
         )
         return self
     }
-    
-    public func completed(closure: (animation: Animation) -> Void) -> Animation {
-        on(.Completed, then: closure)
-        return self
-    }
-    
-    public func started(closure: (animation: Animation) -> Void) -> Animation {
-        on(.Started, then:  closure)
-        return self
-    }
-    
+        
     public func delayed(delay: NSTimeInterval) -> Animation {
         self.delay = delay
         return self
@@ -187,6 +191,7 @@ public class Animation: NSObject {
     func complete(finished: Bool) {
         self.finished = finished
         setPosition(delay + duration)
+        emit(.Complete)
         if let owner = owner {
             owner.childAnimation(self, didCompleteWithFinishState: finished)
         } else {
@@ -203,6 +208,9 @@ public class Animation: NSObject {
     }
     
     func precommit() {
+        if (_position <= delay) {
+            emit(.Animation)
+        }
         setPosition(max(_position, delay))
         commit()
     }
@@ -217,7 +225,7 @@ public class Animation: NSObject {
     
     public func begin() {
         if position == 0.0 {
-            emit(.Started)
+            emit(.Delay)
         }
         preflight()
     }

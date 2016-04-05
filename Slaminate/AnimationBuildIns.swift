@@ -69,14 +69,10 @@ public class AnimationBuildIns: Animation {
         super.setPosition(position, apply: apply)
     }
     
-    public override func completed(closure: (animation: Animation) -> Void) -> AnimationBuildIns {
-        return super.completed(closure) as! AnimationBuildIns
+    public override func on(event: AnimationEvent, then: (animation: Animation) -> Void) -> AnimationBuildIns {
+        return super.on(event, then: then) as! AnimationBuildIns
     }
-    
-    public override func started(closure: (animation: Animation) -> Void) -> AnimationBuildIns {
-        return super.started(closure) as! AnimationBuildIns
-    }
-    
+        
     public override func delayed(delay: NSTimeInterval) -> AnimationBuildIns {
         return super.delayed(delay) as! AnimationBuildIns
     }
