@@ -10,23 +10,6 @@ import Foundation
 
 var ongoingAnimations = [Animation]()
 
-public func +(lhs: Animation, rhs: Animation) -> Animation {
-    return lhs.and(animation: rhs)
-}
-
-public func |(lhs: Animation, rhs: Animation) -> Animation {
-    return lhs.then(animation: rhs)
-}
-
-public func +=(inout lhs: Animation, rhs: Animation) {
-    lhs = lhs.and(animation: rhs)
-}
-
-infix operator |= { associativity right precedence 90 assignment }
-public func |=(inout lhs: Animation, rhs: Animation) {
-    lhs = lhs.then(animation: rhs)
-}
-
 public class Animation: NSObject {
     
     init(duration: NSTimeInterval) {

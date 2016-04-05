@@ -44,7 +44,7 @@ public class AnimationBuildIns: Animation {
         self.applyCurve = curve
         self.animations = AnimationGroup()
         super.init(duration: 0.0)
-        self.preserveFromValue = Curve(transform: { self.hide ? ($0 == 1.0 ? 0.0 : $0) : ($0 == 0.0 ? 1.0 : $0) })
+        self.preserveFromValue = Curve({ self.hide ? ($0 == 1.0 ? 0.0 : $0) : ($0 == 0.0 ? 1.0 : $0) })
         self.animations.owner = self
     }
     
@@ -174,7 +174,7 @@ public class AnimationBuildIns: Animation {
             key: "hidden",
             fromValue: false,
             toValue: true,
-            curve: applyCurve + Curve(transform: { t in
+            curve: applyCurve + Curve({ t in
                 return self.hide ? (t == 1.0 ? 1.0 : 0.0) : (t == 0.0 ? 1.0 : 0.0)
             })
             ))
