@@ -17,7 +17,7 @@
 		A1591B701C6B0384001687F6 /* CurvedAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18F35271C693C41005D2343 /* CurvedAnimation.swift */; };
 		A1591B711C6B0384001687F6 /* AnimationBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A113ACEB1C692C5200C3EDBB /* AnimationBuilder.swift */; };
 		A1591B721C6B0384001687F6 /* NSObject+Swizzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A113ACE91C692BFC00C3EDBB /* NSObject+Swizzle.swift */; };
-		A1591B731C6B0384001687F6 /* Interpolation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15402EA1C6662450035AB8C /* Interpolation.swift */; };
+		A1591B731C6B0384001687F6 /* Interpolatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15402EA1C6662450035AB8C /* Interpolatable.swift */; };
 		A1591B741C6B0384001687F6 /* LayerAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15402E41C6655400035AB8C /* LayerAnimation.swift */; };
 		A1591B751C6B0384001687F6 /* DirectAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15402E61C665F6D0035AB8C /* DirectAnimation.swift */; };
 		A1591B761C6B0384001687F6 /* AnimationGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15402E81C665FA40035AB8C /* AnimationGroup.swift */; };
@@ -41,7 +41,7 @@
 		A15402E41C6655400035AB8C /* LayerAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayerAnimation.swift; sourceTree = "<group>"; };
 		A15402E61C665F6D0035AB8C /* DirectAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DirectAnimation.swift; sourceTree = "<group>"; };
 		A15402E81C665FA40035AB8C /* AnimationGroup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationGroup.swift; sourceTree = "<group>"; };
-		A15402EA1C6662450035AB8C /* Interpolation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Interpolation.swift; sourceTree = "<group>"; };
+		A15402EA1C6662450035AB8C /* Interpolatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Interpolatable.swift; sourceTree = "<group>"; };
 		A1591B641C6B0329001687F6 /* Slaminate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Slaminate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A15C8F5F1C6C872500B2EB74 /* AnimationChain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationChain.swift; sourceTree = "<group>"; };
 		A165B2E61C70DDB200ADEB38 /* AnimationBuildIns.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationBuildIns.swift; sourceTree = "<group>"; };
@@ -137,7 +137,7 @@
 		A1AEACE01C74ADFA00EB7E82 /* Curves & Interpolation */ = {
 			isa = PBXGroup;
 			children = (
-				A15402EA1C6662450035AB8C /* Interpolation.swift */,
+				A15402EA1C6662450035AB8C /* Interpolatable.swift */,
 				A1D7045B1C664EC0009F7C8F /* Curve.swift */,
 			);
 			name = "Curves & Interpolation";
@@ -268,7 +268,7 @@
 				A1591B6D1C6B0381001687F6 /* Swizzle.swift in Sources */,
 				A1591B6F1C6B0381001687F6 /* PropertyInfo.swift in Sources */,
 				A1591B781C6B0384001687F6 /* Animation.swift in Sources */,
-				A1591B731C6B0384001687F6 /* Interpolation.swift in Sources */,
+				A1591B731C6B0384001687F6 /* Interpolatable.swift in Sources */,
 				A1FB7ACE1C6DF8610078BD8B /* ConstraintConstantAnimation.swift in Sources */,
 				A14F64561C7BA5870087BA4B /* ReversedAnimation.swift in Sources */,
 			);
