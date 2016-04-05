@@ -65,7 +65,7 @@ public class Animation: NSObject {
     func setPosition(position: NSTimeInterval, apply: Bool = false) {
         guard position != _position else { return }
         if apply && ((position > 0.0 && _position == 0.0) || (position == 00 && _position > 0.0)) {
-            emit(.Start)
+            emit(.Started)
         } else if position >= delay + duration {
             emit(.Completed)
         }
@@ -85,7 +85,7 @@ public class Animation: NSObject {
     func childAnimation(animation: Animation, didCompleteWithFinishState finished: Bool) {}
     
     enum AnimationEvent {
-        case Start
+        case Started
         case Completed
     }
     
@@ -116,7 +116,7 @@ public class Animation: NSObject {
     }
     
     public func started(closure: (animation: Animation) -> Void) -> Animation {
-        on(.Start, then:  closure)
+        on(.Started, then:  closure)
         return self
     }
     
@@ -187,8 +187,8 @@ public class Animation: NSObject {
     }
     
     // This is a dummy method which just ends the animation.
-    // Overridden by subclasses to do their own stuff.
-    // Used only by Animation.Null.
+    // Overridden by subclasses to do their own stuff - do not call super.
+    // Used only by null animations.
     func commit() {
         complete(true)
     }
@@ -208,7 +208,7 @@ public class Animation: NSObject {
     
     public func begin() {
         if position == 0.0 {
-            emit(.Start)
+            emit(.Started)
         }
         preflight()
     }

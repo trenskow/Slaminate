@@ -68,7 +68,23 @@ public class AnimationBuildIns: Animation {
         animations.setPosition(position, apply: apply)
         super.setPosition(position, apply: apply)
     }
-        
+    
+    public override func completed(closure: (animation: Animation) -> Void) -> AnimationBuildIns {
+        return super.completed(closure) as! AnimationBuildIns
+    }
+    
+    public override func started(closure: (animation: Animation) -> Void) -> AnimationBuildIns {
+        return super.started(closure) as! AnimationBuildIns
+    }
+    
+    public override func delayed(delay: NSTimeInterval) -> AnimationBuildIns {
+        return super.delayed(delay) as! AnimationBuildIns
+    }
+    
+    public override func manual() -> AnimationBuildIns {
+        return super.manual() as! AnimationBuildIns
+    }
+    
     public func fade() -> AnimationBuildIns {
         fades = true
         return self
@@ -193,10 +209,10 @@ extension UIView {
     public func setHidden(hidden: Bool, duration: NSTimeInterval, curve: Curve? = nil) -> AnimationBuildIns {
         return AnimationBuildIns(view: self, hide: hidden, duration: duration, curve: curve ?? Curve.linear)
     }
-    public func show(duration: NSTimeInterval, curve: Curve? = nil) -> AnimationBuildIns {
+    public func show(duration duration: NSTimeInterval, curve: Curve? = nil) -> AnimationBuildIns {
         return setHidden(false, duration: duration, curve: curve)
     }
-    public func hide(duration: NSTimeInterval, curve: Curve? = nil) -> AnimationBuildIns {
+    public func hide(duration duration: NSTimeInterval, curve: Curve? = nil) -> AnimationBuildIns {
         return setHidden(true, duration: duration, curve: curve)
     }
 }
