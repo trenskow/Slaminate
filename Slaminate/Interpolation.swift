@@ -9,7 +9,6 @@
 import Foundation
 
 protocol Interpolatable {
-    init()
     var canInterpolate: Bool { get }
     func interpolate(to: Interpolatable, _ position: Double) -> Interpolatable
     var objectValue: AnyObject? { get }
@@ -365,6 +364,13 @@ extension UIColor: Interpolatable {
         )
     }
     
+}
+
+extension CGColorRef: Interpolatable {
+    func interpolate(to: Interpolatable, _ position: Double) -> Interpolatable {
+        return (UIColor(CGColor: self).interpolate(UIColor(CGColor: to as! CGColorRef), position) as! UIColor).CGColor
+    }
+    var objectValue: AnyObject? { return self }
 }
 
 extension NSValue: Interpolatable {
