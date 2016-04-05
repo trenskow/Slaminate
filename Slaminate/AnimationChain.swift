@@ -15,7 +15,7 @@ class AnimationChain: Animation {
     
     init(animations: [Animation]) {
         self.animations = animations
-        super.init()
+        super.init(duration: 0.0)
         self.animations.forEach { (animation) -> () in
             animation.owner = self
         }

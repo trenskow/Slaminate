@@ -12,7 +12,7 @@ class AnimationGroup: Animation {
     
     init(animations: [Animation]) {
         self.animations = animations ?? []
-        super.init()
+        super.init(duration: 0.0)
         animations.forEach({ $0.owner = self })
     }
     
