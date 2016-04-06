@@ -136,6 +136,7 @@ public class Curve : NSObject {
     }).guarded
     public static let easeInOutBounce = easeInBounce | easeOutBounce
     
+    @objc(initWithTransform:)
     public init(_ transform: CurveTransform) {
         self.transform = transform
         super.init()
