@@ -186,23 +186,20 @@ class AnimationBuilder: AnimationGroup {
         buildState = .Building
         
         for propertyInfo in propertyInfos {
+            guard let object = propertyInfo.object, value = propertyInfo.toValue else { continue }
             
             var animation: Animation?
             
-            if let value = propertyInfo.toValue {
+            if LayerAnimation.canAnimate(object, key: propertyInfo.key) {
+                animation = LayerAnimation(duration: applyDuration, object: object, key: propertyInfo.key, toValue: value, curve: applyCurve ?? Curve.linear)
+            }
                 
-                if LayerAnimation.canAnimate(propertyInfo.object, key: propertyInfo.key) {
-                    animation = LayerAnimation(duration: applyDuration, object: propertyInfo.object, key: propertyInfo.key, toValue: value, curve: applyCurve ?? Curve.linear)
-                }
+            else if ConstraintConstantAnimation.canAnimate(object, key: propertyInfo.key) {
+                animation = ConstraintConstantAnimation(duration: applyDuration, object: object, key: propertyInfo.key, toValue: value, curve: applyCurve ?? Curve.linear)
+            }
                 
-                else if ConstraintConstantAnimation.canAnimate(propertyInfo.object, key: propertyInfo.key) {
-                    animation = ConstraintConstantAnimation(duration: applyDuration, object: propertyInfo.object, key: propertyInfo.key, toValue: value, curve: applyCurve ?? Curve.linear)
-                }
-                    
-                else if DirectAnimation.canAnimate(propertyInfo.object, key: propertyInfo.key) {
-                    animation = DirectAnimation(duration: applyDuration, object: propertyInfo.object, key: propertyInfo.key, toValue: value, curve: applyCurve ?? Curve.linear)
-                }
-                
+            else if DirectAnimation.canAnimate(object, key: propertyInfo.key) {
+                animation = DirectAnimation(duration: applyDuration, object: object, key: propertyInfo.key, toValue: value, curve: applyCurve ?? Curve.linear)
             }
             
             if let animation = animation {

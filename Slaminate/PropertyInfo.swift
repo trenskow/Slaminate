@@ -9,7 +9,7 @@
 import Foundation
 
 protocol PropertyInfoProtocol: Equatable, Hashable {
-    var object: NSObject { get set }
+    weak var object: NSObject? { get set }
     var key: String { get set }
     var fromValue: NSObject? { get set }
     var toValue: NSObject? { get set }
@@ -20,13 +20,13 @@ protocol PropertyInfoProtocol: Equatable, Hashable {
 
 extension PropertyInfoProtocol {
     func applyFromValue() {
-        object.setValue(fromValue, forKey: key)
+        object?.setValue(fromValue, forKey: key)
     }
     func applyToValue() {
-        object.setValue(toValue, forKey: key)
+        object?.setValue(toValue, forKey: key)
     }
     var hashValue: Int {
-        return object.hashValue + key.hashValue
+        return (object?.hashValue ?? 0) + key.hashValue
     }
 }
 
@@ -39,7 +39,7 @@ func ==<T: PropertyInfoProtocol>(lhs: T, rhs: (NSObject, String)) -> Bool {
 }
 
 struct PropertyInfo: PropertyInfoProtocol {
-    var object: NSObject
+    weak var object: NSObject?
     var key: String
     var fromValue: NSObject?
     var toValue: NSObject?

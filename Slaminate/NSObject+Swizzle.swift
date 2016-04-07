@@ -43,6 +43,7 @@ extension NSObject {
             slaminate_willChangeValueForKey(key)
         }
         
+        guard NSThread.isMainThread() else { return }
         guard self as? NSLayoutConstraint == nil else { return }
         guard AnimationBuilder.top.setObjectFromValue(self, key: key, value: valueForKey(key) as? NSObject) else {
             return;
@@ -56,6 +57,7 @@ extension NSObject {
             slaminate_didChangeValueForKey(key)
         }
         
+        guard NSThread.isMainThread() else { return }
         guard self as? NSLayoutConstraint == nil else { return }
         guard AnimationBuilder.top.setObjectToValue(self, key: key, value: valueForKey(key) as? NSObject) else {
             return
@@ -69,6 +71,7 @@ extension NSObject {
             slaminate_setValue(value, forKey: key)
         }
         
+        guard NSThread.isMainThread() else { return }
         guard self as? NSLayoutConstraint == nil else { return }
         
         guard AnimationBuilder.top.setObjectFromToValue(self, key: key, fromValue: valueForKey(key) as? NSObject, toValue: value as? NSObject) else {
