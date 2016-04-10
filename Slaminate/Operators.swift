@@ -33,17 +33,25 @@ public func |=(inout lhs: Animation, rhs: Animation) {
 }
 
 public func +(lhs: Curve, rhs: Curve) -> Curve {
-    return lhs.and(rhs)
+    return lhs.add(rhs)
+}
+
+public func *(lhs: Curve, rhs: Curve) -> Curve {
+    return lhs.multiply(rhs)
 }
 
 public func |(lhs: Curve, rhs: Curve) -> Curve {
-    return lhs.then(rhs)
+    return lhs.or(rhs)
 }
 
 public func +=(inout lhs: Curve, rhs: Curve) {
-    lhs = lhs.and(rhs)
+    lhs = lhs + rhs
+}
+
+public func *=(inout lhs: Curve, rhs: Curve) {
+    lhs = lhs * rhs
 }
 
 public func |=(inout lhs: Curve, rhs: Curve) {
-    lhs = lhs.then(rhs)
+    lhs = lhs | rhs
 }

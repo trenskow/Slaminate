@@ -7,16 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A13C26AF1C7D021900F0ABC4 /* CALayer+Additions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13C26AE1C7D021900F0ABC4 /* CALayer+Additions.swift */; };
+		A13C26AF1C7D021900F0ABC4 /* CALayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13C26AE1C7D021900F0ABC4 /* CALayer.swift */; };
 		A13C26B31C7F961700F0ABC4 /* Operators.swift in Sources */ = {isa = PBXBuildFile; fileRef = A13C26B21C7F961700F0ABC4 /* Operators.swift */; };
 		A14F64561C7BA5870087BA4B /* ReversedAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14F64551C7BA5870087BA4B /* ReversedAnimation.swift */; };
 		A1591B6C1C6B037D001687F6 /* Slaminate.h in Headers */ = {isa = PBXBuildFile; fileRef = A1D704431C664D14009F7C8F /* Slaminate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A1591B6D1C6B0381001687F6 /* Swizzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14E954D1C689B5600C303CC /* Swizzle.swift */; };
-		A1591B6E1C6B0381001687F6 /* UIView+CommonAncestor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18F35231C69361C005D2343 /* UIView+CommonAncestor.swift */; };
+		A1591B6E1C6B0381001687F6 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18F35231C69361C005D2343 /* UIView.swift */; };
 		A1591B6F1C6B0381001687F6 /* PropertyInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18F35251C6938B2005D2343 /* PropertyInfo.swift */; };
 		A1591B701C6B0384001687F6 /* CurvedAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A18F35271C693C41005D2343 /* CurvedAnimation.swift */; };
 		A1591B711C6B0384001687F6 /* AnimationBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A113ACEB1C692C5200C3EDBB /* AnimationBuilder.swift */; };
-		A1591B721C6B0384001687F6 /* NSObject+Swizzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A113ACE91C692BFC00C3EDBB /* NSObject+Swizzle.swift */; };
+		A1591B721C6B0384001687F6 /* NSObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = A113ACE91C692BFC00C3EDBB /* NSObject.swift */; };
 		A1591B731C6B0384001687F6 /* Interpolatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15402EA1C6662450035AB8C /* Interpolatable.swift */; };
 		A1591B741C6B0384001687F6 /* LayerAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15402E41C6655400035AB8C /* LayerAnimation.swift */; };
 		A1591B751C6B0384001687F6 /* DirectAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A15402E61C665F6D0035AB8C /* DirectAnimation.swift */; };
@@ -32,9 +32,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		A113ACE91C692BFC00C3EDBB /* NSObject+Swizzle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObject+Swizzle.swift"; sourceTree = "<group>"; };
+		A113ACE91C692BFC00C3EDBB /* NSObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSObject.swift; sourceTree = "<group>"; };
 		A113ACEB1C692C5200C3EDBB /* AnimationBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationBuilder.swift; sourceTree = "<group>"; };
-		A13C26AE1C7D021900F0ABC4 /* CALayer+Additions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CALayer+Additions.swift"; sourceTree = "<group>"; };
+		A13C26AE1C7D021900F0ABC4 /* CALayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CALayer.swift; sourceTree = "<group>"; };
 		A13C26B21C7F961700F0ABC4 /* Operators.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Operators.swift; sourceTree = "<group>"; };
 		A14E954D1C689B5600C303CC /* Swizzle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Swizzle.swift; sourceTree = "<group>"; };
 		A14F64551C7BA5870087BA4B /* ReversedAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReversedAnimation.swift; sourceTree = "<group>"; };
@@ -46,9 +46,10 @@
 		A15C8F5F1C6C872500B2EB74 /* AnimationChain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationChain.swift; sourceTree = "<group>"; };
 		A165B2E61C70DDB200ADEB38 /* AnimationBuildIns.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationBuildIns.swift; sourceTree = "<group>"; };
 		A17A19241C7A74D30036F485 /* PropertyAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyAnimation.swift; sourceTree = "<group>"; };
-		A18F35231C69361C005D2343 /* UIView+CommonAncestor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+CommonAncestor.swift"; sourceTree = "<group>"; };
+		A18F35231C69361C005D2343 /* UIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
 		A18F35251C6938B2005D2343 /* PropertyInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyInfo.swift; sourceTree = "<group>"; };
 		A18F35271C693C41005D2343 /* CurvedAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurvedAnimation.swift; sourceTree = "<group>"; };
+		A1A0144A1CBADD690090578A /* Curves.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Curves.playground; sourceTree = "<group>"; };
 		A1D704431C664D14009F7C8F /* Slaminate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Slaminate.h; sourceTree = "<group>"; };
 		A1D704451C664D14009F7C8F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A1D704531C664D48009F7C8F /* Animation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Animation.swift; sourceTree = "<group>"; };
@@ -124,11 +125,7 @@
 		A1117A861C6EE7F3006828D7 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				A13C26AE1C7D021900F0ABC4 /* CALayer+Additions.swift */,
-				A14E954D1C689B5600C303CC /* Swizzle.swift */,
-				A18F35231C69361C005D2343 /* UIView+CommonAncestor.swift */,
-				A113ACE91C692BFC00C3EDBB /* NSObject+Swizzle.swift */,
-				A1FB7ACB1C6DF67D0078BD8B /* Array.swift */,
+				A1E6A3701CB5CC5E00D4A6B3 /* Extensions */,
 				A13C26B21C7F961700F0ABC4 /* Operators.swift */,
 			);
 			name = Helpers;
@@ -146,6 +143,7 @@
 		A1D704361C664D14009F7C8F = {
 			isa = PBXGroup;
 			children = (
+				A1A0144A1CBADD690090578A /* Curves.playground */,
 				A1D704421C664D14009F7C8F /* Slaminate */,
 				A1D704411C664D14009F7C8F /* Products */,
 			);
@@ -169,6 +167,18 @@
 				A1D704451C664D14009F7C8F /* Info.plist */,
 			);
 			path = Slaminate;
+			sourceTree = "<group>";
+		};
+		A1E6A3701CB5CC5E00D4A6B3 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				A13C26AE1C7D021900F0ABC4 /* CALayer.swift */,
+				A14E954D1C689B5600C303CC /* Swizzle.swift */,
+				A18F35231C69361C005D2343 /* UIView.swift */,
+				A113ACE91C692BFC00C3EDBB /* NSObject.swift */,
+				A1FB7ACB1C6DF67D0078BD8B /* Array.swift */,
+			);
+			name = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -250,13 +260,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A1591B721C6B0384001687F6 /* NSObject+Swizzle.swift in Sources */,
+				A1591B721C6B0384001687F6 /* NSObject.swift in Sources */,
 				A165B2E71C70DDB200ADEB38 /* AnimationBuildIns.swift in Sources */,
 				A13C26B31C7F961700F0ABC4 /* Operators.swift in Sources */,
-				A1591B6E1C6B0381001687F6 /* UIView+CommonAncestor.swift in Sources */,
+				A1591B6E1C6B0381001687F6 /* UIView.swift in Sources */,
 				A17A19251C7A74D30036F485 /* PropertyAnimation.swift in Sources */,
 				A1591B701C6B0384001687F6 /* CurvedAnimation.swift in Sources */,
-				A13C26AF1C7D021900F0ABC4 /* CALayer+Additions.swift in Sources */,
+				A13C26AF1C7D021900F0ABC4 /* CALayer.swift in Sources */,
 				A1591B751C6B0384001687F6 /* DirectAnimation.swift in Sources */,
 				A1FB7ACC1C6DF67D0078BD8B /* Array.swift in Sources */,
 				A15C8F601C6C872500B2EB74 /* AnimationChain.swift in Sources */,

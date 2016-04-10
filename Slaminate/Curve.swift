@@ -10,8 +10,6 @@ public typealias CurveTransform = (Double -> Double)
 
 public class Curve : NSObject {
     
-    let transform: CurveTransform
-    
     public static let boolean = Curve({ ($0 < 0.5 ? 0.0 : 1.0) }).guarded
     public static let reversed = Curve({ 1.0 - $0 }).guarded
     
@@ -24,19 +22,19 @@ public class Curve : NSObject {
     
     public static let easeInQuad = Curve({ pow($0, 2) }).guarded
     public static let easeOutQuad = Curve({ -1.0 * $0 * ($0 - 2.0) }).guarded
-    public static let easeInOutQuad = easeInQuad | easeOutQuad.guarded
+    public static let easeInOutQuad = easeInQuad + easeOutQuad.guarded
     
     public static let easeInCubic = Curve({ pow($0, 3.0) }).guarded
     public static let easeOutCubic = Curve({ pow($0 - 1.0, 3.0) + 1.0 }).guarded
-    public static let easeInOutCubic = easeInCubic | easeOutCubic
+    public static let easeInOutCubic = easeInCubic + easeOutCubic
     
     public static let easeInQuart = Curve({ pow($0, 4.0) }).guarded
     public static let easeOutQuart = Curve({ -1.0 * (pow($0 - 1.0, 4.0) - 1.0) }).guarded
-    public static let easeInOutQuart = easeInQuart | easeOutQuart
+    public static let easeInOutQuart = easeInQuart + easeOutQuart
     
     public static let easeInQuint = Curve({ pow($0, 5.0) }).guarded
     public static let easeOutQuint = Curve({ 1.0 * (pow($0 - 1.0, 5.0) + 1.0) }).guarded
-    public static let easeInOutQuint = easeInQuint | easeOutQuint
+    public static let easeInOutQuint = easeInQuint + easeOutQuint
     
     public static let easeInSine = Curve({ (-1.0 * cos($0 * M_PI_2) + 1.0) }).guarded
     public static let easeOutSine = Curve({ sin($0 * M_PI_2) }).guarded
@@ -44,11 +42,11 @@ public class Curve : NSObject {
     
     public static let easeInExpo = Curve({ ($0 == 0.0 ? 0.0 : pow(2.0, 10.0 * ($0 - 1.0))) }).guarded
     public static let easeOutExpo = Curve({ -pow(2.0, -10.0 * $0) + 1.0 }).guarded
-    public static let easeInOutExpo = easeInExpo | easeOutExpo
+    public static let easeInOutExpo = easeInExpo + easeOutExpo
     
     public static let easeInCirc = Curve({ -1.0 * (sqrt(1.0 - pow($0, 2.0)) - 1.0) }).guarded
     public static let easeOutCirc = Curve({ sqrt(1.0 - pow($0 - 1.0, 2.0)) }).guarded
-    public static let easeInOutCirc = easeInCirc | easeOutCirc
+    public static let easeInOutCirc = easeInCirc + easeOutCirc
     
     public static let easeInElastic = Curve({
         
@@ -82,35 +80,11 @@ public class Curve : NSObject {
         return a * pow(2.0, -10.0 * $0) * sin(($0 - s) * (2 * M_PI) / p) + 1.0
         
     }).guarded
-    public static let easeInOutElastic = Curve({
-        
-        var s = 1.70158
-        var p = 0.3 * 1.5
-        var a = 1.0
-        
-        var t = $0 / 0.5
-        
-        if a < 1.0 {
-            a = 1.0
-            s = p / 4.0
-        } else {
-            s = p / (2.0 * M_PI) * asin (1.0 / a)
-        }
-        
-        if t < 1 {
-            t -= 1.0
-            return -0.5 * (a * pow(2.0,10.0 * t) * sin((t - s) * (2.0 * M_PI) / p))
-        }
-        
-        t -= 1.0
-        
-        return a * pow(2.0, -10.0 * t) * sin((t - s) * (2.0 * M_PI) / p) * 0.5 + 1.0
-        
-    }).guarded
+    public static let easeInOutElastic = easeInElastic + easeOutElastic
     
     public static let easeInBack = Curve({ $0 * $0 * (2.70158 * $0 - 1.70158) }).guarded
     public static let easeOutBack = Curve({ ($0 - 1.0) * ($0 - 1.0) * (2.70158 * ($0 - 1.0) + 1.70158) + 1.0 }).guarded
-    public static let easeInOutBack = easeInBack | easeOutBack
+    public static let easeInOutBack = easeInBack + easeOutBack
     
     public static let easeInBounce = Curve({ 1.0 - easeOutBounce.transform(1.0 - $0) }).guarded
     public static let easeOutBounce = Curve({
@@ -134,7 +108,9 @@ public class Curve : NSObject {
         
         return r;
     }).guarded
-    public static let easeInOutBounce = easeInBounce | easeOutBounce
+    public static let easeInOutBounce = easeInBounce + easeOutBounce
+    
+    public let transform: CurveTransform
     
     @objc(initWithTransform:)
     public init(_ transform: CurveTransform) {
@@ -142,11 +118,18 @@ public class Curve : NSObject {
         super.init()
     }
     
-    public func and(curve: Curve) -> Curve {
-        return Curve({ curve.transform(self.transform($0)) })
+    public func or(curve: Curve) -> Curve {
+        let linear = Curve.linear
+        return Curve({
+            return self.delta(linear).transform($0) + curve.delta(linear).transform($0) + linear.transform($0)
+        })
     }
     
-    public func then(curve: Curve) -> Curve {
+    public func multiply(curve: Curve) -> Curve {
+        return Curve({ return curve.transform(self.transform($0)) })
+    }
+    
+    public func add(curve: Curve) -> Curve {
         return Curve({
             if ($0 < 0.5) { return self.transform($0 * 2.0) / 2.0}
             return curve.transform(($0 - 0.5) * 2.0) / 2.0 + 0.5
@@ -155,14 +138,19 @@ public class Curve : NSObject {
     
     public var guarded: Curve {
         return Curve({
-            guard $0 > 0.0 && $0 < 1.0 else { return $0 <= 0.0 ? 0.0 : 1.0 }
-            return self.transform($0)
+            return self.transform(min(1.0, max(0.0, $0)))
         })
     }
     
     public var reversed: Curve {
         return Curve({
             return 1.0 - self.transform(1.0 - $0)
+        })
+    }
+    
+    public func delta(curve: Curve) -> Curve {
+        return Curve({
+            return self.transform($0) - curve.transform($0)
         })
     }
     

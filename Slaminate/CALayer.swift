@@ -100,6 +100,10 @@ extension CALayer {
         ])
     }
     
+    var stateLayer: CALayer {
+        return presentationLayer() as? CALayer ?? self
+    }
+    
 }
 
 extension CAEmitterCell: CoreAnimationKVCExtension {
