@@ -81,7 +81,7 @@ class DirectAnimation: Animation, PropertyAnimation {
         let position = position / duration * speed
         
         if position >= 1.0 {
-            object.setValue(fromValue.interpolate(toValue, curve.transform(1.0)).objectValue!, forKey: key)
+            object.setValue(fromValue.interpolate(toValue, curve.transform(1.0)).objectValue, forKey: key)
             complete(true)
         }
         
@@ -96,7 +96,7 @@ class DirectAnimation: Animation, PropertyAnimation {
             )
             
         } else {
-            object.setValue(fromValue.interpolate(toValue, curve.transform(0.0)).objectValue!, forKey: key)
+            object.setValue(fromValue.interpolate(toValue, curve.transform(0.0)).objectValue, forKey: key)
         }
         
     }

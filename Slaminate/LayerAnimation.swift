@@ -28,7 +28,7 @@ class LayerAnimation: DirectAnimation {
     }
     
     override func animationDidStart(anim: CAAnimation) {
-        object.setValue((fromValue as! Interpolatable).interpolate(toValue as! Interpolatable, curve.transform(1.0)).objectValue!, forKey: key)
+        object.setValue((fromValue as! Interpolatable).interpolate(toValue as! Interpolatable, curve.transform(1.0)).objectValue, forKey: key)
     }
     
     override func animationDidStop(anim: CAAnimation, finished flag: Bool) {

@@ -11,42 +11,42 @@ import Foundation
 protocol Interpolatable {
     var canInterpolate: Bool { get }
     func interpolate(to: Interpolatable, _ position: Double) -> Interpolatable
-    var objectValue: AnyObject? { get }
+    var objectValue: AnyObject { get }
 }
 
 extension Interpolatable {
     var canInterpolate: Bool {
         return true
     }
-    var objectValue: AnyObject? { return self as? AnyObject }
+    var objectValue: AnyObject { return self as! AnyObject }
 }
 
 extension Bool: Interpolatable {
     func interpolate(to: Interpolatable, _ position: Double) -> Interpolatable {
         return (position > 0.5 ? to : self)
     }
-    var objectValue: AnyObject? { return NSNumber(bool: self) }
+    var objectValue: AnyObject { return NSNumber(bool: self) }
 }
 
 extension Double: Interpolatable {
     func interpolate(to: Interpolatable, _ position: Double) -> Interpolatable {
         return (to as! Double - self) * position + self
     }
-    var objectValue: AnyObject? { return NSNumber(double: self) }
+    var objectValue: AnyObject { return NSNumber(double: self) }
 }
 
 extension Float: Interpolatable {
     func interpolate(to: Interpolatable, _ position: Double) -> Interpolatable {
         return (to as! Float - self) * Float(position) + self
     }
-    var objectValue: AnyObject? { return NSNumber(float: self) }
+    var objectValue: AnyObject { return NSNumber(float: self) }
 }
 
 extension CGFloat: Interpolatable {
     func interpolate(to: Interpolatable, _ position: Double) -> Interpolatable {
         return (to as! CGFloat - self) * CGFloat(position) + self
     }
-    var objectValue: AnyObject? { return NSNumber(double: Double(self)) }
+    var objectValue: AnyObject { return NSNumber(double: Double(self)) }
 }
 
 extension CGPoint: Interpolatable {
@@ -56,7 +56,7 @@ extension CGPoint: Interpolatable {
             y: y.interpolate((to as! CGPoint).y, position) as! CGFloat
         )
     }
-    var objectValue: AnyObject? { return NSValue(CGPoint: self) }
+    var objectValue: AnyObject { return NSValue(CGPoint: self) }
 }
 
 extension CGSize: Interpolatable {
@@ -66,7 +66,7 @@ extension CGSize: Interpolatable {
             height: height.interpolate((to as! CGSize).height, position) as! CGFloat
         )
     }
-    var objectValue: AnyObject? { return NSValue(CGSize: self) }
+    var objectValue: AnyObject { return NSValue(CGSize: self) }
 }
 
 extension CGRect: Interpolatable {
@@ -76,7 +76,7 @@ extension CGRect: Interpolatable {
             size: size.interpolate((to as! CGRect).size, position) as! CGSize
         )
     }
-    var objectValue: AnyObject? { return NSValue(CGRect: self) }
+    var objectValue: AnyObject { return NSValue(CGRect: self) }
 }
 
 private struct Quaternion: Equatable, Interpolatable {
@@ -334,7 +334,7 @@ extension CATransform3D : Interpolatable {
         
     }
     
-    var objectValue: AnyObject? { return NSValue(CATransform3D: self) }
+    var objectValue: AnyObject { return NSValue(CATransform3D: self) }
     
 }
 
@@ -370,7 +370,7 @@ extension CGColorRef: Interpolatable {
     func interpolate(to: Interpolatable, _ position: Double) -> Interpolatable {
         return (UIColor(CGColor: self).interpolate(UIColor(CGColor: to as! CGColorRef), position) as! UIColor).CGColor
     }
-    var objectValue: AnyObject? { return self }
+    var objectValue: AnyObject { return self }
 }
 
 extension NSValue: Interpolatable {

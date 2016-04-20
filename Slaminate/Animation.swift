@@ -271,4 +271,7 @@ extension NSObject {
     public func setValue(value: AnyObject?, forKey key: String, duration: NSTimeInterval, curve: Curve? = nil) -> Animation {
         return Slaminate(duration: duration, curve: curve, animation: { [weak self] in self?.setValue(value, forKey: key) })
     }
+    public func setValue(value: AnyObject?, forKeyPath keyPath: String, duration: NSTimeInterval, curve: Curve? = nil) -> Animation {
+        return Slaminate(duration: duration, curve: curve, animation: { [weak self] in self?.setValue(value, forKeyPath: keyPath) })
+    }
 }
