@@ -11,7 +11,7 @@ import Foundation
 var ongoingAnimations = [Animation]()
 
 public class Animation: NSObject {
-    
+        
     init(duration: NSTimeInterval) {
         self.duration = duration
         super.init()
@@ -268,8 +268,14 @@ extension NSObject {
             animation: animation
         )
     }
+    public class func slaminating() -> Bool {
+        return AnimationBuilder.top != nil
+    }
+    public func animateProperty(key: String, fromValue: AnyObject?, toValue: AnyObject, duration: NSTimeInterval, curve: Curve? = nil) -> Animation! {
+        return self.pick(key, toValue: toValue)!.init(duration: duration, object: self, key: key, fromValue: fromValue, toValue: toValue, curve: curve ?? Curve.linear) as! Animation
+    }
     public func setValue(value: AnyObject?, forKey key: String, duration: NSTimeInterval, curve: Curve? = nil) -> Animation {
-        return Slaminate(duration: duration, curve: curve, animation: { [weak self] in self?.setValue(value, forKey: key) })
+        return setValue(value, forKeyPath: key, duration: duration, curve: curve)
     }
     public func setValue(value: AnyObject?, forKeyPath keyPath: String, duration: NSTimeInterval, curve: Curve? = nil) -> Animation {
         return Slaminate(duration: duration, curve: curve, animation: { [weak self] in self?.setValue(value, forKeyPath: keyPath) })

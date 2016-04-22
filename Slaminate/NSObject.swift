@@ -132,4 +132,20 @@ extension NSObject {
         slaminate_removeConstraints(constraints)
     }
     
+    func pick(key: String, toValue: Any) -> PropertyAnimation.Type? {
+        if LayerAnimation.canAnimate(self, key: key) {
+            return LayerAnimation.self
+        }
+            
+        else if ConstraintConstantAnimation.canAnimate(self, key: key) {
+            return ConstraintConstantAnimation.self
+        }
+            
+        else if DirectAnimation.canAnimate(self, key: key) {
+            return DirectAnimation.self
+        }
+        
+        return nil
+    }
+    
 }

@@ -38,18 +38,18 @@ class DirectAnimation: Animation, PropertyAnimation {
         update(position - delay)
     }
     
-    required init(duration: NSTimeInterval, object: NSObject, key: String, toValue: Any, curve: Curve) {
+    required init(duration: NSTimeInterval, object: NSObject, key: String, fromValue: Any?, toValue: Any, curve: Curve) {
         self.object = object
         self.key = key
         self.toValue = toValue
         self.curve = curve
+        self.fromValue = fromValue
+        self.fromValueIsConcrete = (fromValue != nil)
         super.init(duration: duration)
     }
     
-    convenience init(duration: NSTimeInterval, object: NSObject, key: String, fromValue: Any, toValue: Any, curve: Curve) {
-        self.init(duration: duration, object: object, key: key, toValue: toValue, curve: curve)
-        self.fromValue = fromValue
-        self.fromValueIsConcrete = true
+    convenience init(duration: NSTimeInterval, object: NSObject, key: String, toValue: Any, curve: Curve) {
+        self.init(duration: duration, object: object, key: key, fromValue: nil, toValue: toValue, curve: curve)
     }
     
     override func commit() {

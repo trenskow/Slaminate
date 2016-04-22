@@ -11,8 +11,8 @@ import Foundation
 class LayerAnimation: DirectAnimation {
     
     override class func canAnimate(object: NSObject, key: String) -> Bool {
-        guard (object.valueForKey(key) as? Interpolatable)?.canInterpolate == true else { return false }
         guard let layer = object as? CoreAnimationKVCExtension else { return false }
+        guard (object.valueForKeyPath(key) as? Interpolatable)?.canInterpolate == true else { return false }
         return layer.dynamicType.animatableKeyPaths.contains(key)
     }
     
@@ -22,9 +22,9 @@ class LayerAnimation: DirectAnimation {
     
     var animation: CurvedAnimation?
     
-    required init(duration: NSTimeInterval, object: NSObject, key: String, toValue: Any, curve: Curve) {
+    required init(duration: NSTimeInterval, object: NSObject, key: String, fromValue: Any?, toValue: Any, curve: Curve) {
         self.layer = object as! CALayer
-        super.init(duration: duration, object: object, key: key, toValue: toValue, curve: curve)
+        super.init(duration: duration, object: object, key: key, fromValue: fromValue, toValue: toValue, curve: curve)
     }
     
     override func animationDidStart(anim: CAAnimation) {

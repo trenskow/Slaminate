@@ -13,14 +13,15 @@ class ReversedAnimation: DirectAnimation {
             duration: animation.duration + animation.delay - animation.position,
             object: animation,
             key: "position",
+            fromValue: nil,
             toValue: 0.0,
             curve: Curve.linear
         )
         animation.owner = self
     }
     
-    required init(duration: NSTimeInterval, object: NSObject, key: String, toValue: Any, curve: Curve) {
-        super.init(duration: duration, object: object, key: key, toValue: toValue, curve: curve)
+    required init(duration: NSTimeInterval, object: NSObject, key: String, fromValue: Any?, toValue: Any, curve: Curve) {
+        super.init(duration: duration, object: object, key: key, fromValue: fromValue, toValue: toValue, curve: curve)
     }
     
     override var reversed: Bool {

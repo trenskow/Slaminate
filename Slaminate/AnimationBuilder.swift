@@ -17,8 +17,8 @@ class AnimationBuilder: AnimationGroup {
         NSObject.swizzled = builders.some({ $0.buildState == .Collecting })
     }
     
-    static var top: AnimationBuilder {
-        return builders.last!
+    static var top: AnimationBuilder! {
+        return builders.last
     }
     
     enum AnimationBuilderState {
@@ -186,24 +186,21 @@ class AnimationBuilder: AnimationGroup {
         buildState = .Building
         
         for propertyInfo in propertyInfos {
-            guard let object = propertyInfo.object, value = propertyInfo.toValue else { continue }
+            guard let object = propertyInfo.object, toValue = propertyInfo.toValue else { continue }
             
-            var animation: Animation?
-            
-            if LayerAnimation.canAnimate(object, key: propertyInfo.key) {
-                animation = LayerAnimation(duration: applyDuration, object: object, key: propertyInfo.key, toValue: value, curve: applyCurve ?? Curve.linear)
-            }
-                
-            else if ConstraintConstantAnimation.canAnimate(object, key: propertyInfo.key) {
-                animation = ConstraintConstantAnimation(duration: applyDuration, object: object, key: propertyInfo.key, toValue: value, curve: applyCurve ?? Curve.linear)
-            }
-                
-            else if DirectAnimation.canAnimate(object, key: propertyInfo.key) {
-                animation = DirectAnimation(duration: applyDuration, object: object, key: propertyInfo.key, toValue: value, curve: applyCurve ?? Curve.linear)
-            }
+            let animation = object.pick(
+                propertyInfo.key, toValue: toValue
+            )?.init(
+                duration: applyDuration,
+                object: object,
+                key: propertyInfo.key,
+                fromValue: nil,
+                toValue: toValue,
+                curve: applyCurve
+            )
             
             if let animation = animation {
-                add(animation)
+                add(animation as! Animation)
             } else {
                 propertyInfo.applyToValue()
             }
