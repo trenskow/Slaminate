@@ -272,7 +272,7 @@ extension NSObject {
         return AnimationBuilder.top != nil
     }
     public func animateProperty(key: String, fromValue: AnyObject?, toValue: AnyObject, duration: NSTimeInterval, curve: Curve? = nil) -> Animation! {
-        return self.pick(key, toValue: toValue)!.init(duration: duration, object: self, key: key, fromValue: fromValue, toValue: toValue, curve: curve ?? Curve.linear) as! Animation
+        return self.pick(key, fromValue: fromValue, toValue: toValue, duration: duration, curve: curve)
     }
     public func setValue(value: AnyObject?, forKey key: String, duration: NSTimeInterval, curve: Curve? = nil) -> Animation {
         return setValue(value, forKeyPath: key, duration: duration, curve: curve)

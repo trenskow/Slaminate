@@ -189,18 +189,15 @@ class AnimationBuilder: AnimationGroup {
             guard let object = propertyInfo.object, toValue = propertyInfo.toValue else { continue }
             
             let animation = object.pick(
-                propertyInfo.key, toValue: toValue
-            )?.init(
-                duration: applyDuration,
-                object: object,
-                key: propertyInfo.key,
+                propertyInfo.key,
                 fromValue: nil,
                 toValue: toValue,
-                curve: applyCurve
-            )
+                duration: duration,
+                curve: applyCurve)
+            ;
             
             if let animation = animation {
-                add(animation as! Animation)
+                add(animation)
             } else {
                 propertyInfo.applyToValue()
             }
