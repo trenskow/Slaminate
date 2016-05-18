@@ -378,6 +378,8 @@ extension NSValue: Interpolatable {
     private var typeEncoding: String {
         get {
             return String(CString: objCType, encoding: NSUTF8StringEncoding)!
+            .stringByReplacingOccurrencesOfString("NS", withString: "CG")
+            .stringByReplacingOccurrencesOfString("ff", withString: "dd")
         }
     }
     
@@ -415,10 +417,13 @@ extension NSValue: Interpolatable {
         }
         
         switch typeEncoding {
-        case "d":
+        case "f", "d":
             let val = value(Double()).interpolate((to as! NSValue).value(Double()), position)
             return NSNumber(double: val as! Double)
-        case "{CGPoint=dd}":
+        case "{CGPoint=dd}",
+             "{CGPoint=ff}",
+             "{NSPoint=ff}",
+             "{NSPoint=dd}":
             let val = value(CGPoint()).interpolate((to as! NSValue).value(CGPoint()), position)
             return NSValue(CGPoint: val as! CGPoint)
         case "{CGSize=dd}":
