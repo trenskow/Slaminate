@@ -378,6 +378,7 @@ extension NSValue: Interpolatable {
     private var typeEncoding: String {
         get {
             return String(CString: objCType, encoding: NSUTF8StringEncoding)!
+            // Fix 32-bit
             .stringByReplacingOccurrencesOfString("NS", withString: "CG")
             .stringByReplacingOccurrencesOfString("ff", withString: "dd")
         }
