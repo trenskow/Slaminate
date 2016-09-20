@@ -9,7 +9,7 @@
 import Foundation
 
 // Operator to only assign if nil.
-infix operator ??= { associativity right precedence 90 assignment }
-func ??=<T>(inout lhs: T?, rhs: T?) {
+infix operator ??=
+func ??=<T>(lhs: inout T?, rhs: T?) {
     lhs = lhs ?? rhs
 }

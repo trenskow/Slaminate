@@ -11,7 +11,7 @@ import Foundation
 class AnimationChain: Animation {
     
     var animations: [Animation]
-    private var commited: Bool = false
+    fileprivate var commited: Bool = false
     
     init(animations: [Animation]) {
         self.animations = animations
@@ -21,9 +21,9 @@ class AnimationChain: Animation {
         }
     }
         
-    @objc override var duration: NSTimeInterval {
+    @objc override var duration: TimeInterval {
         get {
-            return self.animations.reduce(0.0, combine: { (c, animation) -> NSTimeInterval in
+            return self.animations.reduce(0.0, { (c, animation) -> TimeInterval in
                 return c + animation.delay + animation.duration
             })
         }
@@ -38,10 +38,10 @@ class AnimationChain: Animation {
         }
     }
         
-    override func setPosition(position: NSTimeInterval, apply: Bool) {
+    override func setPosition(_ position: TimeInterval, apply: Bool) {
         defer { super.setPosition(position, apply: apply) }
         guard apply else { return }
-        _ = animations.reduce(delay) { (total, animation) -> NSTimeInterval in
+        _ = animations.reduce(delay) { (total, animation) -> TimeInterval in
             let full = animation.delay + animation.duration
             animation.setPosition(max(0.0, min(full, position - total)), apply: apply)
             return total + full
@@ -53,7 +53,7 @@ class AnimationChain: Animation {
         animateNext()
     }
     
-    override func then(animations animations: [Animation]) -> Animation {
+    override func then(animations: [Animation]) -> Animation {
         animations.forEach { animation in
             animation.owner = self
             self.animations.append(animation)
@@ -61,16 +61,16 @@ class AnimationChain: Animation {
         return self
     }
     
-    private func animateNext() {
+    fileprivate func animateNext() {
         guard commited else { return }
         if let nextAnimation = animations.filter({ $0.position < $0.delay + $0.duration }).first {
             nextAnimation.begin()
         } else {
-            complete(animations.reduce(true, combine: { $0 && $1.finished }))
+            complete(animations.reduce(true, { $0 && $1.finished }))
         }
     }
     
-    override func childAnimation(animation: Animation, didCompleteWithFinishState finished: Bool) {
+    override func childAnimation(_ animation: Animation, didCompleteWithFinishState finished: Bool) {
         animateNext()
     }
     

@@ -10,9 +10,9 @@ import Foundation
 
 class DirectAnimation: Animation, PropertyAnimation {
     
-    class func canAnimate(object: NSObject, key: String) -> Bool {
+    class func canAnimate(_ object: NSObject, key: String) -> Bool {
         guard !(object is NSLayoutConstraint) else { return false }
-        return (object.valueForKey(key) as? Interpolatable)?.canInterpolate == true
+        return (object.value(forKey: key) as? Interpolatable)?.canInterpolate == true
     }
     
     var object: NSObject
@@ -23,10 +23,10 @@ class DirectAnimation: Animation, PropertyAnimation {
     var toValue: Any
     var curve: Curve
     
-    var animationStart: NSDate?
+    var animationStart: Date?
     var displayLink: CADisplayLink?
     
-    override func setPosition(position: NSTimeInterval, apply: Bool) {
+    override func setPosition(_ position: TimeInterval, apply: Bool) {
         defer { super.setPosition(position, apply: apply) }
         guard apply else { return }
         guard position != _position else { return }
@@ -38,7 +38,7 @@ class DirectAnimation: Animation, PropertyAnimation {
         update(position - delay)
     }
     
-    required init(duration: NSTimeInterval, object: NSObject, key: String, toValue: Any, curve: Curve) {
+    required init(duration: TimeInterval, object: NSObject, key: String, toValue: Any, curve: Curve) {
         self.object = object
         self.key = key
         self.toValue = toValue
@@ -46,35 +46,35 @@ class DirectAnimation: Animation, PropertyAnimation {
         super.init(duration: duration)
     }
     
-    convenience init(duration: NSTimeInterval, object: NSObject, key: String, fromValue: Any, toValue: Any, curve: Curve) {
+    convenience init(duration: TimeInterval, object: NSObject, key: String, fromValue: Any, toValue: Any, curve: Curve) {
         self.init(duration: duration, object: object, key: key, toValue: toValue, curve: curve)
         self.fromValue = fromValue
         self.fromValueIsConcrete = true
     }
     
     override func commit() {
-        animationStart = NSDate(timeIntervalSinceNow: -position + delay)
+        animationStart = Date(timeIntervalSinceNow: -position + delay)
         displayLink = CADisplayLink(target: self, selector: #selector(DirectAnimation.displayDidUpdate))
-        displayLink?.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSRunLoopCommonModes)
+        displayLink?.add(to: RunLoop.main, forMode: RunLoopMode.commonModes)
     }
     
-    override func complete(finished: Bool) {
+    override func complete(_ finished: Bool) {
         displayLink?.invalidate()
         displayLink = nil
         animationStart = nil
         super.complete(finished)
     }
     
-    func update(position: Double) {
+    func update(_ position: Double) {
         
         if invalidatedFromValue {
             self.fromValue = nil
             invalidatedFromValue = false
         }
         
-        self.fromValue ??= object.valueForKey(key)
+        self.fromValue ??= object.value(forKey: key)
         
-        guard let fromValue = fromValue as? Interpolatable, toValue = toValue as? Interpolatable else  {
+        guard let fromValue = fromValue as? Interpolatable, let toValue = toValue as? Interpolatable else  {
             fatalError("Cannot interpolate non-interpolatable types.")
         }
         

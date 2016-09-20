@@ -11,7 +11,7 @@ import Foundation
 protocol Interpolatable {
     init()
     var canInterpolate: Bool { get }
-    func interpolate(to: Interpolatable, _ position: Double) -> Interpolatable
+    func interpolate(_ to: Interpolatable, _ position: Double) -> Interpolatable
     var objectValue: AnyObject? { get }
 }
 
@@ -19,65 +19,65 @@ extension Interpolatable {
     var canInterpolate: Bool {
         return true
     }
-    var objectValue: AnyObject? { return self as? AnyObject }
+    var objectValue: AnyObject? { return self as AnyObject }
 }
 
 extension Bool: Interpolatable {
-    func interpolate(to: Interpolatable, _ position: Double) -> Interpolatable {
+    func interpolate(_ to: Interpolatable, _ position: Double) -> Interpolatable {
         return (position > 0.5 ? to : self)
     }
-    var objectValue: AnyObject? { return NSNumber(bool: self) }
+    var objectValue: AnyObject? { return NSNumber(value: self as Bool) }
 }
 
 extension Double: Interpolatable {
-    func interpolate(to: Interpolatable, _ position: Double) -> Interpolatable {
+    func interpolate(_ to: Interpolatable, _ position: Double) -> Interpolatable {
         return (to as! Double - self) * position + self
     }
-    var objectValue: AnyObject? { return NSNumber(double: self) }
+    var objectValue: AnyObject? { return NSNumber(value: self as Double) }
 }
 
 extension Float: Interpolatable {
-    func interpolate(to: Interpolatable, _ position: Double) -> Interpolatable {
+    func interpolate(_ to: Interpolatable, _ position: Double) -> Interpolatable {
         return (to as! Float - self) * Float(position) + self
     }
-    var objectValue: AnyObject? { return NSNumber(float: self) }
+    var objectValue: AnyObject? { return NSNumber(value: self as Float) }
 }
 
 extension CGFloat: Interpolatable {
-    func interpolate(to: Interpolatable, _ position: Double) -> Interpolatable {
+    func interpolate(_ to: Interpolatable, _ position: Double) -> Interpolatable {
         return (to as! CGFloat - self) * CGFloat(position) + self
     }
-    var objectValue: AnyObject? { return NSNumber(double: Double(self)) }
+    var objectValue: AnyObject? { return NSNumber(value: Double(self) as Double) }
 }
 
 extension CGPoint: Interpolatable {
-    func interpolate(to: Interpolatable, _ position: Double) -> Interpolatable {
+    func interpolate(_ to: Interpolatable, _ position: Double) -> Interpolatable {
         return CGPoint(
             x: x.interpolate((to as! CGPoint).x, position) as! CGFloat,
             y: y.interpolate((to as! CGPoint).y, position) as! CGFloat
         )
     }
-    var objectValue: AnyObject? { return NSValue(CGPoint: self) }
+    var objectValue: AnyObject? { return NSValue(cgPoint: self) }
 }
 
 extension CGSize: Interpolatable {
-    func interpolate(to: Interpolatable, _ position: Double) -> Interpolatable {
+    func interpolate(_ to: Interpolatable, _ position: Double) -> Interpolatable {
         return CGSize(
             width: width.interpolate((to as! CGSize).width, position) as! CGFloat,
             height: height.interpolate((to as! CGSize).height, position) as! CGFloat
         )
     }
-    var objectValue: AnyObject? { return NSValue(CGSize: self) }
+    var objectValue: AnyObject? { return NSValue(cgSize: self) }
 }
 
 extension CGRect: Interpolatable {
-    func interpolate(to: Interpolatable, _ position: Double) -> Interpolatable {
+    func interpolate(_ to: Interpolatable, _ position: Double) -> Interpolatable {
         return CGRect(
             origin: origin.interpolate((to as! CGRect).origin, position) as! CGPoint,
             size: size.interpolate((to as! CGRect).size, position) as! CGSize
         )
     }
-    var objectValue: AnyObject? { return NSValue(CGRect: self) }
+    var objectValue: AnyObject? { return NSValue(cgRect: self) }
 }
 
 private struct Quaternion: Equatable, Interpolatable {
@@ -85,7 +85,7 @@ private struct Quaternion: Equatable, Interpolatable {
     var y: CGFloat = 0.0
     var z: CGFloat = 0.0
     var w: CGFloat = 0.0
-    private func interpolate(to: Interpolatable, _ position: Double) -> Interpolatable {
+    fileprivate func interpolate(_ to: Interpolatable, _ position: Double) -> Interpolatable {
         return Quaternion(
             x: x.interpolate((to as! Quaternion).x, position) as! CGFloat,
             y: y.interpolate((to as! Quaternion).y, position) as! CGFloat,
@@ -101,14 +101,14 @@ private func ==(lhs: Quaternion, rhs: Quaternion) -> Bool {
 
 extension CATransform3D : Interpolatable {
     
-    private init(a: [CGFloat]) {
+    fileprivate init(a: [CGFloat]) {
         m11 = a[0];  m12 = a[1];  m13 = a[2];  m14 = a[3]
         m21 = a[4];  m22 = a[5];  m23 = a[6];  m24 = a[7]
         m31 = a[8];  m32 = a[9];  m33 = a[10]; m34 = a[11]
         m41 = a[12]; m42 = a[13]; m43 = a[14]; m44 = a[15]
     }
     
-    private func toArray() -> [CGFloat] {
+    fileprivate func toArray() -> [CGFloat] {
         return [
             m11, m12, m13, m14,
             m21, m22, m23, m24,
@@ -117,7 +117,7 @@ extension CATransform3D : Interpolatable {
         ]
     }
     
-    private func transpose(m: CATransform3D) -> CATransform3D {
+    fileprivate func transpose(_ m: CATransform3D) -> CATransform3D {
         
         var mT = m.toArray()
         var rT = CATransform3D().toArray()
@@ -136,7 +136,7 @@ extension CATransform3D : Interpolatable {
         
     }
     
-    private func matrixQuaternion(m: CATransform3D) -> Quaternion {
+    fileprivate func matrixQuaternion(_ m: CATransform3D) -> Quaternion {
         
         var q = Quaternion()
         
@@ -186,7 +186,7 @@ extension CATransform3D : Interpolatable {
         
     }
     
-    private func quaternionMatrix(q: Quaternion) -> CATransform3D {
+    fileprivate func quaternionMatrix(_ q: Quaternion) -> CATransform3D {
         
         var m = CATransform3D()
         
@@ -214,7 +214,7 @@ extension CATransform3D : Interpolatable {
         
     }
     
-    private func interpolateQuaternion(a: Quaternion, b: Quaternion, position: Double) -> Quaternion {
+    fileprivate func interpolateQuaternion(_ a: Quaternion, b: Quaternion, position: Double) -> Quaternion {
         
         var q = Quaternion()
         
@@ -246,7 +246,7 @@ extension CATransform3D : Interpolatable {
         
     }
     
-    private init(tf: CATransform3D, s: Quaternion) {
+    fileprivate init(tf: CATransform3D, s: Quaternion) {
         m11 = tf.m11 / s.x
         m12 = tf.m12 / s.x
         m13 = tf.m13 / s.x
@@ -265,7 +265,7 @@ extension CATransform3D : Interpolatable {
         m44 = 1.0
     }
     
-    func interpolate(to: Interpolatable, _ position: Double) -> Interpolatable {
+    func interpolate(_ to: Interpolatable, _ position: Double) -> Interpolatable {
         
         var fromTf = self
         var toTf = to as! CATransform3D
@@ -335,29 +335,29 @@ extension CATransform3D : Interpolatable {
         
     }
     
-    var objectValue: AnyObject? { return NSValue(CATransform3D: self) }
+    var objectValue: AnyObject? { return NSValue(caTransform3D: self) }
     
 }
 
 extension UIColor: Interpolatable {
     
-    private struct Components {
+    fileprivate struct Components {
         var red:CGFloat = 0.0
         var blue:CGFloat = 0.0
         var green:CGFloat = 0.0
         var alpha:CGFloat = 0.0
     }
     
-    private var components: Components {
+    fileprivate var components: Components {
         var components = Components()
         getRed(&components.red, green: &components.green, blue: &components.blue, alpha: &components.alpha)
         return components
     }
     
-    func interpolate(to: Interpolatable, _ position: Double) -> Interpolatable {
+    func interpolate(_ to: Interpolatable, _ position: Double) -> Interpolatable {
         let from = components
         let to = (to as! UIColor).components
-        return self.dynamicType.init(
+        return type(of: self).init(
             red: from.red.interpolate(to.red, position) as! CGFloat,
             green: from.green.interpolate(to.green, position) as! CGFloat,
             blue: from.blue.interpolate(to.blue, position) as! CGFloat,
@@ -369,13 +369,13 @@ extension UIColor: Interpolatable {
 
 extension NSValue: Interpolatable {
     
-    private var typeEncoding: String {
+    fileprivate var typeEncoding: String {
         get {
-            return String(CString: objCType, encoding: NSUTF8StringEncoding)!
+            return String(cString: objCType, encoding: String.Encoding.utf8)!
         }
     }
     
-    private func value<T>(initialValue: T) -> T {
+    fileprivate func value<T>(_ initialValue: T) -> T {
         var val = initialValue
         getValue(&val)
         return val
@@ -392,15 +392,15 @@ extension NSValue: Interpolatable {
         ].contains(typeEncoding)
     }
     
-    func interpolate(to: Interpolatable, _ position: Double) -> Interpolatable {
+    func interpolate(_ to: Interpolatable, _ position: Double) -> Interpolatable {
         
         // If number - but not same type.
-        if let to = to as? NSNumber, from = self as? NSNumber {
+        if let to = to as? NSNumber, let from = self as? NSNumber {
             if from.typeEncoding == "c" && to.typeEncoding == "c" {
-                return NSNumber(bool: from.boolValue.interpolate(to.boolValue, position) as! Bool)
+                return NSNumber(value: from.boolValue.interpolate(to.boolValue, position) as! Bool as Bool)
             }
             if from.typeEncoding != "d" || to.typeEncoding != "d" {
-                return NSNumber(double: from.doubleValue.interpolate(to.doubleValue, position) as! Double)
+                return NSNumber(value: from.doubleValue.interpolate(to.doubleValue, position) as! Double as Double)
             }
         }
         
@@ -411,19 +411,19 @@ extension NSValue: Interpolatable {
         switch typeEncoding {
         case "d":
             let val = value(Double()).interpolate((to as! NSValue).value(Double()), position)
-            return NSNumber(double: val as! Double)
+            return NSNumber(value: val as! Double as Double)
         case "{CGPoint=dd}":
             let val = value(CGPoint()).interpolate((to as! NSValue).value(CGPoint()), position)
-            return NSValue(CGPoint: val as! CGPoint)
+            return NSValue(cgPoint: val as! CGPoint)
         case "{CGSize=dd}":
             let val = value(CGSize()).interpolate((to as! NSValue).value(CGSize()), position)
-            return NSValue(CGSize: val as! CGSize)
+            return NSValue(cgSize: val as! CGSize)
         case "{CGRect={CGPoint=dd}{CGSize=dd}}":
             let val = value(CGRect()).interpolate((to as! NSValue).value(CGRect()), position)
-            return NSValue(CGRect: val as! CGRect)
+            return NSValue(cgRect: val as! CGRect)
         case "{CATransform3D=dddddddddddddddd}":
             let val = value(CATransform3D()).interpolate((to as! NSValue).value(CATransform3D()), position)
-            return NSValue(CATransform3D: val as! CATransform3D)
+            return NSValue(caTransform3D: val as! CATransform3D)
         default:
             fatalError("Interpolation does not support type encoding \(typeEncoding).")
             break

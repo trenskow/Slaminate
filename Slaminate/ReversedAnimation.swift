@@ -19,7 +19,7 @@ class ReversedAnimation: DirectAnimation {
         animation.owner = self
     }
     
-    required init(duration: NSTimeInterval, object: NSObject, key: String, toValue: Any, curve: Curve) {
+    required init(duration: TimeInterval, object: NSObject, key: String, toValue: Any, curve: Curve) {
         super.init(duration: duration, object: object, key: key, toValue: toValue, curve: curve)
     }
     

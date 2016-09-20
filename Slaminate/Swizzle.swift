@@ -34,7 +34,7 @@ protocol Swizzled {
     var enabled: Bool { get set }
 }
 
-struct Swizzle<T where T: MethodInfo>: Swizzled {
+struct Swizzle<T>: Swizzled where T: MethodInfo {
     var foundation: MethodInfo
     var slaminate: MethodInfo
     init(cls: AnyClass, _ selectorName: String) {

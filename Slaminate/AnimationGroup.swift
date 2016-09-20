@@ -11,7 +11,7 @@ class AnimationGroup: Animation {
     var animations: [Animation]
     
     init(animations: [Animation]) {
-        self.animations = animations ?? []
+        self.animations = animations
         super.init(duration: 0.0)
         animations.forEach({ $0.owner = self })
     }
@@ -20,7 +20,7 @@ class AnimationGroup: Animation {
         self.init(animations: [])
     }
         
-    override func setPosition(position: NSTimeInterval, apply: Bool) {
+    override func setPosition(_ position: TimeInterval, apply: Bool) {
         defer { super.setPosition(position, apply: apply) }
         guard apply else { return }
         animations.forEach({
@@ -31,9 +31,9 @@ class AnimationGroup: Animation {
         })
     }
     
-    override var duration: NSTimeInterval {
+    override var duration: TimeInterval {
         get {
-            return animations.reduce(0.0) { (c, animation) -> NSTimeInterval in
+            return animations.reduce(0.0) { (c, animation) -> TimeInterval in
                 return max(c, animation.delay + animation.duration)
             }
         }
@@ -57,12 +57,12 @@ class AnimationGroup: Animation {
         }
     }
     
-    func add(animation: Animation) {
+    func add(_ animation: Animation) {
         animations.append(animation)
         animation.owner = self
     }
     
-    override func and(animations animations: [Animation]) -> Animation {
+    override func and(animations: [Animation]) -> Animation {
         guard !(self is AnimationBuilder) else {
             return super.and(animations: animations)
         }
@@ -70,9 +70,9 @@ class AnimationGroup: Animation {
         return self
     }
     
-    override func childAnimation(animation: Animation, didCompleteWithFinishState finished: Bool) {
+    override func childAnimation(_ animation: Animation, didCompleteWithFinishState finished: Bool) {
         if animations.all({ $0.position >= $0.delay + $0.duration }) {
-            complete(animations.reduce(true, combine: { $0 && $1.finished } ))
+            complete(animations.reduce(true, { $0 && $1.finished } ))
         }
     }
     
