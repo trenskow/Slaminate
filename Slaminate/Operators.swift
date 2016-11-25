@@ -9,10 +9,10 @@
 import Foundation
 
 // Operator to only assign if nil.
-infix operator ??= { associativity right precedence 90 assignment }
-infix operator |= { associativity right precedence 90 assignment }
+infix operator ??=
+infix operator |=
 
-func ??=<T>(inout lhs: T?, rhs: T?) {
+func ??=<T>(lhs: inout T?, rhs: T?) {
     lhs = lhs ?? rhs
 }
 
@@ -24,34 +24,34 @@ public func |(lhs: Animation, rhs: Animation) -> Animation {
     return lhs.then(animation: rhs)
 }
 
-public func +=(inout lhs: Animation, rhs: Animation) {
+public func +=(lhs: inout Animation, rhs: Animation) {
     lhs = lhs.and(animation: rhs)
 }
 
-public func |=(inout lhs: Animation, rhs: Animation) {
+public func |=(lhs: inout Animation, rhs: Animation) {
     lhs = lhs.then(animation: rhs)
 }
 
 public func +(lhs: Curve, rhs: Curve) -> Curve {
-    return lhs.add(rhs)
+    return lhs.add(curve: rhs)
 }
 
 public func *(lhs: Curve, rhs: Curve) -> Curve {
-    return lhs.multiply(rhs)
+    return lhs.multiply(curve: rhs)
 }
 
 public func |(lhs: Curve, rhs: Curve) -> Curve {
-    return lhs.or(rhs)
+    return lhs.or(curve: rhs)
 }
 
-public func +=(inout lhs: Curve, rhs: Curve) {
+public func +=(lhs: inout Curve, rhs: Curve) {
     lhs = lhs + rhs
 }
 
-public func *=(inout lhs: Curve, rhs: Curve) {
+public func *=(lhs: inout Curve, rhs: Curve) {
     lhs = lhs * rhs
 }
 
-public func |=(inout lhs: Curve, rhs: Curve) {
+public func |=(lhs: inout Curve, rhs: Curve) {
     lhs = lhs | rhs
 }

@@ -7,10 +7,11 @@
 //
 
 protocol PropertyAnimation {
-    static func canAnimate(object: NSObject, key: String) -> Bool
+    static func canAnimate(_ object: NSObject, key: String) -> Bool
     var object: NSObject { get }
     var key: String { get }
+    var fromValue: Any? { get }
     var toValue: Any { get }
     var curve: Curve { get }
-    init(duration: NSTimeInterval, object: NSObject, key: String, fromValue: Any?, toValue: Any, curve: Curve)
+    init(duration: TimeInterval, object: NSObject, key: String, fromValue: Any?, toValue: Any, curve: Curve)
 }

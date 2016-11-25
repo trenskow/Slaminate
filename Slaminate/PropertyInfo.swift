@@ -50,14 +50,14 @@ struct PropertyInfo: PropertyInfoProtocol {
 }
 
 extension Array where Element: PropertyInfoProtocol {
-    mutating func indexOf(object: NSObject, key: String) -> Index {
+    mutating func indexOf(_ object: NSObject, key: String) -> Index {
         for index in self.indices {
             if self[index] == (object, key) {
                 return index
             }
         }
         append(Element(object: object, key: key))
-        return endIndex.advancedBy(-1)
+        return endIndex.advanced(by: -1)
     }
     func applyFromValues() {
         self.forEach({ $0.applyFromValue() })

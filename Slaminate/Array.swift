@@ -8,7 +8,7 @@
 
 extension Array {
     
-    func some(@noescape filter: Element -> Bool) -> Bool {
+    func some(_ filter: (Element) -> Bool) -> Bool {
         for element in self {
             if filter(element) {
                 return true
@@ -17,7 +17,7 @@ extension Array {
         return false
     }
     
-    func all(@noescape filter: Element -> Bool) -> Bool {
+    func all(_ filter: (Element) -> Bool) -> Bool {
         if self.count == 0 { return false }
         var ret = true
         for element in self {

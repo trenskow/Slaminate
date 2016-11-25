@@ -13,8 +13,8 @@ class AnimationBuilder: AnimationGroup {
     static var allAnimations = [AnimationGroup]()
     static var builders = [AnimationBuilder]()
     
-    private static func updateSwizzle() {
-        NSObject.swizzled = builders.some({ $0.buildState == .Collecting })
+    fileprivate static func updateSwizzle() {
+        NSObject.swizzled = builders.some({ $0.buildState == .collecting })
     }
     
     static var top: AnimationBuilder! {
@@ -22,14 +22,14 @@ class AnimationBuilder: AnimationGroup {
     }
     
     enum AnimationBuilderState {
-        case Waiting
-        case Collecting
-        case Resetting
-        case Building
-        case Done
+        case waiting
+        case collecting
+        case resetting
+        case building
+        case done
     }
     
-    var buildState = AnimationBuilderState.Building {
+    var buildState = AnimationBuilderState.building {
         didSet {
             AnimationBuilder.updateSwizzle()
         }
@@ -39,18 +39,18 @@ class AnimationBuilder: AnimationGroup {
     var constraintInfos = [PropertyInfo]()
     var constraintPresenceInfos = [ConstraintPresenceInfo]()
     
-    let animation: Void -> Void
-    var applyDuration: NSTimeInterval
+    let animation: (Void) -> Void
+    var applyDuration: TimeInterval
     var applyCurve: Curve
     
-    init(duration: NSTimeInterval, curve: Curve, animation: Void -> Void) {
+    init(duration: TimeInterval, curve: Curve, animation: @escaping (Void) -> Void) {
         self.animation = animation
         self.applyCurve = curve
         self.applyDuration = duration
         super.init(animations: [])
     }
     
-    override var duration: NSTimeInterval {
+    override var duration: TimeInterval {
         get { return applyDuration }
         set {
             applyDuration = newValue
@@ -58,16 +58,16 @@ class AnimationBuilder: AnimationGroup {
         }
     }
         
-    override func setPosition(position: NSTimeInterval, apply: Bool) {
+    override func setPosition(_ position: TimeInterval, apply: Bool) {
         if position > 0.0 {
             build()
         }
         super.setPosition(position, apply: apply)
     }
     
-    func setObjectFromValue(object: NSObject, key: String, value: NSObject?) -> Bool {
+    func setObjectFromValue(_ object: NSObject, key: String, value: NSObject?) -> Bool {
         
-        guard buildState == .Collecting else {
+        guard buildState == .collecting else {
             return false
         }
         
@@ -78,9 +78,9 @@ class AnimationBuilder: AnimationGroup {
         
     }
     
-    func setObjectToValue(object: NSObject, key: String, value: NSObject?) -> Bool {
+    func setObjectToValue(_ object: NSObject, key: String, value: NSObject?) -> Bool {
         
-        guard buildState == .Collecting else {
+        guard buildState == .collecting else {
             return false
         }
         
@@ -90,9 +90,9 @@ class AnimationBuilder: AnimationGroup {
         
     }
     
-    func setObjectFromToValue(object: NSObject, key: String, fromValue: NSObject?, toValue: NSObject?) -> Bool {
+    func setObjectFromToValue(_ object: NSObject, key: String, fromValue: NSObject?, toValue: NSObject?) -> Bool {
         
-        guard buildState == .Collecting else {
+        guard buildState == .collecting else {
             return false
         }
         
@@ -104,23 +104,23 @@ class AnimationBuilder: AnimationGroup {
         
     }
     
-    func setConstraintValue(object: NSLayoutConstraint, key: String, fromValue: NSObject, toValue: NSObject) {
+    func setConstraintValue(_ object: NSLayoutConstraint, key: String, fromValue: NSObject, toValue: NSObject) {
         
-        guard buildState == .Collecting else { return }
+        guard buildState == .collecting else { return }
         
         let index = constraintInfos.indexOf(object, key: key)
         constraintInfos[index].fromValue ??= fromValue
         constraintInfos[index].toValue = toValue
         
         if key == "constant" {
-            setObjectFromToValue(object, key: key, fromValue: fromValue, toValue: toValue)
+            _ = setObjectFromToValue(object, key: key, fromValue: fromValue, toValue: toValue)
         }
 
     }
     
-    func addConstraintPresence(view: UIView, constraint: NSLayoutConstraint, added: Bool) {
+    func addConstraintPresence(_ view: UIView, constraint: NSLayoutConstraint, added: Bool) {
         
-        guard buildState == .Collecting else { return }
+        guard buildState == .collecting else { return }
         
         constraintPresenceInfos.append(ConstraintPresenceInfo(
             view: view,
@@ -132,7 +132,7 @@ class AnimationBuilder: AnimationGroup {
     
     func collectAnimations() {
         
-        guard buildState == .Collecting else {
+        guard buildState == .collecting else {
             fatalError("Finalizing without collecting.")
         }
         
@@ -144,14 +144,14 @@ class AnimationBuilder: AnimationGroup {
                 ($0.object as! NSLayoutConstraint).secondItem as? UIView
         ) })
         
-        views.appendContentsOf(constraintPresenceInfos.map({ (
+        views.append(contentsOf: constraintPresenceInfos.map({ (
             ($0.constraint.firstItem as! UIView),
             ($0.constraint.secondItem as? UIView)
         ) }))
         
         if let first = views.first {
             
-            var common = views.reduce(first.1 != nil ? first.0.commonAncestor(first.1!)! : first.0, combine: { (c, views) -> UIView in
+            var common = views.reduce(first.1 != nil ? first.0.commonAncestor(first.1!)! : first.0, { (c, views) -> UIView in
                 var first = c.commonAncestor(views.0)
                 if let _ = views.1 {
                     first = first?.commonAncestor(views.1!)
@@ -159,14 +159,14 @@ class AnimationBuilder: AnimationGroup {
                 return first!
             })
             
-            if let superview = common.superview where superview as? UIWindow == nil {
+            if let superview = common.superview , superview as? UIWindow == nil {
                 common = superview
             }
             
             common.updateConstraints()
             common.layoutSubviews()
             
-            buildState = .Resetting
+            buildState = .resetting
             
             constraintInfos.applyFromValues()
             constraintPresenceInfos.applyPresent(false)
@@ -176,25 +176,24 @@ class AnimationBuilder: AnimationGroup {
             
         }
         
-        buildState = .Resetting
+        buildState = .resetting
         
         // Apply from value to all but constraints constants.
         propertyInfos.filter({
             $0.key != "constant" && !($0.object is NSLayoutConstraint)
         }).applyFromValues()
         
-        buildState = .Building
+        buildState = .building
         
         for propertyInfo in propertyInfos {
-            guard let object = propertyInfo.object, toValue = propertyInfo.toValue else { continue }
+            guard let object = propertyInfo.object, let toValue = propertyInfo.toValue else { continue }
             
             let animation = object.pick(
-                propertyInfo.key,
+                animationForKey: propertyInfo.key,
                 fromValue: nil,
                 toValue: toValue,
                 duration: duration,
                 curve: applyCurve)
-            ;
             
             if let animation = animation {
                 add(animation)
@@ -204,15 +203,15 @@ class AnimationBuilder: AnimationGroup {
             
         }
         
-        buildState = .Done
+        buildState = .done
         
     }
     
     func build() {
-        guard buildState == .Building else { return }
+        guard buildState == .building else { return }
         AnimationBuilder.builders.append(self)
-        buildState = .Collecting
-        let enabled = UIView.areAnimationsEnabled()
+        buildState = .collecting
+        let enabled = UIView.areAnimationsEnabled
         UIView.setAnimationsEnabled(false)
         animation()
         collectAnimations()
@@ -225,7 +224,7 @@ class AnimationBuilder: AnimationGroup {
         super.commit()
     }
     
-    override func complete(finished: Bool) {
+    override func complete(_ finished: Bool) {
         constraintInfos.applyToValues()
         constraintPresenceInfos.applyPresent(true)
         super.complete(finished)

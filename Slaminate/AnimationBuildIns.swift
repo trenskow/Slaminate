@@ -8,51 +8,51 @@
 
 import UIKit
 
-public class AnimationBuildIns: Animation {
+open class AnimationBuildIns: Animation {
     
     @objc public enum MoveDirection: Int {
-        case Top
-        case Right
-        case Bottom
-        case Left
+        case top
+        case right
+        case bottom
+        case left
     }
     
     @objc public enum FlipDirection: Int {
-        case TopDown
-        case BottomUp
-        case RightToLeft
-        case LeftToRight
+        case topDown
+        case bottomUp
+        case rightToLeft
+        case leftToRight
     }
     
-    private var animations: Animation
+    fileprivate var animations: Animation
     
-    private weak var view: UIView!
-    private var hide: Bool
-    private var applyDuration: NSTimeInterval
-    private var applyCurve: Curve?
+    fileprivate weak var view: UIView!
+    fileprivate var hide: Bool
+    fileprivate var applyDuration: TimeInterval
+    fileprivate var applyCurve: Curve?
     
-    private var fades: (enabled: Bool, curve: Curve?) = (false, nil)
-    private var moves: (enabled: Bool, direction: MoveDirection, offset: CGSize, curve: Curve?) = (false, .Top, CGSize(), nil)
-    private var flip: (enabled: Bool, direction: FlipDirection, curve: Curve?) = (false, .TopDown, nil)
+    fileprivate var fades: (enabled: Bool, curve: Curve?) = (false, nil)
+    fileprivate var moves: (enabled: Bool, direction: MoveDirection, offset: CGSize, curve: Curve?) = (false, .top, CGSize(), nil)
+    fileprivate var flip: (enabled: Bool, direction: FlipDirection, curve: Curve?) = (false, .topDown, nil)
     
-    private var preserveFromValueCurve: Curve! = nil
+    fileprivate var preserveFromValueCurve: Curve! = nil
     
-    private var isBuild: Bool = false
+    fileprivate var isBuild: Bool = false
     
-    init(view: UIView, hide: Bool, duration: NSTimeInterval, curve: Curve?) {
+    init(view: UIView, hide: Bool, duration: TimeInterval, curve: Curve) {
         self.view = view
         self.hide = hide
         self.applyDuration = duration
         self.applyCurve = curve
         self.animations = AnimationGroup()
         super.init(duration: 0.0)
-        self.preserveFromValueCurve = Curve({ [unowned self] in
+        self.preserveFromValueCurve = Curve(transform: { [unowned self] in
             self.hide ? ($0 == 1.0 ? 0.0 : $0) : ($0 == 0.0 ? 1.0 : $0) }
         )
         self.animations.owner = self
     }
     
-    override public var duration: NSTimeInterval {
+    override open var duration: TimeInterval {
         get { return applyDuration }
         set {
             applyDuration = newValue
@@ -60,12 +60,12 @@ public class AnimationBuildIns: Animation {
         }
     }
     
-    override public var position: NSTimeInterval {
+    override open var position: TimeInterval {
         get { return animations.position }
         set { setPosition(newValue, apply: true) }
     }
     
-    override func setPosition(position: NSTimeInterval, apply: Bool) {
+    override func setPosition(_ position: TimeInterval, apply: Bool) {
         if position > 0.0 {
             build()
         }
@@ -73,29 +73,29 @@ public class AnimationBuildIns: Animation {
         super.setPosition(position, apply: apply)
     }
     
-    public override func on(event: AnimationEvent, then: (animation: Animation) -> Void) -> AnimationBuildIns {
+    override open func on(_ event: AnimationEvent, then: @escaping (Animation) -> Void) -> AnimationBuildIns {
         return super.on(event, then: then) as! AnimationBuildIns
     }
         
-    public override func delayed(delay: NSTimeInterval) -> AnimationBuildIns {
+    override open func delayed(_ delay: TimeInterval) -> AnimationBuildIns {
         return super.delayed(delay) as! AnimationBuildIns
     }
     
-    public override func manual() -> AnimationBuildIns {
+    override open func manual() -> AnimationBuildIns {
         return super.manual() as! AnimationBuildIns
     }
     
-    public func fade(curve curve: Curve? = nil) -> AnimationBuildIns {
+    open func fade(curve: Curve? = nil) -> AnimationBuildIns {
         fades = (true, curve)
         return self
     }
     
-    private func buildFade() {
-        guard view.hidden != hide else { return }
+    fileprivate func buildFade() {
+        guard view.isHidden != hide else { return }
         var fromValue: CGFloat = CGFloat(self.view.layer.stateLayer.opacity)
         var toValue: CGFloat = 0.0
         if !hide { swap(&fromValue, &toValue) }
-        animations.and(animation: LayerAnimation(
+        _ = animations.and(animation: LayerAnimation(
             duration: applyDuration,
             object: view.layer,
             key: "opacity",
@@ -105,35 +105,35 @@ public class AnimationBuildIns: Animation {
             ))
     }
     
-    public func move(direction direction: MoveDirection, offset: CGSize, curve: Curve? = nil) -> AnimationBuildIns {
+    open func move(direction: MoveDirection, offset: CGSize, curve: Curve? = nil) -> AnimationBuildIns {
         moves = (true, direction, offset, curve)
         return self
     }
     
-    public func move(direction direction: MoveDirection, outsideViewBounds viewBounds: UIView? = nil, curve: Curve? = nil) -> AnimationBuildIns {
+    open func move(direction: MoveDirection, outsideViewBounds viewBounds: UIView? = nil, curve: Curve? = nil) -> AnimationBuildIns {
         return move(direction: direction, offset: (viewBounds ?? view).layer.bounds.size, curve: nil)
     }
     
-    public func move() -> AnimationBuildIns {
-        return move(direction: .Top, outsideViewBounds: nil)
+    open func move() -> AnimationBuildIns {
+        return move(direction: .top, outsideViewBounds: nil)
     }
     
-    private func buildMove() {
-        guard view.hidden != hide else { return }
+    fileprivate func buildMove() {
+        guard view.isHidden != hide else { return }
         var fromValue = view.layer.stateLayer.position
         var toValue = fromValue
         switch moves.direction {
-        case .Top:
+        case .top:
             toValue.y -= moves.offset.height
-        case .Right:
+        case .right:
             toValue.x += moves.offset.width
-        case .Bottom:
+        case .bottom:
             toValue.y += moves.offset.height
-        case .Left:
+        case .left:
             toValue.x -= moves.offset.width
         }
         if !hide { swap(&fromValue, &toValue) }
-        animations.and(animation: LayerAnimation(
+        _ = animations.and(animation: LayerAnimation(
             duration: applyDuration,
             object: view.layer,
             key: "position",
@@ -143,24 +143,24 @@ public class AnimationBuildIns: Animation {
             ))
     }
     
-    public func flip(direction direction: FlipDirection, curve: Curve? = nil) -> AnimationBuildIns {
+    open func flip(direction: FlipDirection, curve: Curve? = nil) -> AnimationBuildIns {
         flip = (true, direction, curve ?? flip.curve)
         return self
     }
     
-    public func buildFlip() {
-        guard view.hidden != hide else { return }
+    fileprivate func buildFlip() {
+        guard view.isHidden != hide else { return }
         var keyPath = "transform.rotation.x"
-        if flip.direction == .RightToLeft || flip.direction == .LeftToRight {
+        if flip.direction == .rightToLeft || flip.direction == .leftToRight {
             keyPath = "transform.rotation.y"
         }
-        var fromValue = view.layer.stateLayer.valueForKeyPath(keyPath) as! Double
+        var fromValue = view.layer.stateLayer.value(forKeyPath: keyPath) as! Double
         var toValue = M_PI_2
-        if flip.direction == .BottomUp || flip.direction == .LeftToRight {
+        if flip.direction == .bottomUp || flip.direction == .leftToRight {
             toValue *= -1.0;
         }
         if !hide { swap(&fromValue, &toValue) }
-        animations.and(animation:
+        _ = animations.and(animation:
             LayerAnimation(
                 duration: applyDuration,
                 object: view.layer,
@@ -168,30 +168,30 @@ public class AnimationBuildIns: Animation {
                 fromValue: fromValue,
                 toValue: toValue,
                 curve: (flip.curve ?? applyCurve ?? Curve.linear) * preserveFromValueCurve)
-            .on(.Delay, then: { [weak self] (animation) in
+                .on(.delayed, then: { [weak self] (animation) in
                 var transform = CATransform3DIdentity
                 transform.m34 = 1.0 / -500.0
                 self?.view.superview?.layer.sublayerTransform = transform
             })
-            .on(.Complete, then: { [weak self] (animation) in
+                .on(.completed, then: { [weak self] (animation) in
                 self?.view.superview?.layer.sublayerTransform = CATransform3DIdentity
             })
         )
     }
     
-    private func build() {
+    fileprivate func build() {
         guard !isBuild else { return }
         
         isBuild = true
         
         // We need to hide no matter what.
-        animations.and(animation: LayerAnimation(
+        _ = animations.and(animation: LayerAnimation(
             duration: applyDuration,
             object: view.layer,
             key: "hidden",
             fromValue: false,
             toValue: true,
-            curve: (applyCurve ?? Curve.linear) * Curve({ t in
+            curve: (applyCurve ?? Curve.linear) * Curve(transform: { t in
                 return self.hide ? (t == 1.0 ? 1.0 : 0.0) : (t == 0.0 ? 1.0 : 0.0)
             })
             ))
@@ -212,20 +212,20 @@ public class AnimationBuildIns: Animation {
         animations.begin()
     }
     
-    override func childAnimation(animation: Animation, didCompleteWithFinishState finished: Bool) {
+    override func child(animation: Animation, didCompleteWithFinishState finished: Bool) {
         complete(finished)
     }
     
 }
 
 extension UIView {
-    public func setHidden(hidden: Bool, duration: NSTimeInterval, curve: Curve? = nil) -> AnimationBuildIns {
-        return AnimationBuildIns(view: self, hide: hidden, duration: duration, curve: curve)
+    public func setHidden(_ hidden: Bool, duration: TimeInterval, curve: Curve? = nil) -> AnimationBuildIns {
+        return AnimationBuildIns(view: self, hide: hidden, duration: duration, curve: curve ?? Curve.linear)
     }
-    public func show(duration duration: NSTimeInterval, curve: Curve? = nil) -> AnimationBuildIns {
+    public func show(duration: TimeInterval, curve: Curve? = nil) -> AnimationBuildIns {
         return setHidden(false, duration: duration, curve: curve)
     }
-    public func hide(duration duration: NSTimeInterval, curve: Curve? = nil) -> AnimationBuildIns {
+    public func hide(duration: TimeInterval, curve: Curve? = nil) -> AnimationBuildIns {
         return setHidden(true, duration: duration, curve: curve)
     }
 }

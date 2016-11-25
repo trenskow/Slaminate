@@ -9,12 +9,12 @@
 protocol CoreAnimationKVCExtension {
     static var animatableKeyPaths: [String] { get }
     var animatableKeyPaths: [String] { get }
-    static func keyPathsForName(name: String) -> [String]
+    static func keyPaths(forName name: String) -> [String]
 }
 
 extension CoreAnimationKVCExtension {
     var animatableKeyPaths: [String] {
-        return self.dynamicType.animatableKeyPaths;
+        return type(of: self).animatableKeyPaths;
     }
 }
 
@@ -22,7 +22,7 @@ extension CoreAnimationKVCExtension {
     static var animatableKeyPaths: [String] {
         return []
     }
-    static func keyPathsForName(name: String) -> [String] {
+    static func keyPaths(forName name: String) -> [String] {
         return [name] + animatableKeyPaths.map({ "\(name).\($0)" })
     }
 }
@@ -36,7 +36,7 @@ extension CATransform3D: CoreAnimationKVCExtension {
         ]
     }
     var animatableKeyPaths: [String] {
-        return self.dynamicType.animatableKeyPaths;
+        return type(of: self).animatableKeyPaths;
     }
 }
 
@@ -45,7 +45,7 @@ extension CGPoint: CoreAnimationKVCExtension {
         return [ "x", "y" ]
     }
     var animatableKeyPaths: [String] {
-        return self.dynamicType.animatableKeyPaths;
+        return type(of: self).animatableKeyPaths;
     }
 }
 
@@ -54,19 +54,19 @@ extension CGSize: CoreAnimationKVCExtension {
         return ["width", "height"]
     }
     var animatableKeyPaths: [String] {
-        return self.dynamicType.animatableKeyPaths;
+        return type(of: self).animatableKeyPaths;
     }
 }
 
 extension CGRect: CoreAnimationKVCExtension {
     static var animatableKeyPaths: [String] {
         return [String](union: [
-            "origin".keyPathForType(CGPoint),
-            "size".keyPathForType(CGSize)
+            "origin".keyPath(forType: CGPoint.self),
+            "size".keyPath(forType: CGSize.self)
         ])
     }
     var animatableKeyPaths: [String] {
-        return self.dynamicType.animatableKeyPaths;
+        return type(of: self).animatableKeyPaths;
     }
 }
 
@@ -74,19 +74,19 @@ extension Bool: CoreAnimationKVCExtension {}
 extension Float: CoreAnimationKVCExtension {}
 extension Int: CoreAnimationKVCExtension {}
 extension CGFloat: CoreAnimationKVCExtension {}
-extension CGColorRef: CoreAnimationKVCExtension {}
-extension CGPathRef: CoreAnimationKVCExtension {}
+extension CGColor: CoreAnimationKVCExtension {}
+extension CGPath: CoreAnimationKVCExtension {}
 extension CFTimeInterval: CoreAnimationKVCExtension {}
 
 private extension String {
-    func keyPathForType(type: CoreAnimationKVCExtension.Type) -> [String] {
-        return type.keyPathsForName(self)
+    func keyPath(forType type: CoreAnimationKVCExtension.Type) -> [String] {
+        return type.keyPaths(forName: self)
     }
 }
 
 private extension Array {
     init(union: [[Element]]) {
-        self.init(union.reduce([Element](), combine: { (elements, array) in return elements + array }))
+        self.init(union.reduce([Element](), { (elements, array) in return elements + array }))
     }
 }
 
@@ -94,37 +94,37 @@ extension CALayer: CoreAnimationKVCExtension {
     
     class var animatableKeyPaths: [String] {
         return [String](union: [
-            "contentsCenter".keyPathForType(CGPoint),
-            "contentsRect".keyPathForType(CGRect),
-            "opacity".keyPathForType(CGFloat),
-            "hidden".keyPathForType(Bool),
-            "bounds".keyPathForType(CGRect),
-            "masksToBounds".keyPathForType(Bool),
-            "doubleSided".keyPathForType(Bool),
-            "cornerRadius".keyPathForType(CGFloat),
-            "borderWidth".keyPathForType(CGFloat),
-            "borderColor".keyPathForType(CGColorRef),
-            "backgroundColor".keyPathForType(CGColorRef),
-            "shadowOffset".keyPathForType(CGSize),
-            "shadowOpacity".keyPathForType(CGFloat),
-            "shadowRadius".keyPathForType(CGFloat),
-            "shadowColor".keyPathForType(CGColorRef),
-            "shadowPath".keyPathForType(CGPathRef),
-            "position".keyPathForType(CGPoint),
-            "zPosition".keyPathForType(CGFloat),
-            "anchorPoint".keyPathForType(CGPoint),
-            "anchorPointZ".keyPathForType(CGFloat),
-            "transform".keyPathForType(CATransform3D),
-            "sublayerTransform".keyPathForType(CATransform3D)
+            "contentsCenter".keyPath(forType: CGPoint.self),
+            "contentsRect".keyPath(forType: CGRect.self),
+            "opacity".keyPath(forType: CGFloat.self),
+            "hidden".keyPath(forType: Bool.self),
+            "bounds".keyPath(forType: CGRect.self),
+            "masksToBounds".keyPath(forType: Bool.self),
+            "doubleSided".keyPath(forType: Bool.self),
+            "cornerRadius".keyPath(forType: CGFloat.self),
+            "borderWidth".keyPath(forType: CGFloat.self),
+            "borderColor".keyPath(forType: CGColor.self),
+            "backgroundColor".keyPath(forType: CGColor.self),
+            "shadowOffset".keyPath(forType: CGSize.self),
+            "shadowOpacity".keyPath(forType: CGFloat.self),
+            "shadowRadius".keyPath(forType: CGFloat.self),
+            "shadowColor".keyPath(forType: CGColor.self),
+            "shadowPath".keyPath(forType: CGPath.self),
+            "position".keyPath(forType: CGPoint.self),
+            "zPosition".keyPath(forType: CGFloat.self),
+            "anchorPoint".keyPath(forType: CGPoint.self),
+            "anchorPointZ".keyPath(forType: CGFloat.self),
+            "transform".keyPath(forType: CATransform3D.self),
+            "sublayerTransform".keyPath(forType: CATransform3D.self)
         ])
     }
     
     var animatableKeyPaths: [String] {
-        return self.dynamicType.animatableKeyPaths;
+        return type(of: self).animatableKeyPaths;
     }
     
     var stateLayer: CALayer {
-        return presentationLayer() as? CALayer ?? self
+        return presentation() ?? self
     }
     
 }
@@ -132,67 +132,67 @@ extension CALayer: CoreAnimationKVCExtension {
 extension CAEmitterCell: CoreAnimationKVCExtension {
     class var animatableKeyPaths: [String] {
         return [String](union: [
-            "birthRate".keyPathForType(Float),
-            "lifetime".keyPathForType(Float),
-            "lifetimeRange".keyPathForType(Float),
-            "emissionLatitude".keyPathForType(CGFloat),
-            "emissionLongitude".keyPathForType(CGFloat),
-            "emissionRange".keyPathForType(CGFloat),
-            "velocity".keyPathForType(CGFloat),
-            "velocityRange".keyPathForType(CGFloat),
-            "xAcceleration".keyPathForType(CGFloat),
-            "yAcceleration".keyPathForType(CGFloat),
-            "zAcceleration".keyPathForType(CGFloat),
-            "scale".keyPathForType(CGFloat),
-            "scaleRange".keyPathForType(CGFloat),
-            "scaleSpeed".keyPathForType(CGFloat),
-            "spin".keyPathForType(CGFloat),
-            "spinRange".keyPathForType(CGFloat),
-            "color".keyPathForType(CGColor),
-            "redRange".keyPathForType(Float),
-            "greenRange".keyPathForType(Float),
-            "blueRange".keyPathForType(Float),
-            "alphaRange".keyPathForType(Float),
-            "redSpeed".keyPathForType(Float),
-            "greenSpeed".keyPathForType(Float),
-            "blueSpeed".keyPathForType(Float),
-            "alphaSpeed".keyPathForType(Float),
-            "contentsRect".keyPathForType(CGRect)
+            "birthRate".keyPath(forType: Float.self),
+            "lifetime".keyPath(forType: Float.self),
+            "lifetimeRange".keyPath(forType: Float.self),
+            "emissionLatitude".keyPath(forType: CGFloat.self),
+            "emissionLongitude".keyPath(forType: CGFloat.self),
+            "emissionRange".keyPath(forType: CGFloat.self),
+            "velocity".keyPath(forType: CGFloat.self),
+            "velocityRange".keyPath(forType: CGFloat.self),
+            "xAcceleration".keyPath(forType: CGFloat.self),
+            "yAcceleration".keyPath(forType: CGFloat.self),
+            "zAcceleration".keyPath(forType: CGFloat.self),
+            "scale".keyPath(forType: CGFloat.self),
+            "scaleRange".keyPath(forType: CGFloat.self),
+            "scaleSpeed".keyPath(forType: CGFloat.self),
+            "spin".keyPath(forType: CGFloat.self),
+            "spinRange".keyPath(forType: CGFloat.self),
+            "color".keyPath(forType: CGColor.self),
+            "redRange".keyPath(forType: Float.self),
+            "greenRange".keyPath(forType: Float.self),
+            "blueRange".keyPath(forType: Float.self),
+            "alphaRange".keyPath(forType: Float.self),
+            "redSpeed".keyPath(forType: Float.self),
+            "greenSpeed".keyPath(forType: Float.self),
+            "blueSpeed".keyPath(forType: Float.self),
+            "alphaSpeed".keyPath(forType: Float.self),
+            "contentsRect".keyPath(forType: CGRect.self)
         ])
     }
     var animatableKeyPaths: [String] {
-        return self.dynamicType.animatableKeyPaths;
+        return type(of: self).animatableKeyPaths;
     }
 }
 
 extension CAEmitterLayer {
     override class var animatableKeyPaths: [String] {
         return super.animatableKeyPaths + [String](union: [
-            "birthRate".keyPathForType(Float),
-            "lifetime".keyPathForType(Float),
-            "emitterPosition".keyPathForType(CGPoint),
-            "emitterZPosition".keyPathForType(CGFloat),
-            "emitterSize".keyPathForType(CGSize),
-            "emitterDepth".keyPathForType(CGFloat),
-            "velocity".keyPathForType(Float),
-            "scale".keyPathForType(Float),
-            "spin".keyPathForType(Float)
+            "birthRate".keyPath(forType: Float.self),
+            "lifetime".keyPath(forType: Float.self),
+            "emitterPosition".keyPath(forType: CGPoint.self),
+            "emitterZPosition".keyPath(forType: CGFloat.self),
+            "emitterSize".keyPath(forType: CGSize.self),
+            "emitterDepth".keyPath(forType: CGFloat.self),
+            "velocity".keyPath(forType: Float.self),
+            "scale".keyPath(forType: Float.self),
+            "spin".keyPath(forType: Float.self)
             ])
     }
     override var animatableKeyPaths: [String] {
-        return self.dynamicType.animatableKeyPaths + [String](union: emitterCells?.filter({ $0.name != nil }).map({ (cell) -> [String] in
-            return "emitterCells.\(cell.name!)".keyPathForType(CAEmitterCell)
-        }) ?? []);
+        return type(of: self).animatableKeyPaths + [String](union: emitterCells?.filter({ $0.name != nil }).map({ (cell) -> [String] in
+            return "emitterCells.\(cell.name!)".keyPath(forType: CAEmitterCell.self)
+        }) ?? [])
     }
 }
 
 extension CAGradientLayer {
     override class var animatableKeyPaths: [String] {
         return super.animatableKeyPaths + [String](union: [
-            "colors".keyPathForType(CGColorRef),
-            "locations".keyPathForType(CGFloat),
-            "startPoint".keyPathForType(CGPoint),
-            "endPoint".keyPathForType(CGPoint)
+            "colors".keyPath(forType: CGColor.self),
+            "locations".keyPath(forType: CGFloat.self),
+            "startPoint".keyPath(forType: CGPoint.self),
+            "endPoint".keyPath(forType: CGPoint.self)
         ])
     }
 }
@@ -200,14 +200,14 @@ extension CAGradientLayer {
 extension CAReplicatorLayer {
     override var animatableKeyPaths: [String] {
         return super.animatableKeyPaths + [String](union: [
-            "instanceCount".keyPathForType(Int),
-            "instanceDelay".keyPathForType(CFTimeInterval),
-            "instanceTransform".keyPathForType(CATransform3D),
-            "instanceColor".keyPathForType(CGColor),
-            "instanceRedOffset".keyPathForType(Float),
-            "instanceGreenOffset".keyPathForType(Float),
-            "instanceBlueOffset".keyPathForType(Float),
-            "instanceAlphaOffset".keyPathForType(Float)
+            "instanceCount".keyPath(forType: Int.self),
+            "instanceDelay".keyPath(forType: CFTimeInterval.self),
+            "instanceTransform".keyPath(forType: CATransform3D.self),
+            "instanceColor".keyPath(forType: CGColor.self),
+            "instanceRedOffset".keyPath(forType: Float.self),
+            "instanceGreenOffset".keyPath(forType: Float.self),
+            "instanceBlueOffset".keyPath(forType: Float.self),
+            "instanceAlphaOffset".keyPath(forType: Float.self)
         ])
     }
 }
@@ -215,14 +215,14 @@ extension CAReplicatorLayer {
 extension CAShapeLayer {
     override var animatableKeyPaths: [String] {
         return super.animatableKeyPaths + [String](union: [
-            "path".keyPathForType(CGPath),
-            "fillColor".keyPathForType(CGColor),
-            "strokeColor".keyPathForType(CGColor),
-            "strokeStart".keyPathForType(CGFloat),
-            "strokeEnd".keyPathForType(CGFloat),
-            "lineWidth".keyPathForType(CGFloat),
-            "miterLimit".keyPathForType(CGFloat),
-            "lineDashPhase".keyPathForType(CGFloat)
+            "path".keyPath(forType: CGPath.self),
+            "fillColor".keyPath(forType: CGColor.self),
+            "strokeColor".keyPath(forType: CGColor.self),
+            "strokeStart".keyPath(forType: CGFloat.self),
+            "strokeEnd".keyPath(forType: CGFloat.self),
+            "lineWidth".keyPath(forType: CGFloat.self),
+            "miterLimit".keyPath(forType: CGFloat.self),
+            "lineDashPhase".keyPath(forType: CGFloat.self)
         ])
     }
 }

@@ -10,32 +10,32 @@ import Foundation
 
 var ongoingAnimations = [Animation]()
 
-public class Animation: NSObject {
-        
-    init(duration: NSTimeInterval) {
+open class Animation: NSObject {
+    
+    init(duration: TimeInterval) {
         self.duration = duration
         super.init()
         ongoingAnimations.append(self)
-        performSelector(#selector(Animation.go as (Animation) -> () -> Animation), withObject: nil, afterDelay: 0.0, inModes: [NSRunLoopCommonModes])
+        perform(#selector(Animation.go as (Animation) -> () -> Animation), with: nil, afterDelay: 0.0, inModes: [RunLoopMode.commonModes])
     }
     
     public convenience override init() {
         self.init(duration: 0.0)
     }
     
-    @objc(isFinished) public var finished: Bool = false
+    @objc(isFinished) open var finished: Bool = false
     
-    public var duration: NSTimeInterval
-    public internal(set) var delay: NSTimeInterval = 0.0
+    open var duration: TimeInterval
+    open internal(set) var delay: TimeInterval = 0.0
     
-    public var reversed: Bool {
+    open var reversed: Bool {
         @objc(isReversed) get {
             guard owner == nil else { return owner!.reversed }
             return false
         }
     }
     
-    private var _speed: Double = 1.0
+    fileprivate var _speed: Double = 1.0
     var speed: Double {
         get {
             guard owner == nil else { return owner!.speed }
@@ -46,34 +46,27 @@ public class Animation: NSObject {
         }
     }
     
-    var _position: NSTimeInterval = 0.0
-    @objc public var position: NSTimeInterval {
+    var _position: TimeInterval = 0.0
+    @objc open var position: TimeInterval {
         get { return _position }
         set {
             setPosition(newValue, apply: true)
         }
     }
     
-    public override class func automaticallyNotifiesObserversForKey(key: String) -> Bool {
-        guard key != "position" else { return false }
-        return super.automaticallyNotifiesObserversForKey(key)
-    }
-    
-    func setPosition(position: NSTimeInterval, apply: Bool = false) {
+    func setPosition(_ position: TimeInterval, apply: Bool = false) {
         guard position != _position else { return }
         let oldValue = _position
-        willChangeValueForKey("position")
+        willChangeValue(forKey: "position")
         _position = position
-        didChangeValueForKey("position")
+        didChangeValue(forKey: "position")
         guard apply else { return }
-        if ((position > 0.0 && oldValue == 0.0) || (position == 00 && oldValue > 0.0)) {
-            emit(.Delay)
-        } else if position > delay && oldValue <= delay {
-            emit(.Animation)
-        } else if position >= delay + duration {
-            emit(.Complete)
+        if oldValue <= delay && position > delay {
+            emit(.animating)
+        } else if (oldValue < delay + duration && position >= delay + duration) {
+            emit(.completed)
         }
-        emit(.Position)
+        emit(.position)
         postpone()
     }
     
@@ -86,27 +79,27 @@ public class Animation: NSObject {
         }
     }
     
-    func childAnimation(animation: Animation, didCompleteWithFinishState finished: Bool) {}
+    func child(animation: Animation, didCompleteWithFinishState finished: Bool) {}
     
     @objc public enum AnimationEvent: Int {
-        case Position
-        case Delay
-        case Animation
-        case Complete
+        case position
+        case delayed
+        case animating
+        case completed
     }
     
-    private struct EventListener {
+    fileprivate struct EventListener {
         var event: AnimationEvent
-        var then: Animation -> Void
+        var then: (Animation) -> Void
     }
     
-    private var eventListeners = [EventListener]()
+    fileprivate var eventListeners = [EventListener]()
     
-    private func emit(event: AnimationEvent) {
+    fileprivate func emit(_ event: AnimationEvent) {
         eventListeners.filter({ $0.event == event }).forEach({ $0.then(self) })
     }
     
-    public func on(event: AnimationEvent, then: (animation: Animation) -> Void) -> Animation {
+    public func on(_ event: AnimationEvent, then: @escaping (Animation) -> Void) -> Animation {
         eventListeners.append(
             EventListener(
                 event: event,
@@ -115,13 +108,21 @@ public class Animation: NSObject {
         )
         return self
     }
-        
-    public func delayed(delay: NSTimeInterval) -> Animation {
+    
+    open func completed(_ closure: @escaping (Animation) -> Void) -> Animation {
+        return on(.completed, then: closure)
+    }
+    
+    open func animating(_ closure: @escaping (Animation) -> Void) -> Animation {
+        return on(.animating, then:  closure)
+    }
+    
+    open func delayed(_ delay: TimeInterval) -> Animation {
         self.delay = delay
         return self
     }
     
-    public func then(duration duration: NSTimeInterval, curve: Curve?, animation: Void -> Void) -> Animation {
+    open func then(duration: TimeInterval, curve: Curve?, animation: @escaping (Void) -> Void) -> Animation {
         return then(
             animation: AnimationBuilder(
                 duration: duration,
@@ -131,15 +132,15 @@ public class Animation: NSObject {
         )
     }
     
-    public func then(animation animation: Animation) -> Animation {
+    open func then(animation: Animation) -> Animation {
         return then(animations: [animation])
     }
     
-    public func then(animations animations: [Animation]) -> Animation {
+    open func then(animations: [Animation]) -> Animation {
         return AnimationChain(animations: [self] + animations)
     }
     
-    public func and(duration duration: NSTimeInterval, curve: Curve?, animation: Void -> Void) -> Animation {
+    open func and(duration: TimeInterval, curve: Curve?, animation: @escaping (Void) -> Void) -> Animation {
         return and(
             animation: AnimationBuilder(
                 duration: duration,
@@ -149,34 +150,34 @@ public class Animation: NSObject {
         )
     }
     
-    public func and(animation animation: Animation) -> Animation {
+    open func and(animation: Animation) -> Animation {
         return and(animations: [animation])
     }
     
-    public func and(animations animations: [Animation]) -> Animation {
+    open func and(animations: [Animation]) -> Animation {
         return AnimationGroup(animations: [self] + animations)
     }
     
     func postpone() {
-        NSObject.cancelPreviousPerformRequestsWithTarget(
-            self,
+        NSObject.cancelPreviousPerformRequests(
+            withTarget: self,
             selector: #selector(Animation.go as (Animation) -> () -> Animation),
             object: nil
         )
     }
     
-    public func manual() -> Animation {
+    open func manual() -> Animation {
         guard owner == nil else { return owner!.manual() }
         postpone()
         return self
     }
     
-    func complete(finished: Bool) {
+    func complete(_ finished: Bool) {
         self.finished = finished
         setPosition(delay + duration)
-        emit(.Complete)
+        emit(.completed)
         if let owner = owner {
-            owner.childAnimation(self, didCompleteWithFinishState: finished)
+            owner.child(animation: self, didCompleteWithFinishState: finished)
         } else {
             ongoingAnimations.remove(self)
         }
@@ -191,33 +192,33 @@ public class Animation: NSObject {
     }
     
     func precommit() {
-        if (_position <= delay) {
-            emit(.Animation)
+        if (position >= delay) {
+            emit(.animating)
         }
         setPosition(max(_position, delay))
         commit()
     }
     
     func preflight() {
-        if delay - position > 0.0 {
-            performSelector(#selector(Animation.precommit), withObject: nil, afterDelay: (delay - position) / speed, inModes: [NSRunLoopCommonModes])
+        if position < delay {
+            perform(#selector(Animation.precommit), with: nil, afterDelay: (delay - position) / speed, inModes: [RunLoopMode.commonModes])
         } else {
             precommit()
         }
     }
     
-    public func begin() {
-        if position == 0.0 {
-            emit(.Delay)
+    open func begin() {
+        if position < delay {
+            emit(.delayed)
         }
         preflight()
     }
     
-    public func go() -> Animation {
+    open func go() -> Animation {
         return go(speed: 1.0)
     }
     
-    public func go(speed speed: Double) -> Animation {
+    open func go(speed: Double) -> Animation {
         var speed = speed
         if speed < 0.01 && speed > -0.01 { speed = 1.0 }
         guard owner == nil else {
@@ -237,7 +238,7 @@ public class Animation: NSObject {
 }
 
 extension Array where Element: Animation {
-    func indexOf(element: Element) -> Array.Index? {
+    func indexOf(_ element: Element) -> Array.Index? {
         for idx in self.indices {
             if self[idx] === element {
                 return idx
@@ -245,14 +246,14 @@ extension Array where Element: Animation {
         }
         return nil
     }
-    mutating func remove(element: Element) {
+    mutating func remove(_ element: Element) {
         while let index = indexOf(element) {
-            removeAtIndex(index)
+            self.remove(at: index)
         }
     }
 }
 
-public func Slaminate(duration duration: NSTimeInterval, curve: Curve?, animation: Void -> Void) -> Animation {
+public func Slaminate(duration: TimeInterval, curve: Curve?, animation: @escaping (Void) -> Void) -> Animation {
     return AnimationBuilder(
         duration: duration,
         curve: curve ?? Curve.linear,
@@ -261,23 +262,23 @@ public func Slaminate(duration duration: NSTimeInterval, curve: Curve?, animatio
 }
 
 extension NSObject {
-    public class func slaminate(duration duration: NSTimeInterval, curve: Curve? = nil, animation: Void -> Void) -> Animation {
+    public class func slaminate(duration: TimeInterval, curve: Curve? = nil, animation: @escaping (Void) -> Void) -> Animation {
         return AnimationBuilder(
             duration: duration,
             curve: curve ?? Curve.linear,
             animation: animation
         )
     }
-    public class func slaminating() -> Bool {
+    open class func slaminating() -> Bool {
         return AnimationBuilder.top != nil
     }
-    public func animateProperty(key: String, fromValue: AnyObject?, toValue: AnyObject, duration: NSTimeInterval, curve: Curve? = nil) -> Animation! {
-        return self.pick(key, fromValue: fromValue, toValue: toValue, duration: duration, curve: curve)
+    open func setValue(_ toValue: Any, fromValue: Any?, key: String, duration: TimeInterval, curve: Curve? = nil) -> Animation! {
+        return self.pick(animationForKey: key, fromValue: fromValue, toValue: toValue, duration: duration, curve: curve)
     }
-    public func setValue(value: AnyObject?, forKey key: String, duration: NSTimeInterval, curve: Curve? = nil) -> Animation {
-        return setValue(value, forKeyPath: key, duration: duration, curve: curve)
-    }
-    public func setValue(value: AnyObject?, forKeyPath keyPath: String, duration: NSTimeInterval, curve: Curve? = nil) -> Animation {
+    open func setValue(_ value: AnyObject?, forKeyPath keyPath: String, duration: TimeInterval, curve: Curve? = nil) -> Animation {
         return Slaminate(duration: duration, curve: curve, animation: { [weak self] in self?.setValue(value, forKeyPath: keyPath) })
+    }
+    open func setValue(_ value: AnyObject?, forKey key: String, duration: TimeInterval, curve: Curve? = nil) -> Animation {
+        return setValue(value, forKeyPath: key, duration: duration, curve: curve)
     }
 }

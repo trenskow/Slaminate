@@ -22,7 +22,7 @@ struct ConstraintPresenceInfo: ConstraintPresenceInfoProtocol {
 
 extension Array where Element: ConstraintPresenceInfoProtocol {
     
-    func applyPresent(present: Bool) {
+    func applyPresent(_ present: Bool) {
         var toRemove = [Element]()
         var toAdd = [Element]()
         for info in self {

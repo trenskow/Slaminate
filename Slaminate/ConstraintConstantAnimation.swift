@@ -8,7 +8,7 @@
 
 class ConstraintConstantAnimation: DirectAnimation {
     
-    override class func canAnimate(object: NSObject, key: String) -> Bool {
+    override class func canAnimate(_ object: NSObject, key: String) -> Bool {
         return key == "constant" && object is NSLayoutConstraint
     }
     

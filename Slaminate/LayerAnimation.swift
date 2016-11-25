@@ -8,37 +8,37 @@
 
 import Foundation
 
-class LayerAnimation: DirectAnimation {
+class LayerAnimation: DirectAnimation, CAAnimationDelegate {
     
-    override class func canAnimate(object: NSObject, key: String) -> Bool {
+    override class func canAnimate(_ object: NSObject, key: String) -> Bool {
         guard let layer = object as? CoreAnimationKVCExtension else { return false }
-        guard (object.valueForKeyPath(key) as? Interpolatable)?.canInterpolate == true else { return false }
-        return layer.dynamicType.animatableKeyPaths.contains(key)
+        guard (object.value(forKeyPath: key) as? Interpolatable)?.canInterpolate == true else { return false }
+        return type(of: layer).animatableKeyPaths.contains(key)
     }
     
     var layer: CALayer
     
-    var delayTimer: NSTimer?
+    var delayTimer: Timer?
     
     var animation: CurvedAnimation?
     
-    required init(duration: NSTimeInterval, object: NSObject, key: String, fromValue: Any?, toValue: Any, curve: Curve) {
+    required init(duration: TimeInterval, object: NSObject, key: String, fromValue: Any?, toValue: Any, curve: Curve) {
         self.layer = object as! CALayer
         super.init(duration: duration, object: object, key: key, fromValue: fromValue, toValue: toValue, curve: curve)
     }
     
-    override func animationDidStart(anim: CAAnimation) {
-        object.setValue((fromValue as! Interpolatable).interpolate(toValue as! Interpolatable, curve.transform(1.0)).objectValue, forKey: key)
+    func animationDidStart(_ anim: CAAnimation) {
+        object.setValue((fromValue as! Interpolatable).interpolate(to: toValue as! Interpolatable, at: curve.transform(1.0)).objectValue, forKey: key)
     }
     
-    override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
+    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         animation?.delegate = nil
         complete(flag)
     }
     
     override func commit() {
         
-        fromValue ??= (layer.presentationLayer() ?? layer).valueForKey(key)
+        fromValue ??= (layer.presentation() ?? layer).value(forKey: key)
         
         animation = CurvedAnimation(keyPath: key)
         animation?.duration = duration
@@ -48,9 +48,9 @@ class LayerAnimation: DirectAnimation {
         animation?.curve = curve
         animation?.speed = Float(speed)
         animation?.delegate = self
-        animation?.removedOnCompletion = true
+        animation?.isRemovedOnCompletion = true
         
-        layer.addAnimation(animation!, forKey: "animation_\(key)")
+        layer.add(animation!, forKey: "animation_\(key)")
         
     }
     
