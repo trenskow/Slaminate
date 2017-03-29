@@ -37,9 +37,9 @@ open class Curve : NSObject {
     open static let easeOutQuint = Curve(transform: { 1.0 * (pow($0 - 1.0, 5.0) + 1.0) }).guarded
     open static let easeInOutQuint = easeInQuint | easeOutQuint
     
-    open static let easeInSine = Curve(transform: { (-1.0 * cos($0 * M_PI_2) + 1.0) }).guarded
-    open static let easeOutSine = Curve(transform: { sin($0 * M_PI_2) }).guarded
-    open static let easeInOutSine = Curve(transform: { (-0.5 * cos(M_PI * $0) + 0.5) }).guarded
+    open static let easeInSine = Curve(transform: { (-1.0 * cos($0 * .pi / 2) + 1.0) }).guarded
+    open static let easeOutSine = Curve(transform: { sin($0 * .pi / 2) }).guarded
+    open static let easeInOutSine = Curve(transform: { (-0.5 * cos(.pi * $0) + 0.5) }).guarded
     
     open static let easeInExpo = Curve(transform: { ($0 == 0.0 ? 0.0 : pow(2.0, 10.0 * ($0 - 1.0))) }).guarded
     open static let easeOutExpo = Curve(transform: { -pow(2.0, -10.0 * $0) + 1.0 }).guarded
@@ -59,10 +59,10 @@ open class Curve : NSObject {
             a = 1.0
             s = p / 4.0
         } else {
-            s = p / (2.0 * M_PI) * asin(1.0 / a)
+            s = p / (2.0 * .pi) * asin(1.0 / a)
         }
         
-        return -(a * pow(2.0, 10.0 * ($0 - 1.0)) * sin((($0 - 1.0) - s) * (2.0 * M_PI) / p))
+        return -(a * pow(2.0, 10.0 * ($0 - 1.0)) * sin((($0 - 1.0) - s) * (2.0 * .pi) / p))
         
     }).guarded
     open static let easeOutElastic = Curve(transform: {
@@ -75,10 +75,10 @@ open class Curve : NSObject {
             a = 1.0
             s = p/4
         } else {
-            s = p / (2.0 * M_PI) * asin(1.0 / a)
+            s = p / (2.0 * .pi) * asin(1.0 / a)
         }
         
-        return a * pow(2.0, -10.0 * $0) * sin(($0 - s) * (2 * M_PI) / p) + 1.0
+        return a * pow(2.0, -10.0 * $0) * sin(($0 - s) * (2 * .pi) / p) + 1.0
         
     }).guarded
     open static let easeInOutElastic = Curve(transform: {
@@ -93,17 +93,17 @@ open class Curve : NSObject {
             a = 1.0
             s = p / 4.0
         } else {
-            s = p / (2.0 * M_PI) * asin (1.0 / a)
+            s = p / (2.0 * .pi) * asin (1.0 / a)
         }
         
         if t < 1 {
             t -= 1.0
-            return -0.5 * (a * pow(2.0,10.0 * t) * sin((t - s) * (2.0 * M_PI) / p))
+            return -0.5 * (a * pow(2.0,10.0 * t) * sin((t - s) * (2.0 * .pi) / p))
         }
         
         t -= 1.0
         
-        return a * pow(2.0, -10.0 * t) * sin((t - s) * (2.0 * M_PI) / p) * 0.5 + 1.0
+        return a * pow(2.0, -10.0 * t) * sin((t - s) * (2.0 * .pi) / p) * 0.5 + 1.0
         
     }).guarded
     

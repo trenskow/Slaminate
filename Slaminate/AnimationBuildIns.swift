@@ -155,7 +155,7 @@ open class AnimationBuildIns: Animation {
             keyPath = "transform.rotation.y"
         }
         var fromValue = view.layer.stateLayer.value(forKeyPath: keyPath) as! Double
-        var toValue = M_PI_2
+        var toValue = Double.pi / 2
         if flip.direction == .bottomUp || flip.direction == .leftToRight {
             toValue *= -1.0;
         }
