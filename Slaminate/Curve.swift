@@ -22,7 +22,7 @@ open class Curve : NSObject {
     open static let easeDefault = Curve(mediaTimingFunction: kCAMediaTimingFunctionDefault).guarded
     
     open static let easeInQuad = Curve(transform: { pow($0, 2) }).guarded
-    open static let easeOutQuad = Curve(transform: { -1.0 * $0 * ($0 - 2.0) }).guarded
+    open static let easeOutQuad = Curve(transform: { Double(-1.0) * $0 * Double($0 - 2.0) }).guarded
     open static let easeInOutQuad = easeInQuad | easeOutQuad.guarded
     
     open static let easeInCubic = Curve(transform: { pow($0, 3.0) }).guarded
@@ -107,7 +107,7 @@ open class Curve : NSObject {
         
     }).guarded
     
-    open static let easeInBack = Curve(transform: { $0 * $0 * (2.70158 * $0 - 1.70158) }).guarded
+    open static let easeInBack = Curve(transform: { $0 * $0 * (Double(2.70158) * $0 - Double(1.70158)) }).guarded
     open static var easeOutBack = Curve(transform: {
         let s = 1.70158
         let s2 = 2.70158
