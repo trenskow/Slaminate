@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol PropertyInfoProtocol: Equatable, Hashable {
+protocol PropertyInfoProtocol: Hashable {
     weak var object: NSObject? { get set }
     var key: String { get set }
     var fromValue: NSObject? { get set }

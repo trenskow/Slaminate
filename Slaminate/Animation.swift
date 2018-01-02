@@ -122,7 +122,7 @@ open class Animation: NSObject {
         return self
     }
     
-    open func then(duration: TimeInterval, curve: Curve?, animation: @escaping (Void) -> Void) -> Animation {
+    open func then(duration: TimeInterval, curve: Curve?, animation: @escaping () -> Void) -> Animation {
         return then(
             animation: AnimationBuilder(
                 duration: duration,
@@ -140,7 +140,7 @@ open class Animation: NSObject {
         return AnimationChain(animations: [self] + animations)
     }
     
-    open func and(duration: TimeInterval, curve: Curve?, animation: @escaping (Void) -> Void) -> Animation {
+    open func and(duration: TimeInterval, curve: Curve?, animation: @escaping () -> Void) -> Animation {
         return and(
             animation: AnimationBuilder(
                 duration: duration,
@@ -253,7 +253,7 @@ extension Array where Element: Animation {
     }
 }
 
-public func Slaminate(duration: TimeInterval, curve: Curve?, animation: @escaping (Void) -> Void) -> Animation {
+public func Slaminate(duration: TimeInterval, curve: Curve?, animation: @escaping () -> Void) -> Animation {
     return AnimationBuilder(
         duration: duration,
         curve: curve ?? Curve.linear,
@@ -262,7 +262,7 @@ public func Slaminate(duration: TimeInterval, curve: Curve?, animation: @escapin
 }
 
 extension NSObject {
-    public class func slaminate(duration: TimeInterval, curve: Curve? = nil, animation: @escaping (Void) -> Void) -> Animation {
+    public class func slaminate(duration: TimeInterval, curve: Curve? = nil, animation: @escaping () -> Void) -> Animation {
         return AnimationBuilder(
             duration: duration,
             curve: curve ?? Curve.linear,
