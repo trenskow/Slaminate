@@ -224,7 +224,7 @@
 					A1591B631C6B0329001687F6 = {
 						CreatedOnToolsVersion = 7.2.1;
 						DevelopmentTeam = GNSKCLJY5Q;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0920;
 					};
 				};
 			};
@@ -303,7 +303,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.trenskow.Slaminate;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -322,7 +322,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.trenskow.Slaminate;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};

@@ -37,7 +37,7 @@ extension NSObject {
     
     // NSObject
     
-    func slaminate_willChangeValueForKey(_ key: String) {
+    @objc func slaminate_willChangeValueForKey(_ key: String) {
         
         defer {
             slaminate_willChangeValueForKey(key)
@@ -51,7 +51,7 @@ extension NSObject {
         
     }
     
-    func slaminate_didChangeValueForKey(_ key: String) {
+    @objc func slaminate_didChangeValueForKey(_ key: String) {
         
         defer {
             slaminate_didChangeValueForKey(key)
@@ -65,7 +65,7 @@ extension NSObject {
         
     }
     
-    func slaminate_setValue(_ value: AnyObject?, forKey key: String) {
+    @objc func slaminate_setValue(_ value: AnyObject?, forKey key: String) {
         
         defer {
             slaminate_setValue(value, forKey: key)
@@ -91,41 +91,41 @@ extension NSObject {
         )
     }
     
-    func slaminate_setActive(_ active: Bool) {
+    @objc func slaminate_setActive(_ active: Bool) {
         setConstraintValue("active", newValue: active as AnyObject)
         slaminate_setActive(active)
     }
     
-    func slaminate_setConstant(_ constant: CGFloat) {
+    @objc func slaminate_setConstant(_ constant: CGFloat) {
         setConstraintValue("constant", newValue: constant as AnyObject)
         slaminate_setConstant(constant)
     }
     
-    func slaminate_setPriority(_ priority: UILayoutPriority) {
+    @objc func slaminate_setPriority(_ priority: UILayoutPriority) {
         setConstraintValue("priority", newValue: priority as AnyObject)
         slaminate_setPriority(priority)
     }
     
     // UIView
     
-    func slaminate_addConstraint(_ constraint: NSLayoutConstraint) {
+    @objc func slaminate_addConstraint(_ constraint: NSLayoutConstraint) {
         AnimationBuilder.top.addConstraintPresence(self as! UIView, constraint: constraint, added: true)
         slaminate_addConstraint(constraint)
     }
     
-    func slaminate_removeConstraint(_ constraint: NSLayoutConstraint) {
+    @objc func slaminate_removeConstraint(_ constraint: NSLayoutConstraint) {
         AnimationBuilder.top.addConstraintPresence(self as! UIView, constraint: constraint, added: false)
         slaminate_removeConstraint(constraint)
     }
     
-    func slaminate_addConstraints(_ constraints: [NSLayoutConstraint]) {
+    @objc func slaminate_addConstraints(_ constraints: [NSLayoutConstraint]) {
         for constraint in constraints {
             AnimationBuilder.top.addConstraintPresence(self as! UIView, constraint: constraint, added: true)
         }
         slaminate_addConstraints(constraints)
     }
     
-    func slaminate_removeConstraints(_ constraints: [NSLayoutConstraint]) {
+    @objc func slaminate_removeConstraints(_ constraints: [NSLayoutConstraint]) {
         for constraint in constraints {
             AnimationBuilder.top.addConstraintPresence(self as! UIView, constraint: constraint, added: false)
         }

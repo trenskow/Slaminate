@@ -97,7 +97,7 @@ class DirectAnimation: Animation, PropertyAnimation {
         
     }
     
-    func displayDidUpdate() {
+    @objc func displayDidUpdate() {
         self.position = abs(animationStart?.timeIntervalSinceNow ?? 0.0) - delay
     }
     

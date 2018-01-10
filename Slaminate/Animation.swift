@@ -28,7 +28,7 @@ open class Animation: NSObject {
     open var duration: TimeInterval
     open internal(set) var delay: TimeInterval = 0.0
     
-    open var reversed: Bool {
+    @objc open var reversed: Bool {
         @objc(isReversed) get {
             guard owner == nil else { return owner!.reversed }
             return false
@@ -191,7 +191,7 @@ open class Animation: NSObject {
         complete(true)
     }
     
-    func precommit() {
+    @objc func precommit() {
         if (position >= delay) {
             emit(.animating)
         }
@@ -214,7 +214,7 @@ open class Animation: NSObject {
         preflight()
     }
     
-    open func go() -> Animation {
+    @objc open func go() -> Animation {
         return go(speed: 1.0)
     }
     

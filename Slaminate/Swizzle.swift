@@ -16,7 +16,7 @@ struct InstanceMethod: MethodInfo {
     var method: Method
     var implementation: IMP
     init(cls: AnyClass, selector: Selector) {
-        method = class_getInstanceMethod(cls, selector)
+        method = class_getInstanceMethod(cls, selector)!
         implementation = method_getImplementation(method)
     }
 }
@@ -25,7 +25,7 @@ struct ClassMethod: MethodInfo {
     var method: Method
     var implementation: IMP
     init(cls: AnyClass, selector: Selector) {
-        method = class_getClassMethod(cls, selector)
+        method = class_getClassMethod(cls, selector)!
         implementation = method_getImplementation(method)
     }
 }
