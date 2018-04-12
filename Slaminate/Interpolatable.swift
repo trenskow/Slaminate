@@ -66,7 +66,7 @@ extension CGSize: Interpolatable {
             height: height.interpolate(to: (to as! CGSize).height, at: position) as! CGFloat
         )
     }
-    var objectValue: AnyObject? { return NSValue(cgSize: self) }
+    var objectValue: AnyObject { return NSValue(cgSize: self) }
 }
 
 extension CGRect: Interpolatable {
@@ -101,6 +101,7 @@ private func ==(lhs: Quaternion, rhs: Quaternion) -> Bool {
 extension CATransform3D : Interpolatable {
     
     fileprivate init(a: [CGFloat]) {
+        self.init()
         m11 = a[0];  m12 = a[1];  m13 = a[2];  m14 = a[3]
         m21 = a[4];  m22 = a[5];  m23 = a[6];  m24 = a[7]
         m31 = a[8];  m32 = a[9];  m33 = a[10]; m34 = a[11]
@@ -246,6 +247,7 @@ extension CATransform3D : Interpolatable {
     }
     
     fileprivate init(tf: CATransform3D, s: Quaternion) {
+        self.init()
         m11 = tf.m11 / s.x
         m12 = tf.m12 / s.x
         m13 = tf.m13 / s.x
